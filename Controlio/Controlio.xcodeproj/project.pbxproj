@@ -7,6 +7,20 @@
 	objects = {
 
 /* Begin PBXContainerItemProxy section */
+		8B030DEA2EA15E120090D39F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8B9981592E8DB89F003ADE4E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8B030DD82EA15E0E0090D39F;
+			remoteInfo = ControlioReceiver;
+		};
+		8B030DF42EA15E120090D39F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8B9981592E8DB89F003ADE4E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8B030DD82EA15E0E0090D39F;
+			remoteInfo = ControlioReceiver;
+		};
 		8B99816F2E8DB8A6003ADE4E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 8B9981592E8DB89F003ADE4E /* Project object */;
@@ -24,12 +38,32 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		8B030DD92EA15E0E0090D39F /* ControlioReceiver.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ControlioReceiver.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8B030DE92EA15E120090D39F /* ControlioReceiverTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ControlioReceiverTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		8B030DF32EA15E120090D39F /* ControlioReceiverUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ControlioReceiverUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		8B030E062EA15E760090D39F /* EventModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventModel.swift; sourceTree = "<group>"; };
+		8B030E072EA15E7C0090D39F /* MCManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCManager.swift; sourceTree = "<group>"; };
 		8B9981612E8DB89F003ADE4E /* Controlio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Controlio.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B99816E2E8DB8A6003ADE4E /* ControlioTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ControlioTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B9981782E8DB8A6003ADE4E /* ControlioUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ControlioUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		8B030DDA2EA15E0F0090D39F /* ControlioReceiver */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ControlioReceiver;
+			sourceTree = "<group>";
+		};
+		8B030DEC2EA15E120090D39F /* ControlioReceiverTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ControlioReceiverTests;
+			sourceTree = "<group>";
+		};
+		8B030DF62EA15E120090D39F /* ControlioReceiverUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ControlioReceiverUITests;
+			sourceTree = "<group>";
+		};
 		8B9981632E8DB89F003ADE4E /* Controlio */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Controlio;
@@ -48,6 +82,27 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		8B030DD62EA15E0E0090D39F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8B030DE62EA15E120090D39F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8B030DF02EA15E120090D39F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8B99815E2E8DB89F003ADE4E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -72,12 +127,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8B030E042EA15E520090D39F /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				8B030E072EA15E7C0090D39F /* MCManager.swift */,
+				8B030E062EA15E760090D39F /* EventModel.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
 		8B9981582E8DB89F003ADE4E = {
 			isa = PBXGroup;
 			children = (
+				8B030E042EA15E520090D39F /* Shared */,
 				8B9981632E8DB89F003ADE4E /* Controlio */,
 				8B9981712E8DB8A6003ADE4E /* ControlioTests */,
 				8B99817B2E8DB8A6003ADE4E /* ControlioUITests */,
+				8B030DDA2EA15E0F0090D39F /* ControlioReceiver */,
+				8B030DEC2EA15E120090D39F /* ControlioReceiverTests */,
+				8B030DF62EA15E120090D39F /* ControlioReceiverUITests */,
 				8B9981622E8DB89F003ADE4E /* Products */,
 			);
 			sourceTree = "<group>";
@@ -88,6 +156,9 @@
 				8B9981612E8DB89F003ADE4E /* Controlio.app */,
 				8B99816E2E8DB8A6003ADE4E /* ControlioTests.xctest */,
 				8B9981782E8DB8A6003ADE4E /* ControlioUITests.xctest */,
+				8B030DD92EA15E0E0090D39F /* ControlioReceiver.app */,
+				8B030DE92EA15E120090D39F /* ControlioReceiverTests.xctest */,
+				8B030DF32EA15E120090D39F /* ControlioReceiverUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -95,6 +166,74 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		8B030DD82EA15E0E0090D39F /* ControlioReceiver */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8B030E012EA15E120090D39F /* Build configuration list for PBXNativeTarget "ControlioReceiver" */;
+			buildPhases = (
+				8B030DD52EA15E0E0090D39F /* Sources */,
+				8B030DD62EA15E0E0090D39F /* Frameworks */,
+				8B030DD72EA15E0E0090D39F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				8B030DDA2EA15E0F0090D39F /* ControlioReceiver */,
+			);
+			name = ControlioReceiver;
+			packageProductDependencies = (
+			);
+			productName = ControlioReceiver;
+			productReference = 8B030DD92EA15E0E0090D39F /* ControlioReceiver.app */;
+			productType = "com.apple.product-type.application";
+		};
+		8B030DE82EA15E120090D39F /* ControlioReceiverTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8B030E022EA15E120090D39F /* Build configuration list for PBXNativeTarget "ControlioReceiverTests" */;
+			buildPhases = (
+				8B030DE52EA15E120090D39F /* Sources */,
+				8B030DE62EA15E120090D39F /* Frameworks */,
+				8B030DE72EA15E120090D39F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8B030DEB2EA15E120090D39F /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				8B030DEC2EA15E120090D39F /* ControlioReceiverTests */,
+			);
+			name = ControlioReceiverTests;
+			packageProductDependencies = (
+			);
+			productName = ControlioReceiverTests;
+			productReference = 8B030DE92EA15E120090D39F /* ControlioReceiverTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		8B030DF22EA15E120090D39F /* ControlioReceiverUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8B030E032EA15E120090D39F /* Build configuration list for PBXNativeTarget "ControlioReceiverUITests" */;
+			buildPhases = (
+				8B030DEF2EA15E120090D39F /* Sources */,
+				8B030DF02EA15E120090D39F /* Frameworks */,
+				8B030DF12EA15E120090D39F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8B030DF52EA15E120090D39F /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				8B030DF62EA15E120090D39F /* ControlioReceiverUITests */,
+			);
+			name = ControlioReceiverUITests;
+			packageProductDependencies = (
+			);
+			productName = ControlioReceiverUITests;
+			productReference = 8B030DF32EA15E120090D39F /* ControlioReceiverUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		8B9981602E8DB89F003ADE4E /* Controlio */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8B9981822E8DB8A6003ADE4E /* Build configuration list for PBXNativeTarget "Controlio" */;
@@ -173,6 +312,17 @@
 				LastSwiftUpdateCheck = 1640;
 				LastUpgradeCheck = 1640;
 				TargetAttributes = {
+					8B030DD82EA15E0E0090D39F = {
+						CreatedOnToolsVersion = 16.4;
+					};
+					8B030DE82EA15E120090D39F = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = 8B030DD82EA15E0E0090D39F;
+					};
+					8B030DF22EA15E120090D39F = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = 8B030DD82EA15E0E0090D39F;
+					};
 					8B9981602E8DB89F003ADE4E = {
 						CreatedOnToolsVersion = 16.4;
 					};
@@ -203,11 +353,35 @@
 				8B9981602E8DB89F003ADE4E /* Controlio */,
 				8B99816D2E8DB8A6003ADE4E /* ControlioTests */,
 				8B9981772E8DB8A6003ADE4E /* ControlioUITests */,
+				8B030DD82EA15E0E0090D39F /* ControlioReceiver */,
+				8B030DE82EA15E120090D39F /* ControlioReceiverTests */,
+				8B030DF22EA15E120090D39F /* ControlioReceiverUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		8B030DD72EA15E0E0090D39F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8B030DE72EA15E120090D39F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8B030DF12EA15E120090D39F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8B99815F2E8DB89F003ADE4E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -232,6 +406,27 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		8B030DD52EA15E0E0090D39F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8B030DE52EA15E120090D39F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8B030DEF2EA15E120090D39F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8B99815D2E8DB89F003ADE4E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -256,6 +451,16 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		8B030DEB2EA15E120090D39F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8B030DD82EA15E0E0090D39F /* ControlioReceiver */;
+			targetProxy = 8B030DEA2EA15E120090D39F /* PBXContainerItemProxy */;
+		};
+		8B030DF52EA15E120090D39F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8B030DD82EA15E0E0090D39F /* ControlioReceiver */;
+			targetProxy = 8B030DF42EA15E120090D39F /* PBXContainerItemProxy */;
+		};
 		8B9981702E8DB8A6003ADE4E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 8B9981602E8DB89F003ADE4E /* Controlio */;
@@ -269,6 +474,132 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		8B030DFB2EA15E120090D39F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = ControlioReceiver/ControlioReceiver.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = group14.ControlioReceiver;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		8B030DFC2EA15E120090D39F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = ControlioReceiver/ControlioReceiver.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = group14.ControlioReceiver;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		8B030DFD2EA15E120090D39F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = group14.ControlioReceiverTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ControlioReceiver.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ControlioReceiver";
+			};
+			name = Debug;
+		};
+		8B030DFE2EA15E120090D39F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = group14.ControlioReceiverTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ControlioReceiver.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ControlioReceiver";
+			};
+			name = Release;
+		};
+		8B030DFF2EA15E120090D39F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = group14.ControlioReceiverUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = ControlioReceiver;
+			};
+			name = Debug;
+		};
+		8B030E002EA15E120090D39F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = group14.ControlioReceiverUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = ControlioReceiver;
+			};
+			name = Release;
+		};
 		8B9981802E8DB8A6003ADE4E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -513,6 +844,33 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		8B030E012EA15E120090D39F /* Build configuration list for PBXNativeTarget "ControlioReceiver" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8B030DFB2EA15E120090D39F /* Debug */,
+				8B030DFC2EA15E120090D39F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8B030E022EA15E120090D39F /* Build configuration list for PBXNativeTarget "ControlioReceiverTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8B030DFD2EA15E120090D39F /* Debug */,
+				8B030DFE2EA15E120090D39F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8B030E032EA15E120090D39F /* Build configuration list for PBXNativeTarget "ControlioReceiverUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8B030DFF2EA15E120090D39F /* Debug */,
+				8B030E002EA15E120090D39F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		8B99815C2E8DB89F003ADE4E /* Build configuration list for PBXProject "Controlio" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
