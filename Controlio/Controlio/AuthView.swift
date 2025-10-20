@@ -102,7 +102,7 @@ struct SecureToggleField: View {
     let placeholder: String
     @Binding var text: String
     @Binding var show: Bool
-    
+
     var body: some View {
         ZStack(alignment: .leading) {
             if text.isEmpty {
@@ -110,18 +110,26 @@ struct SecureToggleField: View {
                     .foregroundColor(.gray)
                     .padding(.leading, 12)
             }
-            
+
             HStack {
-                TextField("", text: $text)
-                    .textInputAutocapitalization(.none)
-                    .disableAutocorrection(true)
-                    .padding(.trailing, 36) // space for the eye button
-                
+                // Switch between SecureField and TextField
+                if show {
+                    TextField("", text: $text)
+                        .textInputAutocapitalization(.none)
+                        .disableAutocorrection(true)
+                        .padding(.trailing, 36)
+                } else {
+                    SecureField("", text: $text)
+                        .textInputAutocapitalization(.none)
+                        .disableAutocorrection(true)
+                        .padding(.trailing, 36)
+                }
+
                 Button(action: { show.toggle() }) {
                     Image(systemName: show ? "eye.slash" : "eye")
                         .foregroundColor(.gray)
                 }
-                .padding(.trailing, 12) // extra right padding
+                .padding(.trailing, 12)
             }
             .padding(.leading, 12)
         }
@@ -132,7 +140,6 @@ struct SecureToggleField: View {
         .shadow(color: Color.black.opacity(0.25), radius: 4, y: 4)
     }
 }
-
 
 
 /// Authentication button with styling
