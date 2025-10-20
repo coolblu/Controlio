@@ -7,7 +7,9 @@
 
 import Foundation
 import MultipeerConnectivity
-
+#if os(iOS)
+import UIKit
+#endif
 /*
  wrapper for iOS to macOS
  receiver calls startAdvertising()
@@ -24,7 +26,17 @@ final class MCManager: NSObject {
     
     // MC state
     private let serviceType = "controlio-trk"
-    private let peerID = MCPeerID(displayName: Host.current().localizedName)
+    private let peerID: MCPeerID = {
+        #if os(iOS)
+        return MCPeerID(displayName: UIDevice.current.name)
+        #elseif os(macOS)
+        // fall back to hostName if needed
+        let name = Host.current().localizedName ?? ProcessInfo.processInfo.hostName
+        return MCPeerID(displayName: name)
+        #else
+        return MCPeerID(displayName: "Controlio")
+        #endif
+    }()
     private var session: MCSession!
     private var advertiser: MCNearbyServiceAdvertiser?
     private var browser: MCNearbyServiceBrowser?
