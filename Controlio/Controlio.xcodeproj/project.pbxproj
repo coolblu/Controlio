@@ -46,6 +46,7 @@
 		8B9981612E8DB89F003ADE4E /* Controlio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Controlio.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B99816E2E8DB8A6003ADE4E /* ControlioTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ControlioTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B9981782E8DB8A6003ADE4E /* ControlioUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ControlioUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D57158EA2EA5CDD7001BC23F /* ControlioApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ControlioApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -124,6 +125,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D57158E72EA5CDD7001BC23F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -159,6 +167,7 @@
 				8B030DD92EA15E0E0090D39F /* ControlioReceiver.app */,
 				8B030DE92EA15E120090D39F /* ControlioReceiverTests.xctest */,
 				8B030DF32EA15E120090D39F /* ControlioReceiverUITests.xctest */,
+				D57158EA2EA5CDD7001BC23F /* ControlioApp.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -302,6 +311,25 @@
 			productReference = 8B9981782E8DB8A6003ADE4E /* ControlioUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		D57158E92EA5CDD7001BC23F /* ControlioApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D57158F22EA5CDD8001BC23F /* Build configuration list for PBXNativeTarget "ControlioApp" */;
+			buildPhases = (
+				D57158E62EA5CDD7001BC23F /* Sources */,
+				D57158E72EA5CDD7001BC23F /* Frameworks */,
+				D57158E82EA5CDD7001BC23F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ControlioApp;
+			packageProductDependencies = (
+			);
+			productName = ControlioApp;
+			productReference = D57158EA2EA5CDD7001BC23F /* ControlioApp.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -334,6 +362,9 @@
 						CreatedOnToolsVersion = 16.4;
 						TestTargetID = 8B9981602E8DB89F003ADE4E;
 					};
+					D57158E92EA5CDD7001BC23F = {
+						CreatedOnToolsVersion = 16.4;
+					};
 				};
 			};
 			buildConfigurationList = 8B99815C2E8DB89F003ADE4E /* Build configuration list for PBXProject "Controlio" */;
@@ -356,6 +387,7 @@
 				8B030DD82EA15E0E0090D39F /* ControlioReceiver */,
 				8B030DE82EA15E120090D39F /* ControlioReceiverTests */,
 				8B030DF22EA15E120090D39F /* ControlioReceiverUITests */,
+				D57158E92EA5CDD7001BC23F /* ControlioApp */,
 			);
 		};
 /* End PBXProject section */
@@ -403,6 +435,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D57158E82EA5CDD7001BC23F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -442,6 +481,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		8B9981742E8DB8A6003ADE4E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D57158E62EA5CDD7001BC23F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -726,6 +772,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9F9GC6KGQX;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -753,6 +800,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9F9GC6KGQX;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -841,6 +889,62 @@
 			};
 			name = Release;
 		};
+		D57158F32EA5CDD8001BC23F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9F9GC6KGQX;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = sui.ControlioApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		D57158F42EA5CDD8001BC23F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9F9GC6KGQX;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = sui.ControlioApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -903,6 +1007,15 @@
 			buildConfigurations = (
 				8B9981892E8DB8A6003ADE4E /* Debug */,
 				8B99818A2E8DB8A6003ADE4E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D57158F22EA5CDD8001BC23F /* Build configuration list for PBXNativeTarget "ControlioApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D57158F32EA5CDD8001BC23F /* Debug */,
+				D57158F42EA5CDD8001BC23F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

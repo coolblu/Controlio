@@ -21,7 +21,7 @@ struct ContentView: View {
                     .renderingMode(.original)
                     .resizable()
                     .scaledToFit()
-                    .frame(width: w * 1.25)
+                    .frame(width: w * 0.9)
                     .shadow(color: .black.opacity(0.22), radius: 12, x: 0, y: 8)
                     .position(x: w / 2, y: h * 0.28)
             }
