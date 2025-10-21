@@ -59,6 +59,16 @@
 		D57158EA2EA5CDD7001BC23F /* ControlioApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ControlioApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		8B32CDB12EA7FE7E006313F4 /* Exceptions for "Controlio" folder in "Controlio" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 8B9981602E8DB89F003ADE4E /* Controlio */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		8B030DDA2EA15E0F0090D39F /* ControlioReceiver */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
@@ -77,6 +87,9 @@
 		};
 		8B9981632E8DB89F003ADE4E /* Controlio */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				8B32CDB12EA7FE7E006313F4 /* Exceptions for "Controlio" folder in "Controlio" target */,
+			);
 			path = Controlio;
 			sourceTree = "<group>";
 		};
@@ -789,9 +802,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 9F9GC6KGQX;
+				DEVELOPMENT_TEAM = A64N6P66W9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Controlio/Info.plist;
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Controlio uses the local network to discover and connect to your Mac.\n\ntcp_listener_socket_create bind(fd 4) failed [1: Operation not permitted]\n\nServer did not publish: errorDict [{\n    NSNetServicesErrorCode = 1;\n    NSNetServicesErrorDomain = 1;\n}].\n\nServer did not publish: errorDict [{\n    NSNetServicesErrorCode = \"-72000\";\n    NSNetServicesErrorDomain = 10;\nControlio uses the local network to discover and connect to your Mac.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -802,7 +817,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = group14.Controlio;
+				PRODUCT_BUNDLE_IDENTIFIER = CS371Lgroup14.Controlio;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -817,9 +832,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 9F9GC6KGQX;
+				DEVELOPMENT_TEAM = A64N6P66W9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Controlio/Info.plist;
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Controlio uses the local network to discover and connect to your Mac.\n\ntcp_listener_socket_create bind(fd 4) failed [1: Operation not permitted]\n\nServer did not publish: errorDict [{\n    NSNetServicesErrorCode = 1;\n    NSNetServicesErrorDomain = 1;\n}].\n\nServer did not publish: errorDict [{\n    NSNetServicesErrorCode = \"-72000\";\n    NSNetServicesErrorDomain = 10;\nControlio uses the local network to discover and connect to your Mac.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -830,7 +847,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = group14.Controlio;
+				PRODUCT_BUNDLE_IDENTIFIER = CS371Lgroup14.Controlio;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
