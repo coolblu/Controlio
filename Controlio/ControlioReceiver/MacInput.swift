@@ -46,7 +46,7 @@ final class MacInput {
                        y: min(max(p.y, minY), maxY))
     }
     
-    private func moveMouseBy(dx: Int, dy: Int) {
+    func moveMouseBy(dx: Int, dy: Int) {
         let cur = currentMouse()
         let newPoint = clampToMainDisplay(CGPoint(x: cur.x + CGFloat(dx),
                                                   y: cur.y - CGFloat(dy))) // invert Y
@@ -57,7 +57,7 @@ final class MacInput {
         evt?.post(tap: .cghidEventTap)
     }
     
-    private func click(button: Int, isDown: Bool) {
+    func click(button: Int, isDown: Bool) {
         let cur = currentMouse()
         let cgButton: CGMouseButton = (button == 0) ? .left : .right
         let type: CGEventType = {
@@ -72,7 +72,7 @@ final class MacInput {
         evt?.post(tap: .cghidEventTap)	
     }
     
-    private func scrollBy(dx: Int, dy: Int) {
+    func scrollBy(dx: Int, dy: Int) {
         let evt = CGEvent(scrollWheelEvent2Source: nil,
                           units: .pixel,
                           wheelCount: 2,

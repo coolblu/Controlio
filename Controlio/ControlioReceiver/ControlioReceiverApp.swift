@@ -57,18 +57,10 @@ final class ReceiverVM: ObservableObject {
                 self?.log("MC state: \(s.rawValue)")
             }
         }
-        mc.onEvents = { [weak self] events in
-            DispatchQueue.main.async {
-                for e in events {
-                    MacInput.shared.handle(e)
-                    
-                    switch e.t {
-                    case .pm: self?.log("pm: \(e.p.dx ?? 0), \(e.p.dy ?? 0)")
-                    case .sc: self?.log("sc: \(e.p.dx ?? 0), \(e.p.dy ?? 0)")
-                    case .bt: self?.log("bt: c:\(e.p.c ?? -1) s:\(e.p.s ?? -1)")
-                    case .gs: self?.log("gs: k:\(e.p.k ?? -1) v:\(e.p.v ?? -1)")
-                    }
-                }
+        mc.onEvents = { events in
+            EventPump.shared.start()
+            for e in events {
+                EventPump.shared.enqueue(e)
             }
         }
         mc.startAdvertising()
