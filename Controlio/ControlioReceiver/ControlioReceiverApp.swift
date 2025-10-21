@@ -69,7 +69,10 @@ final class ReceiverVM: ObservableObject {
     }
 
     private func log(_ s: String) {
-        logs.append(s)
-        if logs.count > 200 { logs.removeFirst(logs.count - 200) }
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            self.logs.append(s)
+            if logs.count > 200 { logs.removeFirst(logs.count - 200) }
+        }
     }
 }

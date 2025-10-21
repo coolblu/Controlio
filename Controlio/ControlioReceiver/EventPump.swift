@@ -10,10 +10,10 @@ import Foundation
 final class EventPump {
     static let shared = EventPump()
     
-    private let q = DispatchQueue(label: "controlio.rx". qos: .userInteractive)
+    private let q = DispatchQueue(label: "controlio.rx", qos: .userInteractive)
     private var moveDX = 0
     private var moveDY = 0
-    private var time: DispatchSourceTimer?
+    private var timer: DispatchSourceTimer?
     
     func start() {
         if timer != nil { return }
