@@ -60,6 +60,8 @@ final class ReceiverVM: ObservableObject {
         mc.onEvents = { [weak self] events in
             DispatchQueue.main.async {
                 for e in events {
+                    MacInput.shared.handle(e)
+                    
                     switch e.t {
                     case .pm: self?.log("pm: \(e.p.dx ?? 0), \(e.p.dy ?? 0)")
                     case .sc: self?.log("sc: \(e.p.dx ?? 0), \(e.p.dy ?? 0)")
