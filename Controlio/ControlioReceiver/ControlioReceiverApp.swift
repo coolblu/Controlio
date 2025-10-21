@@ -41,6 +41,8 @@ final class ReceiverVM: ObservableObject {
     private let mc = MCManager()
 
     init() {
+        mc.onDebug = { [weak self] in self?.log($0)}
+        
         mc.onStateChange = { [weak self] s in
             DispatchQueue.main.async {
                 self?.connected = (s == .connected)
