@@ -6,6 +6,15 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		8B0CBA932EA6D25800C2ADC7 /* EventBuilders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0CBA922EA6D25800C2ADC7 /* EventBuilders.swift */; };
+		8B0CBA942EA6D35D00C2ADC7 /* EventModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B030E062EA15E760090D39F /* EventModel.swift */; };
+		8B0CBA962EA6D44E00C2ADC7 /* MCManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B030E072EA15E7C0090D39F /* MCManager.swift */; };
+		8B0CBA972EA6D46600C2ADC7 /* MCManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B030E072EA15E7C0090D39F /* MCManager.swift */; };
+		8B0CBA982EA6D46C00C2ADC7 /* EventModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B030E062EA15E760090D39F /* EventModel.swift */; };
+		8B0CBA992EA6D47300C2ADC7 /* EventBuilders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0CBA922EA6D25800C2ADC7 /* EventBuilders.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		8B030DEA2EA15E120090D39F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -43,11 +52,22 @@
 		8B030DF32EA15E120090D39F /* ControlioReceiverUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ControlioReceiverUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B030E062EA15E760090D39F /* EventModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventModel.swift; sourceTree = "<group>"; };
 		8B030E072EA15E7C0090D39F /* MCManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCManager.swift; sourceTree = "<group>"; };
+		8B0CBA922EA6D25800C2ADC7 /* EventBuilders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventBuilders.swift; sourceTree = "<group>"; };
 		8B9981612E8DB89F003ADE4E /* Controlio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Controlio.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B99816E2E8DB8A6003ADE4E /* ControlioTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ControlioTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B9981782E8DB8A6003ADE4E /* ControlioUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ControlioUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D57158EA2EA5CDD7001BC23F /* ControlioApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ControlioApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		8B32CDB12EA7FE7E006313F4 /* Exceptions for "Controlio" folder in "Controlio" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 8B9981602E8DB89F003ADE4E /* Controlio */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		8B030DDA2EA15E0F0090D39F /* ControlioReceiver */ = {
@@ -67,6 +87,9 @@
 		};
 		8B9981632E8DB89F003ADE4E /* Controlio */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				8B32CDB12EA7FE7E006313F4 /* Exceptions for "Controlio" folder in "Controlio" target */,
+			);
 			path = Controlio;
 			sourceTree = "<group>";
 		};
@@ -140,6 +163,7 @@
 			children = (
 				8B030E072EA15E7C0090D39F /* MCManager.swift */,
 				8B030E062EA15E760090D39F /* EventModel.swift */,
+				8B0CBA922EA6D25800C2ADC7 /* EventBuilders.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -449,6 +473,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8B0CBA982EA6D46C00C2ADC7 /* EventModel.swift in Sources */,
+				8B0CBA972EA6D46600C2ADC7 /* MCManager.swift in Sources */,
+				8B0CBA992EA6D47300C2ADC7 /* EventBuilders.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -470,6 +497,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8B0CBA942EA6D35D00C2ADC7 /* EventModel.swift in Sources */,
+				8B0CBA932EA6D25800C2ADC7 /* EventBuilders.swift in Sources */,
+				8B0CBA962EA6D44E00C2ADC7 /* MCManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -531,7 +561,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSMainStoryboardFile = "";
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -559,7 +589,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSMainStoryboardFile = "";
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -772,9 +802,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 9F9GC6KGQX;
+				DEVELOPMENT_TEAM = A64N6P66W9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Controlio/Info.plist;
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Controlio uses the local network to discover and connect to your Mac.\n\ntcp_listener_socket_create bind(fd 4) failed [1: Operation not permitted]\n\nServer did not publish: errorDict [{\n    NSNetServicesErrorCode = 1;\n    NSNetServicesErrorDomain = 1;\n}].\n\nServer did not publish: errorDict [{\n    NSNetServicesErrorCode = \"-72000\";\n    NSNetServicesErrorDomain = 10;\nControlio uses the local network to discover and connect to your Mac.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -785,7 +817,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = group14.Controlio;
+				PRODUCT_BUNDLE_IDENTIFIER = CS371Lgroup14.Controlio;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -800,9 +832,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 9F9GC6KGQX;
+				DEVELOPMENT_TEAM = A64N6P66W9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Controlio/Info.plist;
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Controlio uses the local network to discover and connect to your Mac.\n\ntcp_listener_socket_create bind(fd 4) failed [1: Operation not permitted]\n\nServer did not publish: errorDict [{\n    NSNetServicesErrorCode = 1;\n    NSNetServicesErrorDomain = 1;\n}].\n\nServer did not publish: errorDict [{\n    NSNetServicesErrorCode = \"-72000\";\n    NSNetServicesErrorDomain = 10;\nControlio uses the local network to discover and connect to your Mac.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -813,7 +847,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = group14.Controlio;
+				PRODUCT_BUNDLE_IDENTIFIER = CS371Lgroup14.Controlio;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
