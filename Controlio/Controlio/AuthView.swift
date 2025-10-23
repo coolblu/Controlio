@@ -62,7 +62,7 @@ struct AuthView: View {
                         .focused($focusedField, equals: .confirmPassword)
                 }
             }
-
+            // Error message
             if let message = errorMessage {
                 Text(message)
                     .foregroundColor(.red)

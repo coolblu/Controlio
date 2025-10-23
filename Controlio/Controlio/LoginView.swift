@@ -24,6 +24,7 @@ struct LoginView: View {
 
                 // Auth screens
                 ZStack {
+                    // Login screen
                     if !showSignUp {
                         AuthView(
                             isSignUp: false,
@@ -32,7 +33,8 @@ struct LoginView: View {
                         )
                         .transition(.move(edge: .leading))
                     }
-
+                    
+                    // Sign up screen
                     if showSignUp {
                         AuthView(
                             isSignUp: true,
