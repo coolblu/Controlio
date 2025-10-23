@@ -7,25 +7,6 @@
 
 import SwiftUI
 
-/// Reusable button style with subtle press animation and shadow.
-struct PressableButtonStyle: ButtonStyle {
-    let color: Color
-
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .foregroundColor(.white)
-            .padding(.vertical, 14)
-            .frame(maxWidth: .infinity)
-            .background(color)
-            .cornerRadius(20)
-            .shadow(color: .black.opacity(0.25), radius: 4, y: 4)
-            .scaleEffect(configuration.isPressed ? 0.96 : 1.0)
-            .opacity(configuration.isPressed ? 0.85 : 1.0)
-            .animation(.easeInOut(duration: 0.12), value: configuration.isPressed)
-    }
-}
-
-// MARK: - Styled Button
 /// Button with consistent styling and press effect.
 struct StyledButton: View {
     let title: String
@@ -34,8 +15,20 @@ struct StyledButton: View {
     let iconName: String?
     let action: () -> Void
 
+    @State private var isPressed = false
+
     var body: some View {
-        Button(action: action) {
+        Button(action: {
+            withAnimation(.easeInOut(duration: 0.1)) {
+                isPressed = true
+            }
+            action()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                withAnimation(.easeInOut(duration: 0.1)) {
+                    isPressed = false
+                }
+            }
+        }) {
             HStack(spacing: 8) {
                 if let iconName = iconName {
                     Image(iconName)
@@ -51,10 +44,10 @@ struct StyledButton: View {
             .background(color)
             .cornerRadius(20)
             .shadow(color: .black.opacity(0.15), radius: 4, y: 4)
+            .scaleEffect(isPressed ? 0.96 : 1.0)
         }
     }
 }
-
 
 
 /// Reusable text input field with consistent padding, corner radius, and shadow.
