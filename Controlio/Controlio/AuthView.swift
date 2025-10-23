@@ -5,13 +5,6 @@
 //  Created by Jerry Lin on 10/19/25.
 //
 
-//
-//  AuthView.swift
-//  Controlio
-//
-//  Created by Jerry Lin on 10/19/25.
-//
-
 import SwiftUI
 import FirebaseAuth
 import FirebaseCore
@@ -37,75 +30,77 @@ struct AuthView: View {
     enum Field: Hashable { case email, password, confirmPassword }
 
     var body: some View {
-        VStack(spacing: 24) {
-            // Logo
-            Image("controlio_logo")
-                .resizable()
-                .scaledToFit()
-                .frame(maxWidth: 200)
-                .shadow(color: .black.opacity(0.2), radius: 8, y: 4)
-
-            Text(isSignUp ? "Create Account" : "Welcome to Controlio")
-                .font(.largeTitle)
-                .fontWeight(.semibold)
-            
-            // Input Fields
-            VStack(spacing: 12) {
-                StyledTextField(placeholder: "Email", text: $email, isFocused: focusedField == .email)
-                    .focused($focusedField, equals: .email)
-
-                SecureToggleField(placeholder: "Password", text: $password, show: $showPassword, isFocused: focusedField == .password)
-                    .focused($focusedField, equals: .password)
-
-                if isSignUp {
-                    SecureToggleField(placeholder: "Confirm Password", text: $confirmPassword, show: $showConfirmPassword, isFocused: focusedField == .confirmPassword)
-                        .focused($focusedField, equals: .confirmPassword)
+        ScrollView {
+            VStack(spacing: 24) {
+                // Logo
+                Image("controlio_logo")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(maxWidth: 200)
+                    .shadow(color: .black.opacity(0.2), radius: 8, y: 4)
+                
+                Text(isSignUp ? "Create Account" : "Welcome to Controlio")
+                    .font(.largeTitle)
+                    .fontWeight(.semibold)
+                
+                // Input Fields
+                VStack(spacing: 12) {
+                    StyledTextField(placeholder: "Email", text: $email, isFocused: focusedField == .email)
+                        .focused($focusedField, equals: .email)
+                    
+                    SecureToggleField(placeholder: "Password", text: $password, show: $showPassword, isFocused: focusedField == .password)
+                        .focused($focusedField, equals: .password)
+                    
+                    if isSignUp {
+                        SecureToggleField(placeholder: "Confirm Password", text: $confirmPassword, show: $showConfirmPassword, isFocused: focusedField == .confirmPassword)
+                            .focused($focusedField, equals: .confirmPassword)
+                    }
                 }
+                // Error message
+                if let message = errorMessage {
+                    Text(message)
+                        .foregroundColor(.red)
+                        .font(.footnote)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal)
+                }
+                
+                // Primary button
+                StyledButton(title: isSignUp ? "Create Account" : "Login", color: .orange, textColor: .white, iconName: nil) {
+                    handleAuth()
+                }
+                
+                // Switch screen
+                Button(action: onSwitch) {
+                    Text(isSignUp ? "Already have an account? " : "Don’t have an account? ")
+                        .foregroundColor(.gray)
+                    + Text(isSignUp ? "Log in" : "Sign up")
+                        .foregroundColor(.orange)
+                }
+                .font(.footnote)
+                
+                // Separator for alternative sign in options
+                HStack {
+                    Rectangle()
+                        .frame(height: 1)
+                        .foregroundColor(.gray.opacity(0.4))
+                    Text("or continue with")
+                        .font(.footnote)
+                        .foregroundColor(.gray)
+                    Rectangle()
+                        .frame(height: 1)
+                        .foregroundColor(.gray.opacity(0.4))
+                }
+                
+                // Google Sign-In
+                StyledButton(title: "Sign in with Google", color: .white, textColor: .black, iconName: "google_icon") {
+                    handleGoogleSignIn()
+                }
+                
+                Spacer()
             }
-            // Error message
-            if let message = errorMessage {
-                Text(message)
-                    .foregroundColor(.red)
-                    .font(.footnote)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal)
-            }
-
-            // Primary button
-            StyledButton(title: isSignUp ? "Create Account" : "Login", color: .orange, textColor: .white, iconName: nil) {
-                handleAuth()
-            }
-            
-            // Switch screen
-            Button(action: onSwitch) {
-               Text(isSignUp ? "Already have an account? " : "Don’t have an account? ")
-                   .foregroundColor(.gray)
-               + Text(isSignUp ? "Log in" : "Sign up")
-                   .foregroundColor(.orange)
-           }
-           .font(.footnote)
-            
-            // Separator for alternative sign in options
-            HStack {
-                Rectangle()
-                    .frame(height: 1)
-                    .foregroundColor(.gray.opacity(0.4))
-                Text("or continue with")
-                    .font(.footnote)
-                    .foregroundColor(.gray)
-                Rectangle()
-                    .frame(height: 1)
-                    .foregroundColor(.gray.opacity(0.4))
-            }
-            
-            // Google Sign-In
-            StyledButton(title: "Sign in with Google", color: .white, textColor: .black, iconName: "google_icon") {
-                handleGoogleSignIn()
-            }
-
-            Spacer()
+            .padding(.horizontal, 24)
         }
-        .padding(.horizontal, 24)
     }
 
     // Firebase Auth

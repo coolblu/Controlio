@@ -107,12 +107,14 @@ struct SecureToggleField: View {
                 Group {
                     if show {
                         TextField("", text: $text)
+                            .textContentType(.none)
                             .textInputAutocapitalization(.never)
                             .disableAutocorrection(true)
                             .textContentType(.none)
                             .padding(.trailing, 36)
                     } else {
                         SecureField("", text: $text)
+                            .textContentType(.none)
                             .textInputAutocapitalization(.never)
                             .disableAutocorrection(true)
                             .textContentType(.none)
