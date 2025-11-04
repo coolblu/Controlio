@@ -18,13 +18,26 @@ private enum Theme {
 
 private enum Route: Hashable {
     case trackpad
+    case gamepad
 }
+
+final class MCManagerWrapper: ObservableObject {
+    let manager = MCManager()
+    private var started = false
+    func ensureBrowsing() {
+        guard !started else { return }
+        started = true
+        manager.startBrowsing()
+    }
+}
+
 struct HomeView: View {
     // TO-DO: reflect the changed name from loginview
     var userName: String = "Name"
     // TO-DO: reflect actual connection status of device (right now default is "MacBook Pro")
     @State private var connectedDevice: String? = "MacBook Pro"
     @State private var path = NavigationPath()
+    @StateObject private var mcHost = MCManagerWrapper()
     
     private let columns = [
         GridItem(.flexible(), spacing: 24),
@@ -54,14 +67,14 @@ struct HomeView: View {
                             .frame(width: 107, height: 80)
                     }
                     .padding(.top, 8)
-
+                    
                     // Greetings
                     Text("Hi, \(userName)!")
                         .font(.system(size: 34, weight: .bold, design: .rounded))
                     Text("Choose your controller.")
                         .font(.title3)
                         .foregroundStyle(.secondary)
-
+                    
                     // 2x2 Controller cards
                     LazyVGrid(columns: columns, spacing: 20) {
                         ControllerCard(
@@ -71,21 +84,21 @@ struct HomeView: View {
                             /* start trackpad */
                             action: { path.append(Route.trackpad) }
                         )
-
+                        
                         ControllerCard(
                             systemImage: "gamecontroller",
                             title: "Gamepad",
                             subtitle: "Twin-stick layout",
-                            action: { /* start gamepad */ }
+                            action: { path.append(Route.gamepad) }
                         )
-
+                        
                         ControllerCard(
                             systemImage: "antenna.radiowaves.left.and.right",
                             title: "Motion",
                             subtitle: "Use motion to control",
                             action: { /* start motion */ }
                         )
-
+                        
                         ControllerCard(
                             systemImage: "steeringwheel",
                             title: "Racing",
@@ -93,25 +106,25 @@ struct HomeView: View {
                             action: { /* start racing */ }
                         )
                     }
-
+                    
                     // Connection status
                     if let connectedDevice {
                         ConnectionBanner(deviceName: connectedDevice)
                     }
-
+                    
                     // Action buttons
                     HStack(spacing: 16) {
                         Button("Disconnect") {
                             connectedDevice = nil
                         }
                         .buttonStyle(PrimaryButtonStyle())
-
+                        
                         Button("Change Device") {
                             // navigate to device picker
                         }
                         .buttonStyle(OutlineButtonStyle())
                     }
-
+                    
                     // Help link
                     Button(action: { /* open help */ }) {
                         Text("Help & Tips")
@@ -126,10 +139,13 @@ struct HomeView: View {
                 .padding(.horizontal, 20)
             }
             .background(Theme.bg.ignoresSafeArea())
+            .onAppear{ mcHost.ensureBrowsing() }
             .navigationDestination(for: Route.self) { route in
                 switch route {
                 case .trackpad:
-                    TrackpadView()
+                    TrackpadView(mc: mcHost.manager)
+                case .gamepad:
+                    GamepadView(mc: mcHost.manager)
                 }
             }
         }

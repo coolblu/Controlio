@@ -16,12 +16,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             print("MC state:", state.rawValue)
         }
         mc.onEvents = { events in
-            for e in events {
+            for e in events {	
                 switch e.t {
                 case .pm: print("pm:", e.p.dx ?? 0, e.p.dy ?? 0)
                 case .sc: print("sc:", e.p.dx ?? 0, e.p.dy ?? 0)
                 case .bt: print("bt:", "c:", e.p.c ?? -1, "s:", e.p.s ?? -1)
                 case .gs: print("gs:", "k:", e.p.k ?? -1, "v:", e.p.v ?? -1)
+                case .ax:
+                    let id = e.p.c ?? -1
+                    let x  = (e.p.k ?? 0)
+                    let y  = (e.p.v ?? 0)
+                    print("ax:", "id:", id, "x:", x, "y:", y)
                 }
             }
         }

@@ -9,7 +9,7 @@ import SwiftUI
 import MultipeerConnectivity
 
 struct TrackpadView: View {
-
+    let mc: MCManager
     // callbacks
     var onPointer: (Int, Int) -> Void = { _, _ in }
     var onScroll: (Int, Int) -> Void  = { _, _ in }
@@ -23,22 +23,14 @@ struct TrackpadView: View {
     @State private var isDragging = false
     @State private var statusText = "Searching…"
     @State private var dotColor: Color = .orange
-    
-    private let mc = MCManager()
-    
+        
     var body: some View {
             ZStack {
                 Color(red: 0.957, green: 0.968, blue: 0.980).ignoresSafeArea()
 
                 VStack(spacing: 8) {
                     // tiny status row
-                    HStack(spacing: 8) {
-                        Circle().fill(dotColor).frame(width: 10, height: 10)
-                        Text(statusText).font(.footnote).foregroundColor(.secondary)
-                        Spacer()
-                    }
-                    .padding(.horizontal, 16).padding(.top, 8)
-
+                    ConnectionIndicator(statusText: statusText, color: dotColor)
                     TouchPadSurface(
                         pointerMultiplier: pointerSensitivity,
                         scrollMultiplier:  scrollSensitivity,
@@ -106,14 +98,10 @@ struct TrackpadView: View {
                         }
                     }
                 }
-                mc.startBrowsing()
-            }
-            .onDisappear {
-                mc.stop()
             }
         }
     }
 
-    #Preview {
-        NavigationView { TrackpadView() }
-    }
+//    #Preview {
+//        NavigationView { TrackpadView() }
+//    }

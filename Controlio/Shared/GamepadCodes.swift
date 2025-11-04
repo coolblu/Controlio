@@ -14,7 +14,7 @@ public enum GPButton: Int {
     case start = 40, select = 41
 }
 
-public extension Event {
+extension Event {
     static func gpDown(_ b: GPButton) -> Event { .bt(c: b.rawValue, s:1) }
     static func gpUp(_ b: GPButton) -> Event { .bt(c: b.rawValue, s: 0) }
 }
