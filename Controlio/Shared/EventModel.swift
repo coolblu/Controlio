@@ -13,8 +13,9 @@ import Foundation
  bt = button
  sc = scroll
  gs = gesture
+ ax = analog pos
  */
-enum EVT: String, Codable { case pm, bt, sc, gs}
+enum EVT: String, Codable { case pm, bt, sc, gs, ax }
 
 // payloads for each type
 struct EPointer: Codable { let dx: Int; let dy: Int }
