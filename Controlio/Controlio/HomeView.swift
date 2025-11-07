@@ -8,15 +8,6 @@
 import SwiftUI
 import FirebaseAuth
 
-private enum Theme {
-    static let bg = Color(red: 0.957, green: 0.968, blue: 0.980)
-    static let card = Color.white
-    static let primary = Color.orange
-    static let stroke = Color.black.opacity(0.08)
-    static let shadow = Color.black.opacity(0.06)
-    static let corner: CGFloat = 22
-}
-
 private enum Route: Hashable {
     case trackpad
     case gamepad
@@ -38,6 +29,7 @@ final class MCManagerWrapper: ObservableObject {
 struct HomeView: View {
     // User manager for display name
     @EnvironmentObject var userManager: UserManager
+    @EnvironmentObject var appSettings: AppSettings
     @Binding var isLoggedIn: Bool
 
     // TO-DO: reflect actual connection status of device (right now default is "MacBook Pro")
@@ -69,9 +61,9 @@ struct HomeView: View {
                                     Image(systemName: "line.3.horizontal")
                                         .font(.system(size: 20, weight: .semibold))
                                         .padding(12)
-                                        .background(Circle().fill(.white))
-                                        .overlay(Circle().stroke(Theme.stroke, lineWidth: 1))
-                                        .shadow(color: Theme.shadow, radius: 6, x: 0, y: 2)
+                                        .background(Circle().fill(appSettings.cardColor))
+                                        .overlay(Circle().stroke(appSettings.strokeColor, lineWidth: 1))
+                                        .shadow(color: appSettings.shadowColor, radius: 6, x: 0, y: 2)
                                 }
                                 Spacer() // create space in the right
                             }
@@ -86,9 +78,10 @@ struct HomeView: View {
                             // Greetings
                             Text("Hi, \(userManager.displayName)!")
                                 .font(.system(size: 34, weight: .bold, design: .rounded))
+                                .foregroundColor(appSettings.primaryText)
                             Text("Choose your controller.")
                                 .font(.title3)
-                                .foregroundStyle(.secondary)
+                                .foregroundColor(appSettings.secondaryText)
                             
                             // 2x2 Controller cards
                             LazyVGrid(columns: columns, spacing: 20) {
@@ -99,6 +92,7 @@ struct HomeView: View {
                                     /* start trackpad */
                                     action: { path.append(Route.trackpad) }
                                 )
+                                .environmentObject(appSettings)
                                 
                                 ControllerCard(
                                     systemImage: "gamecontroller",
@@ -106,6 +100,7 @@ struct HomeView: View {
                                     subtitle: "Twin-stick layout",
                                     action: { path.append(Route.gamepad) }
                                 )
+                                .environmentObject(appSettings)
                                 
                                 ControllerCard(
                                     systemImage: "antenna.radiowaves.left.and.right",
@@ -113,6 +108,7 @@ struct HomeView: View {
                                     subtitle: "Use motion to control",
                                     action: { /* start motion */ }
                                 )
+                                .environmentObject(appSettings)
                                 
                                 ControllerCard(
                                     systemImage: "steeringwheel",
@@ -120,6 +116,7 @@ struct HomeView: View {
                                     subtitle: "Steer by tilting",
                                     action: { /* start racing */ }
                                 )
+                                .environmentObject(appSettings)
                             }
                             
                             // Connection status
@@ -133,11 +130,13 @@ struct HomeView: View {
                                     connectedDevice = nil
                                 }
                                 .buttonStyle(PrimaryButtonStyle())
+                                .environmentObject(appSettings)
                                 
                                 Button("Change Device") {
                                     // navigate to device picker
                                 }
                                 .buttonStyle(OutlineButtonStyle())
+                                .environmentObject(appSettings)
                             }
                             
                             // Help link
@@ -147,7 +146,7 @@ struct HomeView: View {
                                 Text("Help & Tips")
                                     .font(.headline)
                                     .underline()
-                                    .foregroundStyle(.secondary)
+                                    .foregroundColor(appSettings.secondaryText)
                                     .frame(maxWidth: .infinity)
                             }
                             .padding(.top, 12)
@@ -155,7 +154,7 @@ struct HomeView: View {
                         }
                         .padding(.horizontal, 20)
                     }
-                    .background(Theme.bg.ignoresSafeArea())
+                    .background(appSettings.bgColor.ignoresSafeArea())
                     .onAppear{ mcHost.ensureBrowsing() }
                     .navigationDestination(for: Route.self) { route in
                         switch route {
@@ -181,15 +180,16 @@ struct HomeView: View {
                     navigateToAppPreferences: { path.append(Route.appPreferences) },
                     navigateToHelp: { path.append(Route.help) }
                 )
+                .environmentObject(appSettings)
             }
         }
     }
 }
 
-// Componenets
-
+// Components
 struct SideMenuView: View {
     @EnvironmentObject var userManager: UserManager
+    @EnvironmentObject var appSettings: AppSettings
     @Binding var isLoggedIn: Bool
     @Binding var showMenu: Bool
     var userName: String = "Name"
@@ -224,7 +224,7 @@ struct SideMenuView: View {
                         VStack(alignment: .leading, spacing: 6) {
                             Text(userManager.displayName)
                                 .font(.custom("SF Pro", size: 18))
-                                .foregroundColor(.black)
+                                .foregroundColor(appSettings.primaryText)
 
                             Button(action: {
                                 showMenu = false
@@ -233,7 +233,7 @@ struct SideMenuView: View {
                                 Text("Manage Profile")
                                     .font(.custom("SF Pro", size: 16))
                                     .underline()
-                                    .foregroundColor(Color(red: 0.25, green: 0.25, blue: 0.25))
+                                    .foregroundColor(appSettings.secondaryText)
                             }
                         }
                     }
@@ -255,7 +255,7 @@ struct SideMenuView: View {
                         MenuButton(
                             icon: "rectangle.portrait.and.arrow.right",
                             title: "Log Out",
-                            outlineColor: .orange,
+                            outlineColor: appSettings.primaryButton,
                             outlineWidth: 2
                         ) {
                             do {
@@ -277,7 +277,7 @@ struct SideMenuView: View {
                 .padding(.horizontal, 16)
                 .padding(.leading, leadingInset)
                 .frame(width: menuWidth, height: geometry.size.height)
-                .background(Color.white)
+                .background(appSettings.cardColor)
                 .offset(x: showMenu ? 0 : -(menuWidth + leadingInset))
                 .animation(.easeOut(duration: 0.25), value: showMenu)
                 .zIndex(1)
@@ -286,12 +286,11 @@ struct SideMenuView: View {
     }
 }
 
-
 struct MenuButton: View {
     let icon: String
     let title: String
-    var foregroundColor: Color = .black
-    var backgroundColor: Color = .white
+    var foregroundColor: Color?
+    var backgroundColor: Color?
     var cornerRadius: CGFloat = 8
     var outlineColor: Color? = nil
     var outlineWidth: CGFloat = 0
@@ -299,22 +298,23 @@ struct MenuButton: View {
     var fontWeight: Font.Weight = .bold
     var fullWidth: Bool = false
     var action: () -> Void
+    @EnvironmentObject var appSettings: AppSettings
 
     var body: some View {
         Button(action: action) {
             HStack(spacing: 10) {
                 Image(systemName: icon)
                     .frame(width: 24, height: 24)
-                    .foregroundColor(foregroundColor)
+                    .foregroundColor(foregroundColor ?? appSettings.primaryText)
                 Text(title)
                     .font(.custom("SF Pro", size: fontSize))
                     .fontWeight(fontWeight)
-                    .foregroundColor(foregroundColor)
+                    .foregroundColor(foregroundColor ?? appSettings.primaryText)
             }
             .padding(.vertical, 12)
             .padding(.horizontal, 16)
             .frame(maxWidth: fullWidth ? .infinity : nil)
-            .background(backgroundColor)
+            .background(backgroundColor ?? appSettings.cardColor)
             .overlay(
                 RoundedRectangle(cornerRadius: cornerRadius)
                     .stroke(outlineColor ?? Color.clear, lineWidth: outlineWidth)
@@ -329,33 +329,34 @@ private struct ControllerCard: View {
     let title: String
     let subtitle: String
     let action: () -> Void
+    @EnvironmentObject var appSettings: AppSettings
 
     var body: some View {
         Button(action: action) {
             VStack(alignment: .leading, spacing: 12) {
                 Image(systemName: systemImage)
                     .font(.system(size: 36))
-                    .foregroundStyle(.primary.opacity(0.85))
+                    .foregroundColor(appSettings.primaryText)
                     .frame(maxWidth: .infinity, alignment: .leading)
 
                 Text(title)
                     .font(.system(.title3, design: .rounded))
                     .fontWeight(.bold)
-                    .foregroundColor(.primary)
+                    .foregroundColor(appSettings.primaryText)
 
                 Text(subtitle)
                     .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .foregroundColor(appSettings.secondaryText)
             }
             .padding(20)
             .frame(maxWidth: .infinity, minHeight: 160, alignment: .topLeading)
-            .background(Theme.card)
-            .clipShape(RoundedRectangle(cornerRadius: Theme.corner, style: .continuous))
+            .background(appSettings.cardColor)
+            .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
             .overlay(
-                RoundedRectangle(cornerRadius: Theme.corner, style: .continuous)
-                    .stroke(Theme.stroke, lineWidth: 1)
+                RoundedRectangle(cornerRadius: 22, style: .continuous)
+                    .stroke(appSettings.strokeColor, lineWidth: 1)
             )
-            .shadow(color: Theme.shadow, radius: 8, x: 0, y: 4)
+            .shadow(color: appSettings.shadowColor, radius: 8, x: 0, y: 4)
         }
         .buttonStyle(.plain)
     }
@@ -363,55 +364,61 @@ private struct ControllerCard: View {
 
 private struct ConnectionBanner: View {
     let deviceName: String
+    @EnvironmentObject var appSettings: AppSettings
 
     var body: some View {
         HStack(spacing: 12) {
             Image(systemName: "checkmark.circle.fill")
-                .foregroundStyle(.green)
+                .foregroundColor(.green)
             Text("Connected to: \(deviceName)")
                 .font(.subheadline)
                 .fontWeight(.semibold)
+                .foregroundColor(appSettings.primaryText)
         }
         .padding(.horizontal, 18)
         .padding(.vertical, 14)
         .frame(maxWidth: .infinity)
-        .background(Theme.card)
+        .background(appSettings.cardColor)
         .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .stroke(Theme.stroke, lineWidth: 1)
+                .stroke(appSettings.strokeColor, lineWidth: 1)
         )
-        .shadow(color: Theme.shadow, radius: 6, x: 0, y: 2)
+        .shadow(color: appSettings.shadowColor, radius: 6, x: 0, y: 2)
     }
 }
 
 private struct PrimaryButtonStyle: ButtonStyle {
+    @EnvironmentObject var appSettings: AppSettings
+
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(.headline)
             .padding(.horizontal, 20)
             .padding(.vertical, 14)
             .frame(maxWidth: .infinity)
-            .foregroundStyle(.white)
-            .background(Theme.primary.opacity(configuration.isPressed ? 0.85 : 1.0))
+            .foregroundColor(appSettings.buttonText)
+            .background(appSettings.primaryButton.opacity(configuration.isPressed ? 0.85 : 1.0))
             .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-            .shadow(color: Theme.primary.opacity(0.35), radius: 8, x: 0, y: 8)
+            .shadow(color: appSettings.shadowColor, radius: 8, x: 0, y: 8)
     }
 }
 
 private struct OutlineButtonStyle: ButtonStyle {
+    @EnvironmentObject var appSettings: AppSettings
+
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(.headline)
             .padding(.horizontal, 20)
             .padding(.vertical, 14)
             .frame(maxWidth: .infinity)
-            .foregroundStyle(Theme.primary.opacity(configuration.isPressed ? 0.7 : 1.0))
-            .background(Color.clear)
+            .foregroundColor(appSettings.primaryText.opacity(configuration.isPressed ? 0.7 : 1.0))
+            .background(appSettings.selectedTheme != "Dark" ? appSettings.cardColor : Color.clear)
             .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .stroke(Theme.primary, lineWidth: 2)
+                    .stroke(appSettings.primaryButton, lineWidth: 2)
             )
     }
 }
