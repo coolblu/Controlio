@@ -13,6 +13,8 @@
 		8B0CBA972EA6D46600C2ADC7 /* MCManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B030E072EA15E7C0090D39F /* MCManager.swift */; };
 		8B0CBA982EA6D46C00C2ADC7 /* EventModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B030E062EA15E760090D39F /* EventModel.swift */; };
 		8B0CBA992EA6D47300C2ADC7 /* EventBuilders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0CBA922EA6D25800C2ADC7 /* EventBuilders.swift */; };
+		8B6CF8892EBA781800D7C218 /* GamepadCodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6CF8882EBA781700D7C218 /* GamepadCodes.swift */; };
+		8B6CF88A2EBA781800D7C218 /* GamepadCodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6CF8882EBA781700D7C218 /* GamepadCodes.swift */; };
 		D53398952EA900940049A130 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = D53398942EA900940049A130 /* FirebaseAnalytics */; };
 		D53398972EA900940049A130 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = D53398962EA900940049A130 /* FirebaseAuth */; };
 		D53398992EA900940049A130 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = D53398982EA900940049A130 /* FirebaseCore */; };
@@ -62,6 +64,7 @@
 		8B030E062EA15E760090D39F /* EventModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventModel.swift; sourceTree = "<group>"; };
 		8B030E072EA15E7C0090D39F /* MCManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCManager.swift; sourceTree = "<group>"; };
 		8B0CBA922EA6D25800C2ADC7 /* EventBuilders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventBuilders.swift; sourceTree = "<group>"; };
+		8B6CF8882EBA781700D7C218 /* GamepadCodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamepadCodes.swift; sourceTree = "<group>"; };
 		8B9981612E8DB89F003ADE4E /* Controlio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Controlio.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B99816E2E8DB8A6003ADE4E /* ControlioTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ControlioTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B9981782E8DB8A6003ADE4E /* ControlioUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ControlioUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -182,6 +185,7 @@
 				8B030E072EA15E7C0090D39F /* MCManager.swift */,
 				8B030E062EA15E760090D39F /* EventModel.swift */,
 				8B0CBA922EA6D25800C2ADC7 /* EventBuilders.swift */,
+				8B6CF8882EBA781700D7C218 /* GamepadCodes.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -506,6 +510,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8B0CBA982EA6D46C00C2ADC7 /* EventModel.swift in Sources */,
+				8B6CF88A2EBA781800D7C218 /* GamepadCodes.swift in Sources */,
 				8B0CBA972EA6D46600C2ADC7 /* MCManager.swift in Sources */,
 				8B0CBA992EA6D47300C2ADC7 /* EventBuilders.swift in Sources */,
 			);
@@ -530,6 +535,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8B0CBA942EA6D35D00C2ADC7 /* EventModel.swift in Sources */,
+				8B6CF8892EBA781800D7C218 /* GamepadCodes.swift in Sources */,
 				8B0CBA932EA6D25800C2ADC7 /* EventBuilders.swift in Sources */,
 				8B0CBA962EA6D44E00C2ADC7 /* MCManager.swift in Sources */,
 			);
@@ -849,7 +855,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = CS371Lgroup14.Controlio;
+				PRODUCT_BUNDLE_IDENTIFIER = group14.Controlio;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -879,7 +885,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = CS371Lgroup14.Controlio;
+				PRODUCT_BUNDLE_IDENTIFIER = group14.Controlio;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;

@@ -1,0 +1,356 @@
+//
+//  GamepadView.swift
+//  Controlio
+//
+//  Created by Avis Luong on 11/4/25.
+//
+
+import SwiftUI
+import CoreHaptics
+
+struct GamepadView: View {
+    let mc: MCManager
+    
+    @State private var engine: CHHapticEngine?
+    @State private var leftStick = CGPoint.zero
+    @State private var rightStick = CGPoint.zero
+    @State private var lastAXSentLeft = Date.distantPast
+    @State private var lastAXSentRight = Date.distantPast
+    private let axInterval: TimeInterval = 1.0 / 60.0
+    private let deadzone: CGFloat = 0.08
+    
+    @State private var statusText = "Searching…"
+    @State private var statusColor: Color = .orange
+    
+    var body: some View {
+        GeometryReader { geo in
+            let w = geo.size.width
+            let h = geo.size.height
+            // responsive sizing
+            let shoulderHeight: CGFloat = max(36, min(52, h * 0.06))
+            let shoulderWidth: CGFloat  = max(100, min(160, w * 0.35))
+            let stickRadius: CGFloat    = max(70, min(110, min(w, h) * 0.18))
+            let abxySize: CGFloat       = max(54, min(68, min(w, h) * 0.11))
+            let dpadKey: CGFloat        = max(40, min(54, min(w, h) * 0.085))
+            let clusterGap: CGFloat     = max(18, min(26, min(w, h) * 0.035))
+            
+            ZStack {
+                LinearGradient(colors: [Color.black, Color.black.opacity(0.92)], startPoint: .top, endPoint: .bottom)
+                    .ignoresSafeArea()
+                
+                VStack(spacing: 0) {
+                    ConnectionIndicator(statusText: statusText, color: statusColor, onDark: true)
+
+                    HStack {
+                        Shoulder(label: "L1", width: shoulderWidth, height: shoulderHeight) { down in
+                            sendButton(.l1, down)
+                        }
+                        Spacer(minLength: 16)
+                        Shoulder(label: "R1", width: shoulderWidth, height: shoulderHeight) { down in
+                            sendButton(.r1, down)
+                        }
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.top, 8)
+                    .padding(.bottom, 12)
+                    
+                    HStack(alignment: .center) {
+                        VStack(spacing: 18) {
+                            DPad(keySize: dpadKey) { dir, down in
+                                switch (dir, down) {
+                                case (.up, true):    mc.send(.gpDown(.dpadUp))
+                                case (.up, false):   mc.send(.gpUp(.dpadUp))
+                                case (.down, true):  mc.send(.gpDown(.dpadDown))
+                                case (.down, false): mc.send(.gpUp(.dpadDown))
+                                case (.left, true):  mc.send(.gpDown(.dpadLeft))
+                                case (.left, false): mc.send(.gpUp(.dpadLeft))
+                                case (.right, true): mc.send(.gpDown(.dpadRight))
+                                case (.right, false):mc.send(.gpUp(.dpadRight))
+                                }
+                                hapticTap()
+                            }
+                            Spacer(minLength: 0)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        
+                        VStack(spacing: 16) {
+                            HStack(spacing: 18) {
+                                GPChip(label: "Select") { down in sendButton(.select, down) }
+                                GPChip(label: "Start")  { down in sendButton(.start, down)  }
+                            }
+                        }
+                        .frame(maxWidth: .infinity)
+                        
+                        VStack(spacing: 18) {
+                            ABXY(buttonSize: abxySize, gap: clusterGap) { btn, down in
+                                switch btn {
+                                case .a: sendButton(.a, down)
+                                case .b: sendButton(.b, down)
+                                case .x: sendButton(.x, down)
+                                case .y: sendButton(.y, down)
+                                }
+                            }
+                            Spacer(minLength: 0)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                    }
+                    .padding(.horizontal, 24)
+                    .frame(height: h * 0.46)
+                    
+                    HStack(alignment: .bottom) {
+                        Thumbstick(radius: stickRadius, value: $leftStick) { x, y in
+                            sendStick(id: 0, x: x, y: y, lastSent: &lastAXSentLeft)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        
+                        Spacer(minLength: 24)
+                        
+                        Thumbstick(radius: stickRadius, value: $rightStick) { x, y in
+                            sendStick(id: 1, x: x, y: y, lastSent: &lastAXSentRight)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                    }
+                    .padding(.horizontal, 28)
+                    .padding(.bottom, 18)
+                }
+            }
+        }
+        .onAppear {
+            prepareHaptics()
+            mc.onStateChange = { state in
+                DispatchQueue.main.async {
+                    switch state {
+                    case .connected:
+                        statusText = "Connected"
+                        statusColor = .green
+                    case .connecting:
+                        statusText = "Connecting…"
+                        statusColor = .orange
+                    case .notConnected:
+                        fallthrough
+                    @unknown default:
+                        statusText = "Searching…"
+                        statusColor = .orange
+                    }
+                }
+            }
+        }
+    }
+    
+    private func sendButton(_ b: GPButton, _ down: Bool) {
+        mc.send(down ? .gpDown(b) : .gpUp(b))
+        hapticTap()
+    }
+    
+    private func sendStick(id: Int, x: CGFloat, y: CGFloat, lastSent: inout Date) {
+        let vx = clampDeadzone(x, dz: deadzone)
+        let vy = clampDeadzone(y, dz: deadzone)
+        
+        let now = Date()
+        guard now.timeIntervalSince(lastSent) >= axInterval else { return }
+        lastSent = now
+        
+        let sx = Int((max(-1, min(1, vx))) * 1000)
+        let sy = Int((max(-1, min(1, vy))) * 1000)
+        mc.send(.ax(id: id, x: sx, y: sy))
+    }
+    
+    private func clampDeadzone(_ v: CGFloat, dz: CGFloat) -> CGFloat {
+        let mag = abs(v)
+        if mag < dz { return 0 }
+        let sign: CGFloat = v >= 0 ? 1.0 : -1.0
+        return sign * (mag - dz) / (1 - dz)
+    }
+    
+    private func prepareHaptics() {
+        guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else { return }
+        do {
+            engine = try CHHapticEngine()
+            try engine?.start()
+        } catch { }
+    }
+    
+    private func hapticTap() {
+        guard let engine else { return }
+        let sharp = CHHapticEvent(
+            eventType: .hapticTransient,
+            parameters: [
+                CHHapticEventParameter(parameterID: .hapticSharpness, value: 0.6),
+                CHHapticEventParameter(parameterID: .hapticIntensity, value: 0.8)
+            ],
+            relativeTime: 0
+        )
+        do {
+            let pattern = try CHHapticPattern(events: [sharp], parameters: [])
+            let player = try engine.makePlayer(with: pattern)
+            try player.start(atTime: 0)
+        } catch { }
+    }
+}
+
+struct Shoulder: View {
+    let label: String
+    let width: CGFloat
+    let height: CGFloat
+    let onChange: (Bool) -> Void
+    @State private var pressed = false
+    
+    var body: some View {
+        RoundedRectangle(cornerRadius: height/2, style: .continuous)
+            .fill(pressed ? Color.white.opacity(0.22) : Color.white.opacity(0.12))
+            .overlay(
+                Text(label).font(.headline).padding(.horizontal, 8)
+            )
+            .frame(width: width, height: height)
+            .overlay(RoundedRectangle(cornerRadius: height/2).stroke(Color.white.opacity(0.15), lineWidth: 1))
+            .onLongPressGesture(minimumDuration: 0, pressing: { isDown in
+                if pressed != isDown { pressed = isDown; onChange(isDown) }
+            }, perform: {})
+    }
+}
+
+//private struct GPButtonView: View {
+//    let label: String
+//    let onChange: (Bool) -> Void
+//    @State private var pressed = false
+//    var body: some View {
+//        Text(label)
+//            .font(.headline)
+//            .padding(.vertical, 10).padding(.horizontal, 16)
+//            .background(pressed ? Color.white.opacity(0.25) : Color.white.opacity(0.12))
+//            .clipShape(Capsule())
+//            .onLongPressGesture(minimumDuration: 0, pressing: { isPressing in
+//                if pressed != isPressing { pressed = isPressing; onChange(isPressing) }
+//            }, perform: {})
+//    }
+//}
+
+private struct GPChip: View {
+    let label: String
+    let onChange: (Bool) -> Void
+    @State private var pressed = false
+    var body: some View {
+        Text(label)
+            .font(.subheadline)
+            .padding(.vertical, 8).padding(.horizontal, 14)
+            .background(pressed ? Color.white.opacity(0.25) : Color.white.opacity(0.12))
+            .clipShape(Capsule())
+            .onLongPressGesture(minimumDuration: 0, pressing: { isPressing in
+                if pressed != isPressing { pressed = isPressing; onChange(isPressing) }
+            }, perform: {})
+    }
+}
+
+enum ABXYBtn { case a, b, x, y }
+
+struct ABXY: View {
+    let buttonSize: CGFloat
+    let gap: CGFloat
+    let onChange: (ABXYBtn, Bool) -> Void
+    @State private var a = false
+    @State private var b = false
+    @State private var x = false
+    @State private var y = false
+    var body: some View {
+        ZStack {
+            VStack(spacing: gap) {
+                roundBtn("Y", pressed: $y) { onChange(.y, $0) }
+                roundBtn("A", pressed: $a) { onChange(.a, $0) }
+            }
+            HStack(spacing: gap) {
+                roundBtn("X", pressed: $x) { onChange(.x, $0) }
+                roundBtn("B", pressed: $b) { onChange(.b, $0) }
+            }
+        }
+        .frame(minWidth: buttonSize*2 + gap, minHeight: buttonSize*2 + gap)
+    }
+    private func roundBtn(_ t: String, pressed: Binding<Bool>, on: @escaping (Bool)->Void) -> some View {
+        Circle()
+            .fill(pressed.wrappedValue ? Color.white.opacity(0.30) : Color.white.opacity(0.16))
+            .overlay(Circle().stroke(Color.white.opacity(0.15), lineWidth: 1))
+            .frame(width: buttonSize, height: buttonSize)
+            .overlay(Text(t).font(.headline))
+            .onLongPressGesture(minimumDuration: 0, pressing: { isDown in
+                if pressed.wrappedValue != isDown { pressed.wrappedValue = isDown; on(isDown) }
+            }, perform: {})
+    }
+}
+
+enum DPadDir { case up, down, left, right }
+
+struct DPad: View {
+    let keySize: CGFloat
+    let onChange: (DPadDir, Bool) -> Void
+    @State private var u = false
+    @State private var d = false
+    @State private var l = false
+    @State private var r = false
+    var body: some View {
+        VStack(spacing: 10) {
+            dKey("▲", pressed: $u) { onChange(.up, $0) }
+            HStack(spacing: 10) {
+                dKey("◀", pressed: $l) { onChange(.left, $0) }
+                Rectangle().fill(Color.clear).frame(width: keySize, height: keySize)
+                dKey("▶", pressed: $r) { onChange(.right, $0) }
+            }
+            dKey("▼", pressed: $d) { onChange(.down, $0) }
+        }
+    }
+    private func dKey(_ t: String, pressed: Binding<Bool>, on: @escaping (Bool)->Void) -> some View {
+        RoundedRectangle(cornerRadius: 10, style: .continuous)
+            .fill(pressed.wrappedValue ? Color.white.opacity(0.28) : Color.white.opacity(0.14))
+            .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.white.opacity(0.12), lineWidth: 1))
+            .frame(width: keySize, height: keySize)
+            .overlay(Text(t))
+            .onLongPressGesture(minimumDuration: 0, pressing: { isDown in
+                if pressed.wrappedValue != isDown { pressed.wrappedValue = isDown; on(isDown) }
+            }, perform: {})
+    }
+}
+
+struct Thumbstick: View {
+    let radius: CGFloat
+    @Binding var value: CGPoint
+    let onChange: (CGFloat, CGFloat) -> Void
+    @State private var drag = CGSize.zero
+    
+    var body: some View {
+        ZStack {
+            Circle().strokeBorder(Color.white.opacity(0.22), lineWidth: 2)
+                .background(Circle().fill(Color.white.opacity(0.08)))
+                .clipShape(Circle())
+                .frame(width: radius*2, height: radius*2)
+            Circle()
+                .fill(Color.white.opacity(0.22))
+                .overlay(Circle().stroke(Color.white.opacity(0.18), lineWidth: 1))
+                .frame(width: max(58, radius * 0.7), height: max(58, radius * 0.7))
+                .offset(drag)
+                .gesture(
+                    DragGesture(minimumDistance: 0)
+                        .onChanged { g in
+                            let dx = g.translation.width
+                            let dy = g.translation.height
+                            let clamped = clampToCircle(CGSize(width: dx, height: dy), limit: radius)
+                            drag = clamped
+                            let nx = clamped.width / radius
+                            let ny = clamped.height / radius
+                            value = CGPoint(x: nx, y: ny)
+                            onChange(nx, -ny) // invert Y
+                        }
+                        .onEnded { _ in
+                            drag = .zero
+                            value = .zero
+                            onChange(0, 0)
+                        }
+                )
+        }
+        .frame(width: radius*2, height: radius*2)
+    }
+    
+    private func clampToCircle(_ v: CGSize, limit: CGFloat) -> CGSize {
+        let d = sqrt(v.width*v.width + v.height*v.height)
+        if d <= limit { return v }
+        let s = limit / d
+        return CGSize(width: v.width*s, height: v.height*s)
+    }
+}
