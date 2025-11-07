@@ -19,6 +19,7 @@ private enum Theme {
 private enum Route: Hashable {
     case trackpad
     case gamepad
+    case help
 }
 
 final class MCManagerWrapper: ObservableObject {
@@ -126,7 +127,7 @@ struct HomeView: View {
                     }
                     
                     // Help link
-                    Button(action: { /* open help */ }) {
+                    Button(action: { path.append(Route.help) }) {
                         Text("Help & Tips")
                             .font(.headline)
                             .underline()
@@ -146,6 +147,8 @@ struct HomeView: View {
                     TrackpadView(mc: mcHost.manager)
                 case .gamepad:
                     GamepadView(mc: mcHost.manager)
+                case .help:
+                    DeviceHelpView()
                 }
             }
         }
