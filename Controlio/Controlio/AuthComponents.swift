@@ -75,7 +75,10 @@ struct StyledTextField: View {
         .frame(maxWidth: .infinity)
         .background(Color.white)
         .cornerRadius(10)
-        .shadow(color: .black.opacity(0.15), radius: 4, y: 4)
+        .overlay(
+            RoundedRectangle(cornerRadius: 10)
+                .stroke(isFocused ? Color.orange : Color.gray.opacity(0.3), lineWidth: 1)
+        )
     }
 }
 
@@ -131,6 +134,9 @@ struct SecureToggleField: View {
         .frame(maxWidth: .infinity)
         .background(Color.white)
         .cornerRadius(10)
-        .shadow(color: .black.opacity(0.15), radius: 4, y: 4)
+        .overlay(
+            RoundedRectangle(cornerRadius: 10)
+                .stroke(isFocused ? Color.orange : Color.gray.opacity(0.3), lineWidth: 1)
+        )
     }
 }

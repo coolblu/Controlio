@@ -18,11 +18,38 @@ class AuthManager {
     private init() {}
 
     // Email / Password sign up through firebase
-    func signUp(email: String, password: String, completion: @escaping (Result<AuthDataResult, Error>) -> Void) {
+    func signUp(email: String, password: String, name: String? = nil, completion: @escaping (Result<AuthDataResult, Error>) -> Void) {
         Auth.auth().createUser(withEmail: email, password: password) { result, error in
             if let error = error {
                 completion(.failure(error))
-            } else if let result = result {
+                return
+            }
+
+            guard let user = result?.user else { return }
+
+            // Reload to ensure currentUser is fully updated
+            user.reload { reloadError in
+                if let reloadError = reloadError {
+                    print("Reload error:", reloadError.localizedDescription)
+                }
+
+                if let name = name, !name.isEmpty {
+                    let changeRequest = user.createProfileChangeRequest()
+                    changeRequest.displayName = name
+                    changeRequest.commitChanges { commitError in
+                        if let commitError = commitError {
+                            print("Failed to set display name:", commitError.localizedDescription)
+                        }
+
+                        // Fetch user info after displayName is committed
+                        UserManager.shared.fetchUser()
+                    }
+                } else {
+                    UserManager.shared.fetchUser()
+                }
+            }
+
+            if let result = result {
                 completion(.success(result))
             }
         }
@@ -34,6 +61,8 @@ class AuthManager {
             if let error = error {
                 completion(.failure(error))
             } else if let result = result {
+                // Update UserManager immediately
+                UserManager.shared.fetchUser()
                 completion(.success(result))
             }
         }
@@ -65,6 +94,7 @@ class AuthManager {
                 if let error = error {
                     completion(.failure(error))
                 } else if let authResult = authResult {
+                    UserManager.shared.fetchUser()
                     completion(.success(authResult))
                 }
             }
@@ -73,6 +103,11 @@ class AuthManager {
     
     // Sign Out
     func signOut() throws {
-        try Auth.auth().signOut()
+        do {
+            try Auth.auth().signOut()
+            UserManager.shared.fetchUser() // reset user info
+        } catch {
+            print("Failed to sign out: \(error.localizedDescription)")
+        }
     }
 }

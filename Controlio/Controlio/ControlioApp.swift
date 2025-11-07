@@ -6,10 +6,13 @@
 //
 
 import SwiftUI
+import FirebaseAuth
 import FirebaseCore
 
 @main
 struct ControlioApp: App {
+    @StateObject private var userManager = UserManager.shared
+    @StateObject private var appSettings = AppSettings()
     @State private var isLoggedIn = false
     @State private var showSplash = true
     
@@ -22,9 +25,18 @@ struct ControlioApp: App {
             ZStack {
                 // Main content (login or home)
                 if isLoggedIn {
-                    HomeView()
+                    HomeView(isLoggedIn: $isLoggedIn)
+                        .environmentObject(userManager)
+                        .environmentObject(appSettings)
+                        .onAppear {
+                            if let currentUser = Auth.auth().currentUser {
+                                appSettings.setUser(currentUser.uid)
+                            }
+                        }
                 } else {
                     LoginView(isLoggedIn: $isLoggedIn)
+                        .environmentObject(userManager)
+                        .environmentObject(appSettings)
                 }
 
                 // Splash screen
@@ -38,6 +50,13 @@ struct ControlioApp: App {
             .animation(.spring(response: 0.6, dampingFraction: 0.7), value: showSplash)
             .onAppear {
                 // Delay before switching from splash
+                if let user = Auth.auth().currentUser {
+                    isLoggedIn = true
+                    appSettings.setUser(user.uid)
+                } else {
+                    isLoggedIn = false
+                }
+                userManager.fetchUser()
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
                     showSplash = false
                 }

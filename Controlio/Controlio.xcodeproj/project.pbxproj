@@ -24,6 +24,8 @@
 		D53398AD2EA974F20049A130 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = D53398AC2EA974F20049A130 /* FirebaseAnalytics */; };
 		D53398AF2EA974F20049A130 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = D53398AE2EA974F20049A130 /* FirebaseAuth */; };
 		D53398B12EA974F20049A130 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = D53398B02EA974F20049A130 /* FirebaseCore */; };
+		D5486AA12EBE278C00B113B9 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = D5486AA02EBE278C00B113B9 /* FirebaseFirestore */; };
+		D5486AA32EBE279B00B113B9 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = D5486AA22EBE279B00B113B9 /* FirebaseFirestore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -149,6 +151,7 @@
 				D53398A02EA9672E0049A130 /* GoogleSignIn in Frameworks */,
 				D53398992EA900940049A130 /* FirebaseCore in Frameworks */,
 				D53398972EA900940049A130 /* FirebaseAuth in Frameworks */,
+				D5486AA12EBE278C00B113B9 /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -171,6 +174,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D53398AD2EA974F20049A130 /* FirebaseAnalytics in Frameworks */,
+				D5486AA32EBE279B00B113B9 /* FirebaseFirestore in Frameworks */,
 				D53398B12EA974F20049A130 /* FirebaseCore in Frameworks */,
 				D53398AF2EA974F20049A130 /* FirebaseAuth in Frameworks */,
 			);
@@ -312,6 +316,7 @@
 				D533989F2EA9672E0049A130 /* GoogleSignIn */,
 				D53398A12EA9672E0049A130 /* GoogleSignInSwift */,
 				D53398A42EA967C10049A130 /* FacebookLogin */,
+				D5486AA02EBE278C00B113B9 /* FirebaseFirestore */,
 			);
 			productName = Controlio;
 			productReference = 8B9981612E8DB89F003ADE4E /* Controlio.app */;
@@ -380,6 +385,7 @@
 				D53398AC2EA974F20049A130 /* FirebaseAnalytics */,
 				D53398AE2EA974F20049A130 /* FirebaseAuth */,
 				D53398B02EA974F20049A130 /* FirebaseCore */,
+				D5486AA22EBE279B00B113B9 /* FirebaseFirestore */,
 			);
 			productName = ControlioApp;
 			productReference = D57158EA2EA5CDD7001BC23F /* ControlioApp.app */;
@@ -1166,6 +1172,14 @@
 			isa = XCSwiftPackageProductDependency;
 			package = D53398932EA900940049A130 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseCore;
+		};
+		D5486AA02EBE278C00B113B9 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FirebaseFirestore;
+		};
+		D5486AA22EBE279B00B113B9 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FirebaseFirestore;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
