@@ -18,9 +18,6 @@ struct ControlioApp: App {
     
     init() {
         FirebaseApp.configure()
-        if Auth.auth().currentUser != nil {
-            _isLoggedIn = State(initialValue: true)
-        }
     }
 
     var body: some Scene {
@@ -53,6 +50,12 @@ struct ControlioApp: App {
             .animation(.spring(response: 0.6, dampingFraction: 0.7), value: showSplash)
             .onAppear {
                 // Delay before switching from splash
+                if let user = Auth.auth().currentUser {
+                    isLoggedIn = true
+                    appSettings.setUser(user.uid)
+                } else {
+                    isLoggedIn = false
+                }
                 userManager.fetchUser()
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
                     showSplash = false

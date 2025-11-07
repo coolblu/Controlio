@@ -46,6 +46,7 @@ struct HomeView: View {
     @StateObject private var mcHost = MCManagerWrapper()
 
     @State private var showMenu = false
+    @State private var screenWidth: CGFloat = UIScreen.main.bounds.width
 
     private let columns = [
         GridItem(.flexible(), spacing: 24),
@@ -53,133 +54,134 @@ struct HomeView: View {
     ]
 
     var body: some View {
-        ZStack {
-            NavigationStack (path: $path) {
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 24) {
-                        // Top bar (hamburger and Controlio logo)
-                        HStack(alignment: .center) {
-                            Button(action: {
-                                withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
-                                    showMenu.toggle()
+        GeometryReader { geometry in
+            ZStack {
+                NavigationStack (path: $path) {
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 24) {
+                            // Top bar (hamburger and Controlio logo)
+                            HStack(alignment: .center) {
+                                Button(action: {
+                                    withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+                                        showMenu.toggle()
+                                    }
+                                }) {
+                                    Image(systemName: "line.3.horizontal")
+                                        .font(.system(size: 20, weight: .semibold))
+                                        .padding(12)
+                                        .background(Circle().fill(.white))
+                                        .overlay(Circle().stroke(Theme.stroke, lineWidth: 1))
+                                        .shadow(color: Theme.shadow, radius: 6, x: 0, y: 2)
                                 }
-                            }) {
-                                Image(systemName: "line.3.horizontal")
-                                    .font(.system(size: 20, weight: .semibold))
-                                    .padding(12)
-                                    .background(Circle().fill(.white))
-                                    .overlay(Circle().stroke(Theme.stroke, lineWidth: 1))
-                                    .shadow(color: Theme.shadow, radius: 6, x: 0, y: 2)
+                                Spacer() // create space in the right
                             }
-                            Spacer() // create space in the right
-                        }
-                        .frame(maxWidth: .infinity, minHeight: 80) // reserve height for the logo
-                        .overlay(alignment: .center) { // overlay puts it in the middle of the parent's coordinate system
-                            Image("gameController")
-                                .resizable()
-                                .frame(width: 107, height: 80)
-                        }
-                        .padding(.top, 8)
-                        
-                        // Greetings
-                        Text("Hi, \(userManager.displayName)!")
-                            .font(.system(size: 34, weight: .bold, design: .rounded))
-                        Text("Choose your controller.")
-                            .font(.title3)
-                            .foregroundStyle(.secondary)
-                        
-                        // 2x2 Controller cards
-                        LazyVGrid(columns: columns, spacing: 20) {
-                            ControllerCard(
-                                systemImage: "hand.tap",
-                                title: "Trackpad",
-                                subtitle: "Use your iPhone as a touchpad",
-                                /* start trackpad */
-                                action: { path.append(Route.trackpad) }
-                            )
-                            
-                            ControllerCard(
-                                systemImage: "gamecontroller",
-                                title: "Gamepad",
-                                subtitle: "Twin-stick layout",
-                                action: { path.append(Route.gamepad) }
-                            )
-                            
-                            ControllerCard(
-                                systemImage: "antenna.radiowaves.left.and.right",
-                                title: "Motion",
-                                subtitle: "Use motion to control",
-                                action: { /* start motion */ }
-                            )
-                            
-                            ControllerCard(
-                                systemImage: "steeringwheel",
-                                title: "Racing",
-                                subtitle: "Steer by tilting",
-                                action: { /* start racing */ }
-                            )
-                        }
-                        
-                        // Connection status
-                        if let connectedDevice {
-                            ConnectionBanner(deviceName: connectedDevice)
-                        }
-                        
-                        // Action buttons
-                        HStack(spacing: 16) {
-                            Button("Disconnect") {
-                                connectedDevice = nil
+                            .frame(maxWidth: .infinity, minHeight: 80) // reserve height for the logo
+                            .overlay(alignment: .center) { // overlay puts it in the middle of the parent's coordinate system
+                                Image("gameController")
+                                    .resizable()
+                                    .frame(width: 107, height: 80)
                             }
-                            .buttonStyle(PrimaryButtonStyle())
+                            .padding(.top, 8)
                             
-                            Button("Change Device") {
-                                // navigate to device picker
-                            }
-                            .buttonStyle(OutlineButtonStyle())
-                        }
-                        
-                        // Help link
-                        Button(action: {
-                            path.append(Route.help)
-                        }) {
-                            Text("Help & Tips")
-                                .font(.headline)
-                                .underline()
+                            // Greetings
+                            Text("Hi, \(userManager.displayName)!")
+                                .font(.system(size: 34, weight: .bold, design: .rounded))
+                            Text("Choose your controller.")
+                                .font(.title3)
                                 .foregroundStyle(.secondary)
-                                .frame(maxWidth: .infinity)
+                            
+                            // 2x2 Controller cards
+                            LazyVGrid(columns: columns, spacing: 20) {
+                                ControllerCard(
+                                    systemImage: "hand.tap",
+                                    title: "Trackpad",
+                                    subtitle: "Use your iPhone as a touchpad",
+                                    /* start trackpad */
+                                    action: { path.append(Route.trackpad) }
+                                )
+                                
+                                ControllerCard(
+                                    systemImage: "gamecontroller",
+                                    title: "Gamepad",
+                                    subtitle: "Twin-stick layout",
+                                    action: { path.append(Route.gamepad) }
+                                )
+                                
+                                ControllerCard(
+                                    systemImage: "antenna.radiowaves.left.and.right",
+                                    title: "Motion",
+                                    subtitle: "Use motion to control",
+                                    action: { /* start motion */ }
+                                )
+                                
+                                ControllerCard(
+                                    systemImage: "steeringwheel",
+                                    title: "Racing",
+                                    subtitle: "Steer by tilting",
+                                    action: { /* start racing */ }
+                                )
+                            }
+                            
+                            // Connection status
+                            if let connectedDevice {
+                                ConnectionBanner(deviceName: connectedDevice)
+                            }
+                            
+                            // Action buttons
+                            HStack(spacing: 16) {
+                                Button("Disconnect") {
+                                    connectedDevice = nil
+                                }
+                                .buttonStyle(PrimaryButtonStyle())
+                                
+                                Button("Change Device") {
+                                    // navigate to device picker
+                                }
+                                .buttonStyle(OutlineButtonStyle())
+                            }
+                            
+                            // Help link
+                            Button(action: {
+                                path.append(Route.help)
+                            }) {
+                                Text("Help & Tips")
+                                    .font(.headline)
+                                    .underline()
+                                    .foregroundStyle(.secondary)
+                                    .frame(maxWidth: .infinity)
+                            }
+                            .padding(.top, 12)
+                            .padding(.bottom, 16)
                         }
-                        .padding(.top, 12)
-                        .padding(.bottom, 16)
+                        .padding(.horizontal, 20)
                     }
-                    .padding(.horizontal, 20)
-                }
-                .background(Theme.bg.ignoresSafeArea())
-                .onAppear{ mcHost.ensureBrowsing() }
-                .navigationDestination(for: Route.self) { route in
-                    switch route {
-                    case .trackpad:
-                        TrackpadView(mc: mcHost.manager)
-                    case .gamepad:
-                        GamepadView(mc: mcHost.manager)
-                    case .manageProfile:
-                        ManageProfileView(isLoggedIn: $isLoggedIn)
-                    case .appPreferences:
-                        AppPreferencesView()
-                    case .help:
-                        HelpView()
+                    .background(Theme.bg.ignoresSafeArea())
+                    .onAppear{ mcHost.ensureBrowsing() }
+                    .navigationDestination(for: Route.self) { route in
+                        switch route {
+                        case .trackpad:
+                            TrackpadView(mc: mcHost.manager)
+                        case .gamepad:
+                            GamepadView(mc: mcHost.manager)
+                        case .manageProfile:
+                            ManageProfileView(isLoggedIn: $isLoggedIn)
+                        case .appPreferences:
+                            AppPreferencesView()
+                        case .help:
+                            HelpView()
+                        }
                     }
                 }
+                
+                SideMenuView(
+                    isLoggedIn: $isLoggedIn,
+                    showMenu: $showMenu,
+                    userName: userManager.displayName,
+                    navigateToManageProfile: { path.append(Route.manageProfile) },
+                    navigateToAppPreferences: { path.append(Route.appPreferences) },
+                    navigateToHelp: { path.append(Route.help) }
+                )
             }
-
-            SideMenuView(
-                isLoggedIn: $isLoggedIn,
-                width: UIScreen.main.bounds.width * 0.6,
-                showMenu: $showMenu,
-                userName: userManager.displayName,
-                navigateToManageProfile: { path.append(Route.manageProfile) },
-                navigateToAppPreferences: { path.append(Route.appPreferences) },
-                navigateToHelp: { path.append(Route.help) }
-            )
         }
     }
 }
@@ -189,7 +191,6 @@ struct HomeView: View {
 struct SideMenuView: View {
     @EnvironmentObject var userManager: UserManager
     @Binding var isLoggedIn: Bool
-    let width: CGFloat
     @Binding var showMenu: Bool
     var userName: String = "Name"
     var navigateToManageProfile: () -> Void
@@ -198,9 +199,21 @@ struct SideMenuView: View {
 
     var body: some View {
         GeometryReader { geometry in
-            HStack(spacing: 0) {
-                VStack(alignment: .leading, spacing: 16) {
+            let menuWidth = geometry.size.width * 0.6
+            let leadingInset = geometry.safeAreaInsets.leading
 
+            ZStack(alignment: .leading) {
+                // Semi-transparent background
+                if showMenu {
+                    Color.black.opacity(0.2)
+                        .ignoresSafeArea()
+                        .onTapGesture { showMenu = false }
+                        .transition(.opacity)
+                        .animation(.easeOut(duration: 0.25), value: showMenu)
+                }
+
+                // Menu content
+                VStack(alignment: .leading, spacing: 16) {
                     // Profile Header
                     HStack(spacing: 12) {
                         Image(systemName: "person.crop.circle.fill")
@@ -225,7 +238,6 @@ struct SideMenuView: View {
                         }
                     }
 
-                    // Menu Buttons
                     MenuButton(icon: "slider.horizontal.3", title: "App Preferences") {
                         showMenu = false
                         navigateToAppPreferences()
@@ -238,7 +250,6 @@ struct SideMenuView: View {
 
                     Spacer()
 
-                    // Logout Button
                     HStack {
                         Spacer()
                         MenuButton(
@@ -247,7 +258,6 @@ struct SideMenuView: View {
                             outlineColor: .orange,
                             outlineWidth: 2
                         ) {
-                            // handle logout
                             do {
                                 try AuthManager.shared.signOut()
                                 showMenu = false
@@ -261,26 +271,21 @@ struct SideMenuView: View {
                         Spacer()
                     }
                     .padding(.bottom, 50)
+
                 }
                 .padding(.top, 16)
                 .padding(.horizontal, 16)
-                .frame(width: width, height: geometry.size.height)
+                .padding(.leading, leadingInset)
+                .frame(width: menuWidth, height: geometry.size.height)
                 .background(Color.white)
-                .offset(x: showMenu ? 0 : -width)
+                .offset(x: showMenu ? 0 : -(menuWidth + leadingInset))
                 .animation(.easeOut(duration: 0.25), value: showMenu)
                 .zIndex(1)
-
-                Spacer()
             }
-            .background(
-                Color.black.opacity(showMenu ? 0.2 : 0)
-                    .ignoresSafeArea()
-                    .animation(.easeOut(duration: 0.25), value: showMenu)
-                    .onTapGesture { showMenu = false }
-            )
         }
     }
 }
+
 
 struct MenuButton: View {
     let icon: String
