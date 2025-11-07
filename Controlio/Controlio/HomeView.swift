@@ -167,7 +167,7 @@ struct HomeView: View {
                         case .appPreferences:
                             AppPreferencesView()
                         case .help:
-                            HelpView()
+                            DeviceHelpView()
                         }
                     }
                 }
