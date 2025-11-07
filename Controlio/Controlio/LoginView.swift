@@ -29,7 +29,11 @@ struct LoginView: View {
                         AuthView(
                             isSignUp: false,
                             onSwitch: { showSignUp = true },
-                            onAuthSuccess: { isLoggedIn = true }
+                            onAuthSuccess: {
+                                withAnimation(.easeInOut(duration: 0.5)) {
+                                    isLoggedIn = true
+                                }
+                            }
                         )
                         .transition(.move(edge: .leading))
                     }
@@ -39,7 +43,11 @@ struct LoginView: View {
                         AuthView(
                             isSignUp: true,
                             onSwitch: { showSignUp = false },
-                            onAuthSuccess: { isLoggedIn = true }
+                            onAuthSuccess: {
+                                withAnimation(.easeInOut(duration: 0.5)) {
+                                    isLoggedIn = true
+                                }
+                            }
                         )
                         .transition(.move(edge: .trailing))
                     }
