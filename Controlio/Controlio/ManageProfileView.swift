@@ -11,7 +11,7 @@ import FirebaseAuth
 struct ManageProfileView: View {
     @Binding var isLoggedIn: Bool
     @EnvironmentObject var userManager: UserManager
-    @Environment(\.dismiss) var dismiss  // allows navigating back
+    @EnvironmentObject var appSettings: AppSettings
 
     @State private var userName: String = ""
     @State private var showPassword: Bool = false
@@ -33,31 +33,31 @@ struct ManageProfileView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 24) {
-
                 // Title
                 Text("Manage Profile")
                     .font(.system(size: 32, weight: .bold))
                     .frame(maxWidth: .infinity)
                     .multilineTextAlignment(.center)
                     .padding(.top, 10)
+                    .foregroundColor(appSettings.primaryText)
 
                 // User Info Card
                 VStack(alignment: .leading, spacing: 16) {
-
                     // Name Field
                     VStack(alignment: .leading, spacing: 6) {
                         Text("Name")
                             .font(.custom("SF Pro", size: 12))
-                            .foregroundColor(Color(red: 0.42, green: 0.42, blue: 0.42))
+                            .foregroundColor(appSettings.secondaryText)
 
                         TextField("Enter your name", text: $userName)
                             .padding()
-                            .background(Color.white)
+                            .background(appSettings.cardColor)
                             .cornerRadius(8)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 8)
-                                    .stroke(focusedField == .name ? Color.orange : Color.gray.opacity(0.3), lineWidth: 1)
+                                    .stroke(focusedField == .name ? appSettings.primaryButton : appSettings.strokeColor, lineWidth: 1)
                             )
+                            .foregroundColor(appSettings.primaryText)
                             .focused($focusedField, equals: .name)
                     }
 
@@ -65,7 +65,7 @@ struct ManageProfileView: View {
                     VStack(alignment: .leading, spacing: 6) {
                         Text("Email")
                             .font(.custom("SF Pro", size: 12))
-                            .foregroundColor(Color(red: 0.42, green: 0.42, blue: 0.42))
+                            .foregroundColor(appSettings.secondaryText)
 
                         Text(userManager.email)
                             .padding()
@@ -78,26 +78,26 @@ struct ManageProfileView: View {
                     Button(action: { saveName() }) {
                         Text("Save Name")
                             .font(.custom("SF Pro", size: 16))
-                            .foregroundColor(.white)
+                            .foregroundColor(appSettings.buttonText)
                             .frame(maxWidth: .infinity, minHeight: 50)
-                            .background(Color.orange)
+                            .background(appSettings.primaryButton)
                             .cornerRadius(12)
                     }
                     .padding(.top, 8)
                 }
                 .padding()
-                .background(Color.white)
+                .background(appSettings.cardColor)
                 .cornerRadius(12)
                 .overlay(
                     RoundedRectangle(cornerRadius: 12)
-                        .stroke(Color(red: 0.89, green: 0.89, blue: 0.89), lineWidth: 0.5)
+                        .stroke(appSettings.strokeColor, lineWidth: 0.5)
                 )
 
                 // Password Change Card
                 VStack(alignment: .leading, spacing: 16) {
                     Text("Password")
                         .font(.custom("SF Pro", size: 12))
-                        .foregroundColor(Color(red: 0.42, green: 0.42, blue: 0.42))
+                        .foregroundColor(appSettings.secondaryText)
 
                     // New Password
                     SecureToggleField(
@@ -107,6 +107,8 @@ struct ManageProfileView: View {
                         isFocused: focusedField == .newPassword
                     )
                     .focused($focusedField, equals: .newPassword)
+                    .foregroundColor(appSettings.primaryText)
+                    .background(appSettings.cardColor)
 
                     // Confirm Password
                     SecureToggleField(
@@ -116,34 +118,36 @@ struct ManageProfileView: View {
                         isFocused: focusedField == .confirmPassword
                     )
                     .focused($focusedField, equals: .confirmPassword)
+                    .foregroundColor(appSettings.primaryText)
+                    .background(appSettings.cardColor)
 
                     Button(action: { changePassword() }) {
                         Text("Change Password")
                             .font(.custom("SF Pro", size: 16))
-                            .foregroundColor(.white)
+                            .foregroundColor(appSettings.buttonText)
                             .frame(maxWidth: .infinity, minHeight: 50)
-                            .background(Color.orange)
+                            .background(appSettings.primaryButton)
                             .cornerRadius(12)
                     }
                 }
                 .padding()
-                .background(Color.white)
+                .background(appSettings.cardColor)
                 .cornerRadius(12)
                 .overlay(
                     RoundedRectangle(cornerRadius: 12)
-                        .stroke(Color(red: 0.89, green: 0.89, blue: 0.89), lineWidth: 0.5)
+                        .stroke(appSettings.strokeColor, lineWidth: 0.5)
                 )
 
                 // Delete Account Button
                 Button(action: { showingDeleteConfirmation = true }) {
                     Text("Delete Account")
                         .font(.custom("SF Pro", size: 16))
-                        .foregroundColor(.red)
+                        .foregroundColor(appSettings.destructiveButton)
                         .frame(maxWidth: .infinity, minHeight: 50)
-                        .background(Color.clear)
+                        .background(appSettings.cardColor)
                         .overlay(
                             RoundedRectangle(cornerRadius: 12)
-                                .stroke(Color.red, lineWidth: 2)
+                                .stroke(appSettings.destructiveButton, lineWidth: 2)
                         )
                 }
                 .padding(.top, 16)
@@ -161,7 +165,7 @@ struct ManageProfileView: View {
             .padding(.horizontal, 20)
             .padding(.bottom, 20)
         }
-        .background(Color(red: 0.96, green: 0.97, blue: 0.98).ignoresSafeArea())
+        .background(appSettings.bgColor.ignoresSafeArea())
         .onAppear { userName = userManager.displayName }
         .alert(alertMessage, isPresented: $showingAlert) {
             Button("OK", role: .cancel) { }

@@ -20,15 +20,15 @@ struct AppPreferencesView: View {
                 // Title
                 Text("App Preferences")
                     .font(.custom("SF Pro", size: 32).weight(.bold))
-                    .foregroundColor(Color(red: 0.25, green: 0.25, blue: 0.25))
+                    .foregroundColor(appSettings.primaryText)
                     .frame(maxWidth: .infinity)
                     .multilineTextAlignment(.center)
                     .padding(.top, 20)
 
                 // General Settings
                 SettingsCard(title: "General") {
-                    PickerRow(title: "Theme", selection: $appSettings.selectedTheme, options: ["Light", "Dark"])
-                    PickerRow(title: "Language", selection: $appSettings.selectedLanguage, options: ["System Default", "English", "Spanish"])
+                    PickerRow(title: "Theme", selection: $appSettings.selectedTheme, options: themes)
+                    PickerRow(title: "Language", selection: $appSettings.selectedLanguage, options: languages)
                 }
 
                 // Controller Settings
@@ -47,7 +47,7 @@ struct AppPreferencesView: View {
             .padding(.horizontal, 20)
             .padding(.bottom, 20)
         }
-        .background(Color(red: 0.96, green: 0.97, blue: 0.98).ignoresSafeArea())
+        .background(appSettings.bgColor.ignoresSafeArea())
     }
 }
 
@@ -55,6 +55,7 @@ struct AppPreferencesView: View {
 struct SettingsCard<Content: View>: View {
     let title: String
     let content: Content
+    @EnvironmentObject var appSettings: AppSettings
 
     init(title: String, @ViewBuilder content: () -> Content) {
         self.title = title
@@ -65,12 +66,13 @@ struct SettingsCard<Content: View>: View {
         VStack(alignment: .leading, spacing: 10) {
             Text(title)
                 .font(.custom("SF Pro", size: 18).weight(.bold))
-                .foregroundColor(Color(red: 0.25, green: 0.25, blue: 0.25))
+                .foregroundColor(appSettings.primaryText)
             content
         }
         .padding()
+        .background(appSettings.cardColor)
         .cornerRadius(12)
-        .shadow(color: Color.black.opacity(0.05), radius: 4, y: 1)
+        .shadow(color: appSettings.shadowColor, radius: 4, y: 1)
     }
 }
 
@@ -79,12 +81,13 @@ struct PickerRow: View {
     let title: String
     @Binding var selection: String
     let options: [String]
+    @EnvironmentObject var appSettings: AppSettings
 
     var body: some View {
         HStack {
             Text(title)
                 .font(.custom("SF Pro", size: 16))
-                .foregroundColor(Color(red: 0.12, green: 0.12, blue: 0.12))
+                .foregroundColor(appSettings.primaryText)
             Spacer()
             Picker("", selection: $selection) {
                 ForEach(options, id: \.self) { option in
@@ -92,13 +95,13 @@ struct PickerRow: View {
                 }
             }
             .pickerStyle(MenuPickerStyle())
-            .foregroundColor(Color(red: 0.42, green: 0.42, blue: 0.42))
+            .foregroundColor(appSettings.secondaryText)
         }
         .padding()
-        .background(Color.white)
+        .background(appSettings.cardColor)
         .overlay(
             RoundedRectangle(cornerRadius: 8)
-                .stroke(Color(red: 0.89, green: 0.89, blue: 0.89), lineWidth: 0.5)
+                .stroke(appSettings.strokeColor, lineWidth: 0.5)
         )
         .cornerRadius(8)
     }
@@ -108,22 +111,23 @@ struct PickerRow: View {
 struct ToggleRow: View {
     let title: String
     @Binding var isOn: Bool
+    @EnvironmentObject var appSettings: AppSettings
 
     var body: some View {
         HStack {
             Text(title)
                 .font(.custom("SF Pro", size: 16))
-                .foregroundColor(Color(red: 0.12, green: 0.12, blue: 0.12))
+                .foregroundColor(appSettings.primaryText)
             Spacer()
             Toggle("", isOn: $isOn)
-                .toggleStyle(SwitchToggleStyle(tint: Color.orange))
+                .toggleStyle(SwitchToggleStyle(tint: appSettings.primaryButton))
         }
         .padding()
-        .background(Color.white)
+        .background(appSettings.cardColor)
         .overlay(
             RoundedRectangle(cornerRadius: 8)
-                .stroke(Color(red: 0.89, green: 0.89, blue: 0.89), lineWidth: 0.5)
-        )   
+                .stroke(appSettings.strokeColor, lineWidth: 0.5)
+        )
         .cornerRadius(8)
     }
 }

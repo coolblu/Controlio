@@ -23,10 +23,12 @@ struct TrackpadView: View {
     @State private var isDragging = false
     @State private var statusText = "Searching…"
     @State private var dotColor: Color = .orange
-        
+
+    @EnvironmentObject var appSettings: AppSettings
+
     var body: some View {
             ZStack {
-                Color(red: 0.957, green: 0.968, blue: 0.980).ignoresSafeArea()
+                appSettings.bgColor.ignoresSafeArea()
 
                 VStack(spacing: 8) {
                     // tiny status row
@@ -56,9 +58,9 @@ struct TrackpadView: View {
                             mc.send(.rightDown); mc.send(.rightUp)
                         }
                     )
-                    .background(Color.white)
+                    .background(appSettings.cardColor)
                     .cornerRadius(18)
-                    .shadow(color: .black.opacity(0.12), radius: 12, y: 8)
+                    .shadow(color: appSettings.shadowColor, radius: 12, y: 8)
                     .padding(16)
                 }
 
@@ -69,7 +71,7 @@ struct TrackpadView: View {
                             Text("Drag")
                                 .font(.caption2)
                                 .padding(.horizontal, 8).padding(.vertical, 4)
-                                .background(Color.black.opacity(0.75))
+                                .background(appSettings.primaryText.opacity(0.75))
                                 .foregroundColor(.white)
                                 .cornerRadius(8)
                                 .padding([.top, .trailing], 12)

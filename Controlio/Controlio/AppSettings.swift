@@ -6,94 +6,96 @@
 //
 
 import SwiftUI
-import FirebaseFirestore
-import FirebaseAuth
 
 final class AppSettings: ObservableObject {
-    @Published var showTips: Bool = true {
+    @Published var showTips: Bool {
         didSet { saveSettings() }
     }
-    @Published var connectionAlerts: Bool = true {
+    @Published var connectionAlerts: Bool {
         didSet { saveSettings() }
     }
-    @Published var updateReminders: Bool = true {
+    @Published var updateReminders: Bool {
         didSet { saveSettings() }
     }
-    @Published var selectedTheme: String = "Light" {
+    @Published var selectedTheme: String {
         didSet { saveSettings() }
     }
-    @Published var selectedLanguage: String = "System Default" {
+    @Published var selectedLanguage: String {
         didSet { saveSettings() }
     }
 
-    private var db = Firestore.firestore()
-    private var userId: String?
+    private let defaults = UserDefaults.standard
 
     init() {
-        // If user is already logged in, set userId and load settings
-        if let user = Auth.auth().currentUser {
-            setUser(user.uid)
+        showTips = defaults.bool(forKey: "showTips")
+        connectionAlerts = defaults.bool(forKey: "connectionAlerts")
+        updateReminders = defaults.bool(forKey: "updateReminders")
+        selectedTheme = defaults.string(forKey: "selectedTheme") ?? "Light"
+        selectedLanguage = defaults.string(forKey: "selectedLanguage") ?? "System Default"
+
+        // If keys were never set, initialize to defaults
+        if defaults.object(forKey: "showTips") == nil {
+            resetToDefaults()
         }
     }
 
-    /// Call this after user logs in
-    func setUser(_ uid: String) {
-        userId = uid
-        loadSettings()
+    private func saveSettings() {
+        defaults.set(showTips, forKey: "showTips")
+        defaults.set(connectionAlerts, forKey: "connectionAlerts")
+        defaults.set(updateReminders, forKey: "updateReminders")
+        defaults.set(selectedTheme, forKey: "selectedTheme")
+        defaults.set(selectedLanguage, forKey: "selectedLanguage")
     }
 
-    /// Reset to default values
     private func resetToDefaults() {
         showTips = true
         connectionAlerts = true
         updateReminders = true
         selectedTheme = "Light"
         selectedLanguage = "System Default"
+        saveSettings()
+    }
+}
+
+// Dynamic Theme Colors
+extension AppSettings {
+    var bgColor: Color {
+        selectedTheme == "Dark" ? Color.black : Color(red: 0.957, green: 0.968, blue: 0.980)
+    }
+    
+    var cardColor: Color {
+        selectedTheme == "Dark" ? Color(red: 0.18, green: 0.18, blue: 0.18) : Color.white
+    }
+    
+    var primaryText: Color {
+        selectedTheme == "Dark" ? Color.white : Color.black
+    }
+    
+    var secondaryText: Color {
+        selectedTheme == "Dark" ? Color.white.opacity(0.6) : Color.gray
+    }
+    
+    var primaryButton: Color {
+        selectedTheme == "Dark" ? Color.orange.opacity(0.9) : Color.orange
+    }
+    
+    var buttonText: Color {
+        Color.white
     }
 
-    /// Load settings from Firestore or create defaults if missing
-    private func loadSettings() {
-        guard let uid = userId else { return }
-
-        let docRef = db.collection("users").document(uid)
-                        .collection("settings").document("preferences")
-
-        docRef.getDocument { [weak self] snapshot, error in
-            guard let self = self else { return }
-
-            if let data = snapshot?.data(), error == nil {
-                // Document exists — load data
-                DispatchQueue.main.async {
-                    self.showTips = data["showTips"] as? Bool ?? true
-                    self.connectionAlerts = data["connectionAlerts"] as? Bool ?? true
-                    self.updateReminders = data["updateReminders"] as? Bool ?? true
-                    self.selectedTheme = data["selectedTheme"] as? String ?? "Light"
-                    self.selectedLanguage = data["selectedLanguage"] as? String ?? "System Default"
-                }
-            } else {
-                // Document missing — initialize defaults and save
-                DispatchQueue.main.async {
-                    self.resetToDefaults()
-                    self.saveSettings()
-                }
-            }
-        }
+    var destructive: Color {
+        selectedTheme == "Dark" ? Color.red.opacity(0.8) : Color.red
     }
 
-    /// Save current settings to Firestore
-    private func saveSettings() {
-        guard let uid = userId else { return }
+    var destructiveButton: Color {
+        Color.red
+    }
 
-        let data: [String: Any] = [
-            "showTips": showTips,
-            "connectionAlerts": connectionAlerts,
-            "updateReminders": updateReminders,
-            "selectedTheme": selectedTheme,
-            "selectedLanguage": selectedLanguage
-        ]
-
-        db.collection("users").document(uid)
-          .collection("settings").document("preferences")
-          .setData(data, merge: true)
+    var shadowColor: Color {
+        selectedTheme == "Dark" ? Color.black.opacity(0.8) : Color.black.opacity(0.06)
+    }
+    
+    var strokeColor: Color {
+        selectedTheme == "Dark" ? Color.white.opacity(0.3) : Color.black.opacity(0.3)
     }
 }

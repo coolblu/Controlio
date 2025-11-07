@@ -11,13 +11,13 @@ import SwiftUI
 struct LoginView: View {
     @Binding var isLoggedIn: Bool
     @State private var showSignUp = false
+    @EnvironmentObject var appSettings: AppSettings
 
-    private let backgroundColor = Color(red: 0.957, green: 0.968, blue: 0.980)
     private let topSpacing: CGFloat = 44
 
     var body: some View {
         ZStack {
-            backgroundColor.ignoresSafeArea()
+            appSettings.bgColor.ignoresSafeArea()
 
             VStack(spacing: 0) {
                 Spacer().frame(height: topSpacing)
