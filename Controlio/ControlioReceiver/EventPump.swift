@@ -19,7 +19,7 @@ final class EventPump {
         if timer != nil { return }
         let t = DispatchSource.makeTimerSource(queue: q)
         // Send coalesced moves every ~8ms (~120 Hz)
-        t.schedule(deadline: .now() + .milliseconds(8), repeating: .milliseconds(8))
+        t.schedule(deadline: .now() + .milliseconds(8), repeating: .milliseconds(1))
         t.setEventHandler { [weak self] in
             guard let self = self else { return }
             let dx = self.moveDX; let dy = self.moveDY

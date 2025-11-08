@@ -15,22 +15,44 @@ struct TrackpadView: View {
     var onScroll: (Int, Int) -> Void  = { _, _ in }
     var onButton: (Int, Int) -> Void  = { _, _ in }
         
-    // hardcoded for alpha
-    private let pointerSensitivity: Double = 1.0  // change in code if needed
-    private let scrollSensitivity: Double = 1.0
-    private let reverseScroll: Bool = false
+    // variables for settings
+    @State private var pointerSensitivity: Double = 1.0
+    @State private var scrollSensitivity: Double = 1.0
+    @State private var reverseScroll: Bool = false
     
     @State private var isDragging = false
     @State private var statusText = "Searching…"
     @State private var dotColor: Color = .orange
+    @State private var showSettings = false
         
     var body: some View {
             ZStack {
                 Color(red: 0.957, green: 0.968, blue: 0.980).ignoresSafeArea()
 
                 VStack(spacing: 8) {
-                    // tiny status row
-                    ConnectionIndicator(statusText: statusText, color: dotColor)
+
+                    HStack {
+                        ConnectionIndicator(statusText: statusText, color: dotColor)
+                        
+                        Spacer()
+                        
+                        Button(action: {
+                            showSettings = true
+                        }) {
+                            Image(systemName: "gearshape.fill")
+                                .font(.system(size: 20))
+                                .foregroundColor(.blue)
+                                .padding(8)
+                                .background(Color.white)
+                                .clipShape(Circle())
+                                .shadow(color: .black.opacity(0.1), radius: 4, y: 2)
+                        }
+                        .padding(.trailing, 16)
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.top, 8)
+                    
+                    
                     TouchPadSurface(
                         pointerMultiplier: pointerSensitivity,
                         scrollMultiplier:  scrollSensitivity,
@@ -79,6 +101,15 @@ struct TrackpadView: View {
                     .transition(.opacity)
                 }
             }
+        
+            .sheet(isPresented: $showSettings) {
+                        TrackpadSettingsView(
+                            pointerSensitivity: $pointerSensitivity,
+                            scrollSensitivity: $scrollSensitivity,
+                            reverseScroll: $reverseScroll
+                        )
+                    }
+        
             .onAppear {
                 // start browsing + wire status updates
                 mc.onStateChange = { state in
