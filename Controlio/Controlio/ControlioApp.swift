@@ -28,11 +28,6 @@ struct ControlioApp: App {
                     HomeView(isLoggedIn: $isLoggedIn)
                         .environmentObject(userManager)
                         .environmentObject(appSettings)
-                        .onAppear {
-                            if let currentUser = Auth.auth().currentUser {
-                                appSettings.setUser(currentUser.uid)
-                            }
-                        }
                 } else {
                     LoginView(isLoggedIn: $isLoggedIn)
                         .environmentObject(userManager)
@@ -42,21 +37,19 @@ struct ControlioApp: App {
                 // Splash screen
                 if showSplash {
                     ContentView()
-                        .preferredColorScheme(.light)
                         .transition(.opacity)
                         .zIndex(1)
                 }
             }
+            .preferredColorScheme(appSettings.selectedTheme == "Dark" ? .dark : .light)
             .animation(.spring(response: 0.6, dampingFraction: 0.7), value: showSplash)
+            .animation(.easeInOut, value: appSettings.selectedTheme)
             .onAppear {
-                // Delay before switching from splash
-                if let user = Auth.auth().currentUser {
-                    isLoggedIn = true
-                    appSettings.setUser(user.uid)
-                } else {
-                    isLoggedIn = false
-                }
+                // Determine login state
+                isLoggedIn = Auth.auth().currentUser != nil
                 userManager.fetchUser()
+
+                // Delay before switching from splash
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
                     showSplash = false
                 }

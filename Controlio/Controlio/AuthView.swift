@@ -26,6 +26,7 @@ struct AuthView: View {
     @State private var errorMessage: String?
 
     @FocusState private var focusedField: Field?
+    @EnvironmentObject var appSettings: AppSettings
 
     enum Field: Hashable { case email, password, confirmPassword }
 
@@ -37,70 +38,87 @@ struct AuthView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(maxWidth: 200)
-                    .shadow(color: .black.opacity(0.2), radius: 8, y: 4)
-                
+                    .shadow(color: appSettings.shadowColor, radius: 8, y: 4)
+
+                // Title
                 Text(isSignUp ? "Create Account" : "Welcome to Controlio")
                     .font(.largeTitle)
                     .fontWeight(.semibold)
-                
+                    .foregroundColor(appSettings.primaryText)
+
                 // Input Fields
                 VStack(spacing: 12) {
                     StyledTextField(placeholder: "Email", text: $email, isFocused: focusedField == .email)
                         .focused($focusedField, equals: .email)
-                    
+                        .environmentObject(appSettings)
+
                     SecureToggleField(placeholder: "Password", text: $password, show: $showPassword, isFocused: focusedField == .password)
                         .focused($focusedField, equals: .password)
-                    
+                        .environmentObject(appSettings)
+
                     if isSignUp {
                         SecureToggleField(placeholder: "Confirm Password", text: $confirmPassword, show: $showConfirmPassword, isFocused: focusedField == .confirmPassword)
                             .focused($focusedField, equals: .confirmPassword)
+                            .environmentObject(appSettings)
                     }
                 }
+
                 // Error message
                 if let message = errorMessage {
                     Text(message)
-                        .foregroundColor(.red)
+                        .foregroundColor(appSettings.destructive)
                         .font(.footnote)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)
                 }
                 
                 // Primary button
-                StyledButton(title: isSignUp ? "Create Account" : "Login", color: .orange, textColor: .white, iconName: nil) {
+                StyledButton(
+                    title: isSignUp ? "Create Account" : "Login",
+                    backgroundColor: appSettings.primaryButton,
+                    textColor: appSettings.buttonText,
+                    iconName: nil
+                ) {
                     handleAuth()
                 }
-                
+
                 // Switch screen
                 Button(action: onSwitch) {
                     Text(isSignUp ? "Already have an account? " : "Don’t have an account? ")
-                        .foregroundColor(.gray)
+                        .foregroundColor(appSettings.secondaryText)
                     + Text(isSignUp ? "Log in" : "Sign up")
-                        .foregroundColor(.orange)
+                        .foregroundColor(appSettings.primaryButton)
                 }
                 .font(.footnote)
-                
+
                 // Separator for alternative sign in options
                 HStack {
                     Rectangle()
                         .frame(height: 1)
-                        .foregroundColor(.gray.opacity(0.4))
+                        .foregroundColor(appSettings.strokeColor)
                     Text("or continue with")
                         .font(.footnote)
-                        .foregroundColor(.gray)
+                        .foregroundColor(appSettings.secondaryText)
                     Rectangle()
                         .frame(height: 1)
-                        .foregroundColor(.gray.opacity(0.4))
+                        .foregroundColor(appSettings.strokeColor)
                 }
-                
+
                 // Google Sign-In
-                StyledButton(title: "Sign in with Google", color: .white, textColor: .black, iconName: "google_icon") {
+                StyledButton(
+                    title: "Sign in with Google",
+                    backgroundColor: appSettings.cardColor,
+                    textColor: appSettings.primaryText,
+                    iconName: "google_icon"
+                ) {
                     handleGoogleSignIn()
                 }
-                
+
                 Spacer()
             }
             .padding(.horizontal, 24)
         }
+        .background(appSettings.bgColor.ignoresSafeArea())
     }
 
     // Firebase Auth
@@ -161,12 +179,8 @@ struct AuthView: View {
     }
 }
 
-// Previews
+// Preview
 #Preview {
-    VStack(spacing: 40) {
-        AuthView(isSignUp: false, onSwitch: {}, onAuthSuccess: {})
-        Divider()
-        AuthView(isSignUp: true, onSwitch: {}, onAuthSuccess: {})
-    }
-    .padding()
+    AuthView(isSignUp: false, onSwitch: {}, onAuthSuccess: {})
+        .environmentObject(AppSettings())
 }

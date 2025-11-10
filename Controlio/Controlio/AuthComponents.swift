@@ -10,7 +10,7 @@ import SwiftUI
 /// Button with consistent styling and press effect.
 struct StyledButton: View {
     let title: String
-    let color: Color
+    let backgroundColor: Color
     let textColor: Color
     let iconName: String?
     let action: () -> Void
@@ -41,7 +41,7 @@ struct StyledButton: View {
             }
             .padding()
             .frame(maxWidth: .infinity)
-            .background(color)
+            .background(backgroundColor)
             .cornerRadius(20)
             .shadow(color: .black.opacity(0.15), radius: 4, y: 4)
             .scaleEffect(isPressed ? 0.96 : 1.0)
@@ -55,13 +55,14 @@ struct StyledTextField: View {
     let placeholder: String
     @Binding var text: String
     let isFocused: Bool
+    @EnvironmentObject var appSettings: AppSettings
 
     var body: some View {
         ZStack(alignment: .leading) {
             // Placeholder shown when text is empty
             if text.isEmpty {
                 Text(placeholder)
-                    .foregroundColor(.gray)
+                    .foregroundColor(appSettings.secondaryText)
                     .padding(.leading, 12)
             }
 
@@ -73,28 +74,29 @@ struct StyledTextField: View {
         }
         .frame(height: 50)
         .frame(maxWidth: .infinity)
-        .background(Color.white)
+        .background(appSettings.cardColor)
         .cornerRadius(10)
         .overlay(
             RoundedRectangle(cornerRadius: 10)
-                .stroke(isFocused ? Color.orange : Color.gray.opacity(0.3), lineWidth: 1)
+                .stroke(isFocused ? appSettings.primaryButton : appSettings.strokeColor, lineWidth: 1)
         )
     }
 }
 
-/// Password input field with an eye icon to toggle visibility.
+/// Password input field with toggle visibility.
 struct SecureToggleField: View {
     let placeholder: String
     @Binding var text: String
     @Binding var show: Bool
     let isFocused: Bool
+    @EnvironmentObject var appSettings: AppSettings
 
     var body: some View {
         ZStack(alignment: .leading) {
             // Placeholder field text
             if text.isEmpty {
                 Text(placeholder)
-                    .foregroundColor(.gray)
+                    .foregroundColor(appSettings.secondaryText)
                     .padding(.leading, 12)
             }
 
@@ -117,14 +119,14 @@ struct SecureToggleField: View {
                             .padding(.trailing, 36)
                     }
                 }
-                .textInputAutocapitalization(.none)
+                .textInputAutocapitalization(.never)
                 .disableAutocorrection(true)
                 .padding(.trailing, 36)
 
                 // Eye button toggles password visibility
                 Button(action: { show.toggle() }) {
                     Image(systemName: show ? "eye.slash" : "eye")
-                        .foregroundColor(.gray)
+                        .foregroundColor(appSettings.secondaryText)
                 }
                 .padding(.trailing, 12)
             }
@@ -132,11 +134,11 @@ struct SecureToggleField: View {
         }
         .frame(height: 50)
         .frame(maxWidth: .infinity)
-        .background(Color.white)
+        .background(appSettings.cardColor)
         .cornerRadius(10)
         .overlay(
             RoundedRectangle(cornerRadius: 10)
-                .stroke(isFocused ? Color.orange : Color.gray.opacity(0.3), lineWidth: 1)
+                .stroke(isFocused ? appSettings.primaryButton : appSettings.strokeColor, lineWidth: 1)
         )
     }
 }
