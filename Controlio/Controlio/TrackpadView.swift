@@ -10,6 +10,7 @@ import MultipeerConnectivity
 
 struct TrackpadView: View {
     let mc: MCManager
+    var onNavigateHome: (() -> Void)? = nil
     
     @EnvironmentObject var appSettings: AppSettings
     
@@ -117,6 +118,7 @@ struct TrackpadView: View {
         
             .sheet(isPresented: $showSettings) {
                         TrackpadSettingsView(
+                            onNavigateHome: onNavigateHome,
                             pointerSensitivity: $pointerSensitivity,
                             scrollSensitivity: $scrollSensitivity,
                             reverseScroll: $reverseScroll

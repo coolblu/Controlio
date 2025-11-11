@@ -2,39 +2,57 @@
 //  DeviceControllerView.swift
 //  Controlio
 //
-//  Created by Codex on 11/07/25.
+//  Created by Masayuki Yamazaki on 11/07/25.
 //
 
 import SwiftUI
 
 struct DeviceControllerView: View {
+    var onNavigateHome: (() -> Void)? = nil
+    @State private var showAppPreferences = false
+    @Environment(\.dismiss) private var dismiss
     private let connectedDevices = DeviceControllerContent.connectedDevices
     private let availableDevices = DeviceControllerContent.availableDevices
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
-                Text("Device Controller")
-                    .font(.system(size: 34, weight: .bold, design: .rounded))
+        ZStack {
+            NavigationLink(
+                destination: AppPreferencesView(),
+                isActive: $showAppPreferences
+            ) {
+                EmptyView()
+            }
+            .hidden()
 
-                ViewThatFits(in: .horizontal) {
-                    HStack(alignment: .top, spacing: 24) {
-                        connectedSection
-                        availableSection
-                    }
-                    VStack(spacing: 24) {
-                        connectedSection
-                        availableSection
+            ScrollView {
+                VStack(alignment: .leading, spacing: 24) {
+                    Text("Device Controller")
+                        .font(.system(size: 34, weight: .bold, design: .rounded))
+
+                    ViewThatFits(in: .horizontal) {
+                        HStack(alignment: .top, spacing: 24) {
+                            connectedSection
+                            availableSection
+                        }
+                        VStack(spacing: 24) {
+                            connectedSection
+                            availableSection
+                        }
                     }
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.top, 12)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.top, 12)
         }
         .padding(.horizontal, 20)
         .padding(.bottom, 20)
         .safeAreaInset(edge: .bottom, spacing: 0) {
-            DeviceHelpBottomBar()
+            DeviceHelpBottomBar(
+                onHomeTap: { onNavigateHome?() },
+                onSettingsTap: { showAppPreferences = true },
+                onWifiTap: {},
+                onHelpTap: { dismiss() }
+            )
         }
         .background(DeviceHelpTheme.background.ignoresSafeArea())
         .navigationTitle("Device Controller")

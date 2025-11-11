@@ -159,7 +159,7 @@ struct HomeView: View {
                     .navigationDestination(for: Route.self) { route in
                         switch route {
                         case .trackpad:
-                            TrackpadView(mc: mcHost.manager)
+                            TrackpadView(mc: mcHost.manager, onNavigateHome: { path = NavigationPath() })
                         case .gamepad:
                             GamepadView(mc: mcHost.manager)
                         case .manageProfile:
@@ -167,7 +167,7 @@ struct HomeView: View {
                         case .appPreferences:
                             AppPreferencesView()
                         case .help:
-                            DeviceHelpView()
+                            DeviceHelpView(onNavigateHome: { path = NavigationPath() })
                         }
                     }
                 }

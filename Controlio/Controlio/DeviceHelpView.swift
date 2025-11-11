@@ -8,14 +8,23 @@
 import SwiftUI
 
 struct DeviceHelpView: View {
+    var onNavigateHome: (() -> Void)? = nil
     @State private var selection: DeviceHelpTab = .connection
     @State private var showDeviceController = false
+    @State private var showAppPreferences = false
 
     var body: some View {
         ZStack {
             NavigationLink(
-                destination: DeviceControllerView(),
+                destination: DeviceControllerView(onNavigateHome: onNavigateHome),
                 isActive: $showDeviceController
+            ) {
+                EmptyView()
+            }
+            .hidden()
+            NavigationLink(
+                destination: AppPreferencesView(),
+                isActive: $showAppPreferences
             ) {
                 EmptyView()
             }
@@ -43,7 +52,12 @@ struct DeviceHelpView: View {
         }
         .padding(20)
         .safeAreaInset(edge: .bottom, spacing: 0) {
-            DeviceHelpBottomBar(onWifiTap: { showDeviceController = true })
+            DeviceHelpBottomBar(
+                onHomeTap: { onNavigateHome?() },
+                onSettingsTap: { showAppPreferences = true },
+                onWifiTap: { showDeviceController = true },
+                onHelpTap: {}
+            )
         }
         .background(DeviceHelpTheme.background.ignoresSafeArea())
         .navigationBarTitleDisplayMode(.inline)
@@ -340,52 +354,93 @@ private struct DeviceHelpCard: View {
 }
 
 struct DeviceHelpBottomBar: View {
-    private let items: [DeviceHelpBottomBarItem]
+    enum Orientation {
+        case horizontal
+        case vertical
+    }
 
-    init(onWifiTap: @escaping () -> Void = {}) {
+    private let items: [DeviceHelpBottomBarItem]
+    private let orientation: Orientation
+
+    init(
+        orientation: Orientation = .horizontal,
+        onHomeTap: @escaping () -> Void = {},
+        onSettingsTap: @escaping () -> Void = {},
+        onWifiTap: @escaping () -> Void = {},
+        onHelpTap: @escaping () -> Void = {}
+    ) {
+        self.orientation = orientation
         self.items = [
-            .init(systemName: "house.fill", accessibilityLabel: "Home", action: {}),
-            .init(systemName: "gearshape.fill", accessibilityLabel: "Settings", action: {}),
+            .init(systemName: "house.fill", accessibilityLabel: "Home", action: onHomeTap),
+            .init(systemName: "gearshape.fill", accessibilityLabel: "Settings", action: onSettingsTap),
             .init(systemName: "wifi", accessibilityLabel: "Wireless connection", action: onWifiTap),
-            .init(systemName: "questionmark.circle", accessibilityLabel: "Help", action: {})
+            .init(systemName: "questionmark.circle", accessibilityLabel: "Help", action: onHelpTap)
         ]
     }
 
     var body: some View {
-        HStack(spacing: 20) {
-            ForEach(items) { item in
-                Button(action: item.action) {
-                    Image(systemName: item.systemName)
-                        .font(.system(size: 22, weight: .semibold))
-                        .foregroundStyle(DeviceHelpTheme.bottomIconForeground)
-                        .frame(width: 56, height: 56)
-                        .background(
-                            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                                .fill(DeviceHelpTheme.bottomIconBackground)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 18, style: .continuous)
-                                        .stroke(DeviceHelpTheme.bottomIconStroke, lineWidth: 1)
-                                )
-                        )
-                        .shadow(color: DeviceHelpTheme.bottomIconShadow, radius: 6, x: 0, y: 4)
+        Group {
+            switch orientation {
+            case .horizontal:
+                HStack(spacing: 20) {
+                    toolbarButtons
                 }
-                .buttonStyle(.plain)
-                .accessibilityLabel(item.accessibilityLabel)
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, 32)
+                .padding(.top, 18)
+                .padding(.bottom, 12)
+                .background(
+                    TopRoundedRectangle(radius: 34)
+                        .fill(DeviceHelpTheme.bottomBarBackground)
+                        .shadow(color: DeviceHelpTheme.bottomBarShadow, radius: 10, x: 0, y: -2)
+                )
+                .background(
+                    DeviceHelpTheme.bottomBarBackground
+                        .ignoresSafeArea(edges: .bottom)
+                )
+
+            case .vertical:
+                VStack(spacing: 20) {
+                    toolbarButtons
+                }
+                .frame(maxHeight: .infinity)
+                .padding(.vertical, 32)
+                .padding(.horizontal, 12)
+                .frame(width: 104)
+                .background(
+                    RightRoundedRectangle(radius: 34)
+                        .fill(DeviceHelpTheme.bottomBarBackground)
+                        .shadow(color: DeviceHelpTheme.bottomBarShadow, radius: 8, x: -2, y: 0)
+                )
+                .background(
+                    DeviceHelpTheme.bottomBarBackground
+                        .ignoresSafeArea(edges: .trailing)
+                )
             }
         }
-        .frame(maxWidth: .infinity)
-        .padding(.horizontal, 32)
-        .padding(.top, 18)
-        .padding(.bottom, 12)
-        .background(
-            TopRoundedRectangle(radius: 34)
-                .fill(DeviceHelpTheme.bottomBarBackground)
-                .shadow(color: DeviceHelpTheme.bottomBarShadow, radius: 10, x: 0, y: -2)
-        )
-        .background(
-            DeviceHelpTheme.bottomBarBackground
-                .ignoresSafeArea(edges: .bottom)
-        )
+    }
+
+    @ViewBuilder
+    private var toolbarButtons: some View {
+        ForEach(items) { item in
+            Button(action: item.action) {
+                Image(systemName: item.systemName)
+                    .font(.system(size: 22, weight: .semibold))
+                    .foregroundStyle(DeviceHelpTheme.bottomIconForeground)
+                    .frame(width: 56, height: 56)
+                    .background(
+                        RoundedRectangle(cornerRadius: 18, style: .continuous)
+                            .fill(DeviceHelpTheme.bottomIconBackground)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                                    .stroke(DeviceHelpTheme.bottomIconStroke, lineWidth: 1)
+                            )
+                    )
+                    .shadow(color: DeviceHelpTheme.bottomIconShadow, radius: 6, x: 0, y: 4)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(item.accessibilityLabel)
+        }
     }
 }
 
@@ -410,6 +465,26 @@ private struct TopRoundedRectangle: Shape {
         path.addQuadCurve(to: CGPoint(x: corner, y: 0), control: CGPoint(x: 0, y: 0))
         path.addLine(to: CGPoint(x: width - corner, y: 0))
         path.addQuadCurve(to: CGPoint(x: width, y: corner), control: CGPoint(x: width, y: 0))
+        path.addLine(to: CGPoint(x: width, y: height))
+        path.closeSubpath()
+        return path
+    }
+}
+
+private struct RightRoundedRectangle: Shape {
+    var radius: CGFloat
+
+    func path(in rect: CGRect) -> Path {
+        let width = rect.width
+        let height = rect.height
+        let corner = min(min(radius, width / 2), height / 2)
+
+        var path = Path()
+        path.move(to: CGPoint(x: width, y: 0))
+        path.addLine(to: CGPoint(x: corner, y: 0))
+        path.addQuadCurve(to: CGPoint(x: 0, y: corner), control: CGPoint(x: 0, y: 0))
+        path.addLine(to: CGPoint(x: 0, y: height - corner))
+        path.addQuadCurve(to: CGPoint(x: corner, y: height), control: CGPoint(x: 0, y: height))
         path.addLine(to: CGPoint(x: width, y: height))
         path.closeSubpath()
         return path
