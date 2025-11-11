@@ -149,7 +149,7 @@ struct GamepadView: View {
         
         let sx = Int((max(-1, min(1, vx))) * 1000)
         let sy = Int((max(-1, min(1, vy))) * 1000)
-        mc.send(.ax(id: id, x: sx, y: sy))
+        mc.send(.ax(id: id, x: sx, y: sy), reliable: false)
     }
     
     private func clampDeadzone(_ v: CGFloat, dz: CGFloat) -> CGFloat {
