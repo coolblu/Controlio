@@ -7,10 +7,20 @@
 
 import SwiftUI
 import CoreHaptics
+import MultipeerConnectivity
 
 struct GamepadView: View {
-    let mc: MCManager
+    @ObservedObject var mc: MCManager
     @EnvironmentObject var appSettings: AppSettings
+    
+    private func ui(for s: MCSessionState) -> (String, Color) {
+        switch s {
+        case .connected:    return ("Connected",   .green)
+        case .connecting:   return ("Connecting…", .orange)
+        case .notConnected: return ("Searching…",  .orange)
+        @unknown default:   return ("Searching…",  .orange)
+        }
+    }
 
     @State private var engine: CHHapticEngine?
     @State private var leftStick = CGPoint.zero
@@ -22,11 +32,9 @@ struct GamepadView: View {
     
     @State private var hapticsReady = false
 
-    @State private var statusText = "Searching…"
-    @State private var dotColor: Color = .orange
-
     var body: some View {
         GeometryReader { geo in
+            let (statusText, dotColor) = ui(for: mc.sessionState)
             let w = geo.size.width
             let h = geo.size.height
             // responsive sizing
@@ -121,23 +129,7 @@ struct GamepadView: View {
         }
         .onAppear {
             prepareHaptics()
-            mc.onStateChange = { state in
-                DispatchQueue.main.async {
-                    switch state {
-                    case .connected:
-                        statusText = "Connected"
-                        dotColor = .green
-                    case .connecting:
-                        statusText = "Connecting…"
-                        dotColor = .orange
-                    case .notConnected:
-                        fallthrough
-                    @unknown default:
-                        statusText = "Searching…"
-                        dotColor = .orange
-                    }
-                }
-            }
+            mc.startBrowsingIfNeeded()
         }
     }
     

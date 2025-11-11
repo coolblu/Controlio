@@ -16,7 +16,7 @@ import UIKit
  controller calls startBrowsing()
  */
 
-final class MCManager: NSObject {
+final class MCManager: NSObject, ObservableObject {
     
     // called when chunk of bytes arrives
     var onEvents: (([Event]) -> Void)?
@@ -25,6 +25,28 @@ final class MCManager: NSObject {
     var onStateChange: ((MCSessionState) -> Void)?
     
     var onDebug: ((String) -> Void)?
+    
+    @Published private(set) var sessionState: MCSessionState = .notConnected
+    
+    var currentState: MCSessionState { sessionState }
+    private var hasStartedBrowsing = false
+    
+    func startBrowsingIfNeeded() {
+        guard !hasStartedBrowsing else { return }
+        hasStartedBrowsing = true
+        startBrowsing()
+    }
+    
+    func stopBrowsing() {
+        browser?.stopBrowsingForPeers()
+        browser = nil
+        hasStartedBrowsing = false
+    }
+    
+    func disconnect(keepRetrying: Bool = true) {
+        session.disconnect()
+        if keepRetrying { startBrowsingIfNeeded() }
+    }
     
     private func log(_ s: String) {
         print(s)
@@ -108,7 +130,13 @@ final class MCManager: NSObject {
 extension MCManager: MCSessionDelegate {
     func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
         log("[MC] \(peerID.displayName) state: \(state.rawValue)")
-        DispatchQueue.main.async { self.onStateChange?(state) }
+        DispatchQueue.main.async {
+            self.onStateChange?(state)
+            self.sessionState = state
+            if state == .notConnected {
+                self.startBrowsingIfNeeded()
+            }
+        }
     }
 
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
