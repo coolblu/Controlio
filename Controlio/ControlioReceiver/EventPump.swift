@@ -49,6 +49,8 @@ final class EventPump {
                 MacInput.shared.click(button: e.p.c ?? 0, isDown: (e.p.s ?? 0) == 1)
             case .gs:
                 break
+            case .ax:
+                break
             }
         }
     }
