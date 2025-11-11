@@ -35,6 +35,8 @@ struct GamepadView: View {
     var body: some View {
         GeometryReader { geo in
             let (statusText, dotColor) = ui(for: mc.sessionState)
+            let isDark = appSettings.selectedTheme == "Dark"
+
             let w = geo.size.width
             let h = geo.size.height
             // responsive sizing
@@ -46,8 +48,7 @@ struct GamepadView: View {
             let clusterGap: CGFloat     = max(18, min(26, min(w, h) * 0.035))
             
             ZStack {
-                LinearGradient(colors: [Color.black, Color.black.opacity(0.92)], startPoint: .top, endPoint: .bottom)
-                    .ignoresSafeArea()
+                appSettings.bgColor.ignoresSafeArea()
                 
                 VStack(spacing: 0) {
                     ConnectionIndicator(statusText: statusText, dotColor: dotColor)
@@ -215,46 +216,46 @@ struct Shoulder: View {
     let height: CGFloat
     let onChange: (Bool) -> Void
     @State private var pressed = false
-    
+    @EnvironmentObject var appSettings: AppSettings
+
     var body: some View {
+        let isDark = appSettings.selectedTheme == "Dark"
+        let fill = isDark
+            ? (pressed ? Color.white.opacity(0.22) : Color.white.opacity(0.12))
+            : (pressed ? appSettings.cardColor.opacity(0.95) : appSettings.cardColor)
+        let stroke = isDark ? Color.white.opacity(0.15) : appSettings.strokeColor
+        let text = appSettings.primaryText
         RoundedRectangle(cornerRadius: height/2, style: .continuous)
-            .fill(pressed ? Color.white.opacity(0.22) : Color.white.opacity(0.12))
-            .overlay(
-                Text(label).font(.headline).padding(.horizontal, 8)
-            )
+            .fill(fill)
+            .overlay(Text(label).font(.headline).foregroundStyle(text).padding(.horizontal, 8))
             .frame(width: width, height: height)
-            .overlay(RoundedRectangle(cornerRadius: height/2).stroke(Color.white.opacity(0.15), lineWidth: 1))
+            .overlay(RoundedRectangle(cornerRadius: height/2).stroke(stroke, lineWidth: 1))
             .onLongPressGesture(minimumDuration: 0, pressing: { isDown in
                 if pressed != isDown { pressed = isDown; onChange(isDown) }
             }, perform: {})
     }
 }
 
-//private struct GPButtonView: View {
-//    let label: String
-//    let onChange: (Bool) -> Void
-//    @State private var pressed = false
-//    var body: some View {
-//        Text(label)
-//            .font(.headline)
-//            .padding(.vertical, 10).padding(.horizontal, 16)
-//            .background(pressed ? Color.white.opacity(0.25) : Color.white.opacity(0.12))
-//            .clipShape(Capsule())
-//            .onLongPressGesture(minimumDuration: 0, pressing: { isPressing in
-//                if pressed != isPressing { pressed = isPressing; onChange(isPressing) }
-//            }, perform: {})
-//    }
-//}
-
 private struct GPChip: View {
     let label: String
     let onChange: (Bool) -> Void
     @State private var pressed = false
+    @EnvironmentObject var appSettings: AppSettings
+
     var body: some View {
+        let isDark = appSettings.selectedTheme == "Dark"
+        let fill = isDark
+            ? (pressed ? Color.white.opacity(0.25) : Color.white.opacity(0.12))
+            : (pressed ? appSettings.cardColor.opacity(0.92) : appSettings.cardColor)
+        let stroke = isDark ? Color.white.opacity(0.15) : appSettings.strokeColor
+        let text = appSettings.primaryText
+
         Text(label)
             .font(.subheadline)
+            .foregroundStyle(text)
             .padding(.vertical, 8).padding(.horizontal, 14)
-            .background(pressed ? Color.white.opacity(0.25) : Color.white.opacity(0.12))
+            .background(fill)
+            .overlay(Capsule().stroke(stroke, lineWidth: 1))
             .clipShape(Capsule())
             .onLongPressGesture(minimumDuration: 0, pressing: { isPressing in
                 if pressed != isPressing { pressed = isPressing; onChange(isPressing) }
@@ -272,6 +273,8 @@ struct ABXY: View {
     @State private var b = false
     @State private var x = false
     @State private var y = false
+    @EnvironmentObject var appSettings: AppSettings
+    
     var body: some View {
         ZStack {
             VStack(spacing: gap) {
@@ -286,11 +289,18 @@ struct ABXY: View {
         .frame(minWidth: buttonSize*2 + gap, minHeight: buttonSize*2 + gap)
     }
     private func roundBtn(_ t: String, pressed: Binding<Bool>, on: @escaping (Bool)->Void) -> some View {
-        Circle()
-            .fill(pressed.wrappedValue ? Color.white.opacity(0.30) : Color.white.opacity(0.16))
-            .overlay(Circle().stroke(Color.white.opacity(0.15), lineWidth: 1))
+        let isDark = appSettings.selectedTheme == "Dark"
+        let fill = isDark
+            ? (pressed.wrappedValue ? Color.white.opacity(0.30) : Color.white.opacity(0.16))
+            : (pressed.wrappedValue ? appSettings.cardColor.opacity(0.95) : appSettings.cardColor)
+        let stroke = isDark ? Color.white.opacity(0.15) : appSettings.strokeColor
+        let text = appSettings.primaryText
+        
+        return Circle()
+            .fill(fill)
+            .overlay(Circle().stroke(stroke, lineWidth: 1))
             .frame(width: buttonSize, height: buttonSize)
-            .overlay(Text(t).font(.headline))
+            .overlay(Text(t).font(.headline).foregroundStyle(text))
             .onLongPressGesture(minimumDuration: 0, pressing: { isDown in
                 if pressed.wrappedValue != isDown { pressed.wrappedValue = isDown; on(isDown) }
             }, perform: {})
@@ -306,6 +316,8 @@ struct DPad: View {
     @State private var d = false
     @State private var l = false
     @State private var r = false
+    @EnvironmentObject var appSettings: AppSettings
+
     var body: some View {
         VStack(spacing: 10) {
             dKey("▲", pressed: $u) { onChange(.up, $0) }
@@ -318,11 +330,18 @@ struct DPad: View {
         }
     }
     private func dKey(_ t: String, pressed: Binding<Bool>, on: @escaping (Bool)->Void) -> some View {
-        RoundedRectangle(cornerRadius: 10, style: .continuous)
-            .fill(pressed.wrappedValue ? Color.white.opacity(0.28) : Color.white.opacity(0.14))
-            .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.white.opacity(0.12), lineWidth: 1))
+        let isDark = appSettings.selectedTheme == "Dark"
+        let fill = isDark
+            ? (pressed.wrappedValue ? Color.white.opacity(0.28) : Color.white.opacity(0.14))
+            : (pressed.wrappedValue ? appSettings.cardColor.opacity(0.95) : appSettings.cardColor)
+        let stroke = isDark ? Color.white.opacity(0.12) : appSettings.strokeColor
+        let text = appSettings.primaryText
+
+        return RoundedRectangle(cornerRadius: 10, style: .continuous)
+            .fill(fill)
+            .overlay(RoundedRectangle(cornerRadius: 10).stroke(stroke, lineWidth: 1))
             .frame(width: keySize, height: keySize)
-            .overlay(Text(t))
+            .overlay(Text(t).foregroundStyle(text))
             .onLongPressGesture(minimumDuration: 0, pressing: { isDown in
                 if pressed.wrappedValue != isDown { pressed.wrappedValue = isDown; on(isDown) }
             }, perform: {})
@@ -334,16 +353,23 @@ struct Thumbstick: View {
     @Binding var value: CGPoint
     let onChange: (CGFloat, CGFloat) -> Void
     @State private var drag = CGSize.zero
-    
+    @EnvironmentObject var appSettings: AppSettings
+
     var body: some View {
-        ZStack {
-            Circle().strokeBorder(Color.white.opacity(0.22), lineWidth: 2)
-                .background(Circle().fill(Color.white.opacity(0.08)))
+        let isDark = appSettings.selectedTheme == "Dark"
+        let ringStroke = isDark ? Color.white.opacity(0.22) : appSettings.strokeColor
+        let ringFill = isDark ? Color.white.opacity(0.08) : appSettings.cardColor
+        let knobFill = isDark ? Color.white.opacity(0.22) : appSettings.cardColor
+        let knobStroke = isDark ? Color.white.opacity(0.18) : appSettings.strokeColor
+	
+        return ZStack {
+            Circle().strokeBorder(ringStroke, lineWidth: 2)
+                .background(Circle().fill(ringFill))
                 .clipShape(Circle())
                 .frame(width: radius*2, height: radius*2)
             Circle()
-                .fill(Color.white.opacity(0.22))
-                .overlay(Circle().stroke(Color.white.opacity(0.18), lineWidth: 1))
+                .fill(knobFill)
+                .overlay(Circle().stroke(knobStroke, lineWidth: 1))
                 .frame(width: max(58, radius * 0.7), height: max(58, radius * 0.7))
                 .offset(drag)
                 .gesture(
@@ -356,7 +382,7 @@ struct Thumbstick: View {
                             let nx = clamped.width / radius
                             let ny = clamped.height / radius
                             value = CGPoint(x: nx, y: ny)
-                            onChange(nx, -ny) // invert Y
+                            onChange(nx, -ny)
                         }
                         .onEnded { _ in
                             drag = .zero

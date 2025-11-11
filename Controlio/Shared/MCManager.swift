@@ -27,12 +27,35 @@ final class MCManager: NSObject, ObservableObject {
     var onDebug: ((String) -> Void)?
     
     @Published private(set) var sessionState: MCSessionState = .notConnected
+    @Published private(set) var connectedPeer: MCPeerID? = nil
+    @Published private(set) var discoveredPeers: [MCPeerID] = []
     
+    @Published private(set) var lastConnectedPeer: MCPeerID? = nil
+    @Published private(set) var manuallyDisconnected: Bool = false
+    
+    var connectedDeviceName: String? { connectedPeer?.displayName }
+    
+    func connect(to peer: MCPeerID, timeout: TimeInterval = 10) {
+        guard browser != nil else {
+            log("[MC] connect(to:) requires an active browser; call userRequestedReconnect() first.")
+            return
+        }
+        browser?.invitePeer(peer, to: session, withContext: nil, timeout: timeout)
+    }
+    
+    func forgetDiscoveredPeers() {
+        discoveredPeers.removeAll()
+    }
+    
+    func availableReceivers() -> [MCPeerID] { discoveredPeers }
+
     var currentState: MCSessionState { sessionState }
+    
+    private(set) var suppressAutoRetry = false
     private var hasStartedBrowsing = false
     
     func startBrowsingIfNeeded() {
-        guard !hasStartedBrowsing else { return }
+        guard !suppressAutoRetry, !hasStartedBrowsing else { return }
         hasStartedBrowsing = true
         startBrowsing()
     }
@@ -41,6 +64,23 @@ final class MCManager: NSObject, ObservableObject {
         browser?.stopBrowsingForPeers()
         browser = nil
         hasStartedBrowsing = false
+    }
+    
+    func userRequestedDisconnect() {
+        suppressAutoRetry = true
+        manuallyDisconnected = true
+        stopBrowsing()
+        if let cp = connectedPeer { lastConnectedPeer = cp }
+        connectedPeer = nil
+        session.disconnect()
+        sessionState = .notConnected
+        onStateChange?(.notConnected)
+    }
+    
+    func userRequestedReconnect() {
+        suppressAutoRetry = false
+        manuallyDisconnected = false
+        startBrowsingIfNeeded()
     }
     
     func disconnect(keepRetrying: Bool = true) {
@@ -133,8 +173,23 @@ extension MCManager: MCSessionDelegate {
         DispatchQueue.main.async {
             self.onStateChange?(state)
             self.sessionState = state
-            if state == .notConnected {
-                self.startBrowsingIfNeeded()
+            switch state {
+            case .connected:
+                self.connectedPeer = peerID
+                self.lastConnectedPeer = peerID
+                self.manuallyDisconnected = false
+            case .notConnected:
+                if let any = session.connectedPeers.first {
+                    self.connectedPeer = any
+                } else {
+                    self.connectedPeer = nil
+                }
+                // only auto-retry if not a manual disconnect
+                if !self.suppressAutoRetry { self.startBrowsingIfNeeded() }
+            case .connecting:
+                break
+            @unknown default:
+                break
             }
         }
     }
@@ -169,8 +224,13 @@ extension MCManager: MCNearbyServiceAdvertiserDelegate, MCNearbyServiceBrowserDe
                  foundPeer peerID: MCPeerID,
                  withDiscoveryInfo info: [String : String]?) {
         print("[iOS] foundPeer:", peerID.displayName)
+        if !discoveredPeers.contains(where: { $0 == peerID }) {
+            DispatchQueue.main.async { self.discoveredPeers.append(peerID) }
+        }
         browser.invitePeer(peerID, to: session, withContext: nil, timeout: 10)
     }
 
-    func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) { }
+    func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
+        DispatchQueue.main.async { self.discoveredPeers.removeAll { $0 == peerID } }
+    }
 }
