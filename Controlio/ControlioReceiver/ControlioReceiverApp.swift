@@ -57,13 +57,15 @@ final class ReceiverVM: ObservableObject {
                 self?.log("MC state: \(s.rawValue)")
             }
         }
+        
         mc.onEvents = { events in
             EventPump.shared.start()
             for e in events {
                 EventPump.shared.enqueue(e)
             }
         }
-        mc.startAdvertising()
+
+                mc.startAdvertising()
         log("Advertising. Open Trackpad on iPhone to test.")
         print("Advertising. Open Trackpad on iPhone to test.") // also to console
     }
