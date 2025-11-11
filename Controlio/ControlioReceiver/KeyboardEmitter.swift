@@ -43,12 +43,12 @@ final class KeyboardEmitter {
             sendKey(right, down: false)
         }
 
-        if y < -threshold {
-            sendKey(up, down: true)
-            sendKey(down, down: false)
-        } else if y > threshold {
+        if y > threshold {
             sendKey(down, down: true)
             sendKey(up, down: false)
+        } else if y < -threshold {
+            sendKey(up, down: true)
+            sendKey(down, down: false)
         } else {
             sendKey(up, down: false)
             sendKey(down, down: false)
