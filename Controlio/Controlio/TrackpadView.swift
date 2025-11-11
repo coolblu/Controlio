@@ -11,6 +11,9 @@ import MultipeerConnectivity
 struct TrackpadView: View {
     let mc: MCManager
     var onNavigateHome: (() -> Void)? = nil
+    
+    @EnvironmentObject var appSettings: AppSettings
+    
     // callbacks
     var onPointer: (Int, Int) -> Void = { _, _ in }
     var onScroll: (Int, Int) -> Void  = { _, _ in }
@@ -28,25 +31,28 @@ struct TrackpadView: View {
         
     var body: some View {
             ZStack {
-                Color(red: 0.957, green: 0.968, blue: 0.980).ignoresSafeArea()
+                appSettings.bgColor.ignoresSafeArea()
 
                 VStack(spacing: 8) {
 
                     HStack {
-                        ConnectionIndicator(statusText: statusText, color: dotColor)
+                        ConnectionIndicator(statusText: statusText, dotColor: dotColor)
+                            .environmentObject(appSettings)
                         
                         Spacer()
                         
-                        Button(action: {
-                            showSettings = true
-                        }) {
+                        Button(action: { showSettings = true }) {
                             Image(systemName: "gearshape.fill")
                                 .font(.system(size: 20))
-                                .foregroundColor(.blue)
+                                .foregroundColor(appSettings.primaryButton)
                                 .padding(8)
-                                .background(Color.white)
+                                .background(appSettings.cardColor)
                                 .clipShape(Circle())
-                                .shadow(color: .black.opacity(0.1), radius: 4, y: 2)
+                                .shadow(color: appSettings.shadowColor, radius: 4, y: 2)
+                                .overlay(
+                                    Circle()
+                                        .stroke(appSettings.strokeColor, lineWidth: 1)
+                                )
                         }
                         .padding(.trailing, 16)
                     }
@@ -79,9 +85,12 @@ struct TrackpadView: View {
                             mc.send(.rightDown); mc.send(.rightUp)
                         }
                     )
-                    .background(Color.white)
+                    .background(appSettings.cardColor)
                     .cornerRadius(18)
-                    .shadow(color: .black.opacity(0.12), radius: 12, y: 8)
+                    .shadow(color: appSettings.shadowColor, radius: 12, y: 8)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 18).stroke(appSettings.strokeColor, lineWidth: 1)
+                    )
                     .padding(16)
                 }
 
@@ -92,9 +101,13 @@ struct TrackpadView: View {
                             Text("Drag")
                                 .font(.caption2)
                                 .padding(.horizontal, 8).padding(.vertical, 4)
-                                .background(Color.black.opacity(0.75))
-                                .foregroundColor(.white)
+                                .background(appSettings.cardColor.opacity(0.9))
+                                .foregroundColor(appSettings.primaryText)
                                 .cornerRadius(8)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8).stroke(appSettings.strokeColor, lineWidth: 1)
+                                )
+                                .shadow(color: appSettings.shadowColor, radius: 4, y: 2)
                                 .padding([.top, .trailing], 12)
                         }
                         Spacer()
@@ -110,7 +123,7 @@ struct TrackpadView: View {
                             scrollSensitivity: $scrollSensitivity,
                             reverseScroll: $reverseScroll
                         )
-                    }
+                    }.environmentObject(appSettings)
         
             .onAppear {
                 // start browsing + wire status updates
