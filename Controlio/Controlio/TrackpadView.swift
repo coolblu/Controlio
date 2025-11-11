@@ -9,7 +9,7 @@ import SwiftUI
 import MultipeerConnectivity
 
 struct TrackpadView: View {
-    let mc: MCManager
+    @ObservedObject var mc: MCManager
     var onNavigateHome: (() -> Void)? = nil
     
     @EnvironmentObject var appSettings: AppSettings
@@ -25,128 +25,120 @@ struct TrackpadView: View {
     @State private var reverseScroll: Bool = false
     
     @State private var isDragging = false
-    @State private var statusText = "Searching…"
-    @State private var dotColor: Color = .orange
     @State private var showSettings = false
-        
-    var body: some View {
-            ZStack {
-                appSettings.bgColor.ignoresSafeArea()
-
-                VStack(spacing: 8) {
-
-                    HStack {
-                        ConnectionIndicator(statusText: statusText, dotColor: dotColor)
-                            .environmentObject(appSettings)
-                        
-                        Spacer()
-                        
-                        Button(action: { showSettings = true }) {
-                            Image(systemName: "gearshape.fill")
-                                .font(.system(size: 20))
-                                .foregroundColor(appSettings.primaryButton)
-                                .padding(8)
-                                .background(appSettings.cardColor)
-                                .clipShape(Circle())
-                                .shadow(color: appSettings.shadowColor, radius: 4, y: 2)
-                                .overlay(
-                                    Circle()
-                                        .stroke(appSettings.strokeColor, lineWidth: 1)
-                                )
-                        }
-                        .padding(.trailing, 16)
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.top, 8)
-                    
-                    
-                    TouchPadSurface(
-                        pointerMultiplier: pointerSensitivity,
-                        scrollMultiplier:  scrollSensitivity,
-                        onPointer: { dx, dy in
-                            mc.send(.pm(dx: dx, dy: dy))
-                        },
-                        onScroll: { dx, dy in
-                            let m = reverseScroll ? -1 : 1
-                            mc.send(.sc(dx: dx * m, dy: dy * m))
-                        },
-                        onLeftDown: {
-                            isDragging = true
-                            mc.send(.leftDown)
-                        },
-                        onLeftUp: {
-                            isDragging = false
-                            mc.send(.leftUp)
-                        },
-                        onLeftClick: {
-                            mc.send(.leftDown); mc.send(.leftUp)
-                        },
-                        onRightClick: {
-                            mc.send(.rightDown); mc.send(.rightUp)
-                        }
-                    )
-                    .background(appSettings.cardColor)
-                    .cornerRadius(18)
-                    .shadow(color: appSettings.shadowColor, radius: 12, y: 8)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 18).stroke(appSettings.strokeColor, lineWidth: 1)
-                    )
-                    .padding(16)
-                }
-
-                if isDragging {
-                    VStack {
-                        HStack {
-                            Spacer()
-                            Text("Drag")
-                                .font(.caption2)
-                                .padding(.horizontal, 8).padding(.vertical, 4)
-                                .background(appSettings.cardColor.opacity(0.9))
-                                .foregroundColor(appSettings.primaryText)
-                                .cornerRadius(8)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 8).stroke(appSettings.strokeColor, lineWidth: 1)
-                                )
-                                .shadow(color: appSettings.shadowColor, radius: 4, y: 2)
-                                .padding([.top, .trailing], 12)
-                        }
-                        Spacer()
-                    }
-                    .transition(.opacity)
-                }
-            }
-        
-            .sheet(isPresented: $showSettings) {
-                        TrackpadSettingsView(
-                            onNavigateHome: onNavigateHome,
-                            pointerSensitivity: $pointerSensitivity,
-                            scrollSensitivity: $scrollSensitivity,
-                            reverseScroll: $reverseScroll
-                        )
-                    }.environmentObject(appSettings)
-        
-            .onAppear {
-                // start browsing + wire status updates
-                mc.onStateChange = { state in
-                    DispatchQueue.main.async {
-                        switch state {
-                        case .connected:
-                            self.statusText = "Connected"
-                            self.dotColor = .green
-                        case .connecting:
-                            self.statusText = "Connecting…"
-                            self.dotColor = .orange
-                        case .notConnected:
-                            fallthrough
-                        @unknown default:
-                            self.statusText = "Searching…"
-                            self.dotColor = .orange
-                        }
-                    }
-                }
-            }
+    
+    private func ui(for s: MCSessionState) -> (String, Color) {
+        switch s {
+        case .connected:    return ("Connected",   .green)
+        case .connecting:   return ("Connecting…", .orange)
+        case .notConnected: return ("Searching…",  .orange)
+        @unknown default:   return ("Searching…",  .orange)
         }
     }
+        
+    var body: some View {
+        let (statusText, dotColor) = ui(for: mc.sessionState)
+        ZStack {
+            appSettings.bgColor.ignoresSafeArea()
+
+            VStack(spacing: 8) {
+
+                HStack {
+                    ConnectionIndicator(statusText: statusText, dotColor: dotColor)
+                        .environmentObject(appSettings)
+                    
+                    Spacer()
+                    
+                    Button(action: { showSettings = true }) {
+                        Image(systemName: "gearshape.fill")
+                            .font(.system(size: 20))
+                            .foregroundColor(appSettings.primaryButton)
+                            .padding(8)
+                            .background(appSettings.cardColor)
+                            .clipShape(Circle())
+                            .shadow(color: appSettings.shadowColor, radius: 4, y: 2)
+                            .overlay(
+                                Circle()
+                                    .stroke(appSettings.strokeColor, lineWidth: 1)
+                            )
+                    }
+                    .padding(.trailing, 16)
+                }
+                .padding(.horizontal, 16)
+                .padding(.top, 8)
+                
+                
+                TouchPadSurface(
+                    pointerMultiplier: pointerSensitivity,
+                    scrollMultiplier:  scrollSensitivity,
+                    onPointer: { dx, dy in
+                        mc.send(.pm(dx: dx, dy: dy))
+                    },
+                    onScroll: { dx, dy in
+                        let m = reverseScroll ? -1 : 1
+                        mc.send(.sc(dx: dx * m, dy: dy * m))
+                    },
+                    onLeftDown: {
+                        isDragging = true
+                        mc.send(.leftDown)
+                    },
+                    onLeftUp: {
+                        isDragging = false
+                        mc.send(.leftUp)
+                    },
+                    onLeftClick: {
+                        mc.send(.leftDown); mc.send(.leftUp)
+                    },
+                    onRightClick: {
+                        mc.send(.rightDown); mc.send(.rightUp)
+                    }
+                )
+                .background(appSettings.cardColor)
+                .cornerRadius(18)
+                .shadow(color: appSettings.shadowColor, radius: 12, y: 8)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 18).stroke(appSettings.strokeColor, lineWidth: 1)
+                )
+                .padding(16)
+            }
+
+            if isDragging {
+                VStack {
+                    HStack {
+                        Spacer()
+                        Text("Drag")
+                            .font(.caption2)
+                            .padding(.horizontal, 8).padding(.vertical, 4)
+                            .background(appSettings.cardColor.opacity(0.9))
+                            .foregroundColor(appSettings.primaryText)
+                            .cornerRadius(8)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8).stroke(appSettings.strokeColor, lineWidth: 1)
+                            )
+                            .shadow(color: appSettings.shadowColor, radius: 4, y: 2)
+                            .padding([.top, .trailing], 12)
+                    }
+                    Spacer()
+                }
+                .transition(.opacity)
+            }
+        }
+    
+        .sheet(isPresented: $showSettings) {
+                    TrackpadSettingsView(
+                        onNavigateHome: onNavigateHome,
+                        pointerSensitivity: $pointerSensitivity,
+                        scrollSensitivity: $scrollSensitivity,
+                        reverseScroll: $reverseScroll
+                    )
+                }
+        .environmentObject(appSettings)
+        .onAppear {
+            // start browsing + wire status updates
+            mc.startBrowsingIfNeeded()
+        }
+    }
+}
 
 //    #Preview {
 //        NavigationView { TrackpadView() }

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import FirebaseAuth
+import Combine
 
 private enum Route: Hashable {
     case trackpad
@@ -19,10 +20,16 @@ private enum Route: Hashable {
 final class MCManagerWrapper: ObservableObject {
     let manager = MCManager()
     private var started = false
+    private var cancellable: AnyCancellable?
+    init() {
+        cancellable = manager.objectWillChange.sink { [weak self] _ in
+            self?.objectWillChange.send()
+        }
+    }
     func ensureBrowsing() {
         guard !started else { return }
         started = true
-        manager.startBrowsing()
+        manager.startBrowsingIfNeeded()
     }
 }
 
@@ -32,8 +39,6 @@ struct HomeView: View {
     @EnvironmentObject var appSettings: AppSettings
     @Binding var isLoggedIn: Bool
 
-    // TO-DO: reflect actual connection status of device (right now default is "MacBook Pro")
-    @State private var connectedDevice: String? = "MacBook Pro"
     @State private var path = NavigationPath()
     @StateObject private var mcHost = MCManagerWrapper()
 
@@ -46,6 +51,7 @@ struct HomeView: View {
     ]
 
     var body: some View {
+        let mc = mcHost.manager
         GeometryReader { geometry in
             ZStack {
                 NavigationStack (path: $path) {
@@ -120,19 +126,42 @@ struct HomeView: View {
                             }
                             
                             // Connection status
-                            if let connectedDevice {
-                                ConnectionBanner(deviceName: connectedDevice)
+                            let isConnected = mc.sessionState == .connected
+                            let wasManuallyDisconnected = mc.manuallyDisconnected
+                            let nameNow = mc.connectedDeviceName
+                            let nameLast = mc.lastConnectedPeer?.displayName
+                            
+                            if isConnected {
+                                ConnectionBanner(deviceName: nameNow ?? "Connected")
+                                    .environmentObject(appSettings)
+                            } else if wasManuallyDisconnected, let last = nameLast {
+                                DisconnectedBanner(deviceName: last)
+                                    .environmentObject(appSettings)
                             }
                             
                             // Action buttons
                             HStack(spacing: 16) {
-                                Button("Disconnect") {
-                                    connectedDevice = nil
+                                if isConnected {
+                                    Button("Disconnect") {
+                                        mc.userRequestedDisconnect()
+                                    }
+                                    .buttonStyle(PrimaryButtonStyle())
+                                    .environmentObject(appSettings)
+                                } else if wasManuallyDisconnected, nameLast != nil {
+                                    Button("Reconnect") {
+                                        mc.userRequestedReconnect()
+                                    }
+                                    .buttonStyle(ReconnectButtonStyle())
+                                    .environmentObject(appSettings)
+                                } else {
+                                    Button("Connect") {
+                                        mc.userRequestedReconnect()
+                                    }
+                                    .buttonStyle(PrimaryButtonStyle())
+                                    .environmentObject(appSettings)
                                 }
-                                .buttonStyle(PrimaryButtonStyle())
-                                .environmentObject(appSettings)
                                 
-                                Button("Change Device") {
+                                Button("Select Device") {
                                     // navigate to device picker
                                 }
                                 .buttonStyle(OutlineButtonStyle())
@@ -159,9 +188,9 @@ struct HomeView: View {
                     .navigationDestination(for: Route.self) { route in
                         switch route {
                         case .trackpad:
-                            TrackpadView(mc: mcHost.manager, onNavigateHome: { path = NavigationPath() })
+                            TrackpadView(mc: mc, onNavigateHome: { path = NavigationPath() })
                         case .gamepad:
-                            GamepadView(mc: mcHost.manager)
+                            GamepadView(mc: mc)
                         case .manageProfile:
                             ManageProfileView(isLoggedIn: $isLoggedIn)
                         case .appPreferences:
@@ -385,6 +414,47 @@ private struct ConnectionBanner: View {
                 .stroke(appSettings.strokeColor, lineWidth: 1)
         )
         .shadow(color: appSettings.shadowColor, radius: 6, x: 0, y: 2)
+    }
+}
+
+private struct DisconnectedBanner: View {
+    let deviceName: String
+    @EnvironmentObject var appSettings: AppSettings
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "xmark.octagon.fill")
+                .foregroundColor(.red)
+            Text("Disconnected from: \(deviceName)")
+                .font(.subheadline)
+                .fontWeight(.semibold)
+                .foregroundColor(appSettings.primaryText)
+        }
+        .padding(.horizontal, 18)
+        .padding(.vertical, 14)
+        .frame(maxWidth: .infinity)
+        .background(appSettings.cardColor)
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .stroke(appSettings.strokeColor, lineWidth: 1)
+        )
+        .shadow(color: appSettings.shadowColor, radius: 6, x: 0, y: 2)
+    }
+}
+
+private struct ReconnectButtonStyle: ButtonStyle {
+    @EnvironmentObject var appSettings: AppSettings
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.headline)
+            .padding(.horizontal, 20)
+            .padding(.vertical, 14)
+            .frame(maxWidth: .infinity)
+            .foregroundColor(appSettings.buttonText)
+            .background(Color.orange.opacity(configuration.isPressed ? 0.85 : 1.0))
+            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .shadow(color: appSettings.shadowColor, radius: 8, x: 0, y: 8)
     }
 }
 
