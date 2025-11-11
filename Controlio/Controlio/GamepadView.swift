@@ -10,7 +10,8 @@ import CoreHaptics
 
 struct GamepadView: View {
     let mc: MCManager
-    
+    @EnvironmentObject var appSettings: AppSettings
+
     @State private var engine: CHHapticEngine?
     @State private var leftStick = CGPoint.zero
     @State private var rightStick = CGPoint.zero
@@ -19,9 +20,11 @@ struct GamepadView: View {
     private let axInterval: TimeInterval = 1.0 / 60.0
     private let deadzone: CGFloat = 0.08
     
+    @State private var hapticsReady = false
+
     @State private var statusText = "Searching…"
-    @State private var statusColor: Color = .orange
-    
+    @State private var dotColor: Color = .orange
+
     var body: some View {
         GeometryReader { geo in
             let w = geo.size.width
@@ -39,7 +42,8 @@ struct GamepadView: View {
                     .ignoresSafeArea()
                 
                 VStack(spacing: 0) {
-                    ConnectionIndicator(statusText: statusText, color: statusColor, onDark: true)
+                    ConnectionIndicator(statusText: statusText, dotColor: dotColor)
+                        .environmentObject(appSettings)
 
                     HStack {
                         Shoulder(label: "L1", width: shoulderWidth, height: shoulderHeight) { down in
@@ -122,15 +126,15 @@ struct GamepadView: View {
                     switch state {
                     case .connected:
                         statusText = "Connected"
-                        statusColor = .green
+                        dotColor = .green
                     case .connecting:
                         statusText = "Connecting…"
-                        statusColor = .orange
+                        dotColor = .orange
                     case .notConnected:
                         fallthrough
                     @unknown default:
                         statusText = "Searching…"
-                        statusColor = .orange
+                        dotColor = .orange
                     }
                 }
             }
@@ -163,11 +167,36 @@ struct GamepadView: View {
     }
     
     private func prepareHaptics() {
-        guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else { return }
-        do {
-            engine = try CHHapticEngine()
-            try engine?.start()
-        } catch { }
+    #if targetEnvironment(simulator)
+        // Simulator doesn’t support haptics
+        hapticsReady = false
+        return
+    #endif
+        DispatchQueue.main.async {
+            let caps = CHHapticEngine.capabilitiesForHardware()
+            guard caps.supportsHaptics else {
+                hapticsReady = false
+                return
+            }
+            do {
+                if engine == nil {
+                    engine = try CHHapticEngine()
+                    engine?.stoppedHandler = { _ in
+                    }
+                    engine?.resetHandler = { [weak engine] in
+                        do { try engine?.start() } catch {}
+                    }
+                }
+
+                try engine?.start()
+                hapticsReady = true
+            } catch {
+                #if DEBUG
+                print("Haptics init failed: \(error)")
+                #endif
+                hapticsReady = false
+            }
+        }
     }
     
     private func hapticTap() {
