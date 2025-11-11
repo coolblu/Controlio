@@ -41,8 +41,6 @@ final class ReceiverVM: ObservableObject {
     private let mc = MCManager()
 
     init() {
-        EventPump.shared.start()
-
         mc.onDebug = { [weak self] in self?.log($0)}
         
         mc.onStateChange = { [weak self] s in

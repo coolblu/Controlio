@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreGraphics
 
 struct TouchPadSurface: UIViewRepresentable {
     var pointerMultiplier: Double
@@ -41,12 +42,18 @@ final class PadView: UIView, UIGestureRecognizerDelegate {
     var scrollMultiplier: Double  = 1.0
 
     var onPointer: (Int, Int) -> Void = { _, _ in }
-    var onScroll: (Int, Int) -> Void  = { _, _ in }
+    var onScroll: (Int, Int) -> Void = { _, _ in }
     var onLeftDown: () -> Void = {}
     var onLeftUp: () -> Void = {}
     var onLeftClick: () -> Void = {}
     var onRightClick: () -> Void = {}
 
+    private var pxRemX = 0.0, pxRemY = 0.0
+    private var scRemX = 0.0, scRemY = 0.0
+    
+    private var lastOne: CGPoint?
+    private var lastTwoCenter: CGPoint?
+    
     private lazy var onePan: UIPanGestureRecognizer = {
         let g = UIPanGestureRecognizer(target: self, action: #selector(onePanChanged(_:)))
         g.minimumNumberOfTouches = 1
@@ -134,5 +141,94 @@ final class PadView: UIView, UIGestureRecognizerDelegate {
         case .ended, .cancelled, .failed: onLeftUp()
         default: break
         }
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let e = event else { return }
+        let all = Array(touches)
+        if all.count == 1 {
+            lastOne = all[0].location(in: self)
+        } else {
+            lastTwoCenter = center(of: all.map { $0.location(in: self) })
+        }
+    }
+    
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let e = event else { return }
+        // Expand to coalesced samples for higher frequency
+        let expanded: [UITouch] = touches.flatMap { e.coalescedTouches(for: $0) ?? [$0] }
+
+        if touchCount(in: e) >= 2 {
+            for t in expanded {
+                let current = currentTwoCenter(from: e)
+                guard let prev = lastTwoCenter else { lastTwoCenter = current; continue }
+                let dx = Double(current.x - prev.x) * scrollMultiplier
+                let dy = Double(current.y - prev.y) * scrollMultiplier
+                emitScroll(dx: dx, dy: dy)
+                lastTwoCenter = current
+            }
+        } else {
+            // One-finger pointer
+            for t in expanded {
+                let p = t.location(in: self)
+                let prev = lastOne ?? p
+                let dx = Double(p.x - prev.x) * pointerMultiplier
+                let dy = Double(p.y - prev.y) * pointerMultiplier
+                emitPointer(dx: dx, dy: dy)
+                lastOne = p
+            }
+        }
+    }
+
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if touchCount(in: event) <= 1 { lastTwoCenter = nil }
+        lastOne = nil
+    }
+
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        lastOne = nil
+        lastTwoCenter = nil
+        pxRemX = 0; pxRemY = 0
+        scRemX = 0; scRemY = 0
+    }
+
+    private func emitPointer(dx: Double, dy: Double) {
+        pxRemX += dx; pxRemY += dy
+        let ix = Int(pxRemX.rounded(.towardZero))
+        let iy = Int(pxRemY.rounded(.towardZero))
+        if ix != 0 || iy != 0 {
+            pxRemX -= Double(ix)
+            pxRemY -= Double(iy)
+            onPointer(ix, iy)
+        }
+    }
+
+    private func emitScroll(dx: Double, dy: Double) {
+        scRemX += dx; scRemY += dy
+        let ix = Int(scRemX.rounded(.towardZero))
+        let iy = Int(scRemY.rounded(.towardZero))
+        if ix != 0 || iy != 0 {
+            scRemX -= Double(ix)
+            scRemY -= Double(iy)
+            onScroll(ix, iy)
+        }
+    }
+    
+    private func touchCount(in event: UIEvent?) -> Int {
+        guard let e = event else { return 0 }
+        return e.allTouches?.filter { $0.phase != .ended && $0.phase != .cancelled }.count ?? 0
+    }
+
+    private func currentTwoCenter(from event: UIEvent) -> CGPoint {
+        let points = (event.allTouches ?? []).filter { $0.phase != .ended && $0.phase != .cancelled }
+            .map { $0.location(in: self) }
+        return center(of: points)
+    }
+
+    private func center(of pts: [CGPoint]) -> CGPoint {
+        guard !pts.isEmpty else { return .zero }
+        var sx: CGFloat = 0, sy: CGFloat = 0
+        for p in pts { sx += p.x; sy += p.y }
+        return CGPoint(x: sx / CGFloat(pts.count), y: sy / CGFloat(pts.count))
     }
 }
