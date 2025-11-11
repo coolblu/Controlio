@@ -46,10 +46,14 @@ final class EventPump {
             case .sc:
                 MacInput.shared.scrollBy(dx: e.p.dx ?? 0, dy: e.p.dy ?? 0)
             case .bt:
-                MacInput.shared.click(button: e.p.c ?? 0, isDown: (e.p.s ?? 0) == 1)
-            case .gs:
-                break
+                if let button = GPButton(rawValue: e.p.c ?? -1) {
+                    KeyboardEmitter.shared.press(button, isDown: (e.p.s ?? 0) == 1)
+                }
             case .ax:
+                let x = CGFloat(e.p.k ?? 0) / 1000.0
+                let y = CGFloat(e.p.v ?? 0) / 1000.0
+                KeyboardEmitter.shared.smoothLeftStick(x: x, y: y)
+            case .gs:
                 break
             }
         }

@@ -54,7 +54,7 @@ final class MacInput {
     func moveMouseBy(dx: Int, dy: Int) {
         let cur = currentMouse()
         let newPoint = clampToMainDisplay(CGPoint(x: cur.x + CGFloat(dx),
-                                                  y: cur.y - CGFloat(dy))) // invert Y
+                                                  y: cur.y + CGFloat(dy)))
         // Use appropriate event type depending on button state for smoother drag
         let type: CGEventType = isLeftDown ? .leftMouseDragged : .mouseMoved
         let evt = CGEvent(mouseEventSource: nil, mouseType: type,

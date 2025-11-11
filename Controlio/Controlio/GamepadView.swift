@@ -382,7 +382,7 @@ struct Thumbstick: View {
                             let nx = clamped.width / radius
                             let ny = clamped.height / radius
                             value = CGPoint(x: nx, y: ny)
-                            onChange(nx, -ny)
+                            onChange(nx, ny)
                         }
                         .onEnded { _ in
                             drag = .zero
