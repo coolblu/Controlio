@@ -33,8 +33,9 @@ struct ManageProfileView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 24) {
+
                 // Title
-                Text("Manage Profile")
+                Text(NSLocalizedString("Manage Profile", bundle: appSettings.bundle, comment: ""))
                     .font(.system(size: 32, weight: .bold))
                     .frame(maxWidth: .infinity)
                     .multilineTextAlignment(.center)
@@ -43,13 +44,14 @@ struct ManageProfileView: View {
 
                 // User Info Card
                 VStack(alignment: .leading, spacing: 16) {
+
                     // Name Field
                     VStack(alignment: .leading, spacing: 6) {
-                        Text("Name")
+                        Text(NSLocalizedString("Name", bundle: appSettings.bundle, comment: ""))
                             .font(.custom("SF Pro", size: 12))
                             .foregroundColor(appSettings.secondaryText)
 
-                        TextField("Enter your name", text: $userName)
+                        TextField(NSLocalizedString("Enter your name", bundle: appSettings.bundle, comment: ""), text: $userName)
                             .padding()
                             .background(appSettings.cardColor)
                             .cornerRadius(8)
@@ -63,7 +65,7 @@ struct ManageProfileView: View {
 
                     // Email Field (read-only)
                     VStack(alignment: .leading, spacing: 6) {
-                        Text("Email")
+                        Text(NSLocalizedString("Email", bundle: appSettings.bundle, comment: ""))
                             .font(.custom("SF Pro", size: 12))
                             .foregroundColor(appSettings.secondaryText)
 
@@ -76,7 +78,7 @@ struct ManageProfileView: View {
                     }
 
                     Button(action: { saveName() }) {
-                        Text("Save Name")
+                        Text(NSLocalizedString("Save Name", bundle: appSettings.bundle, comment: ""))
                             .font(.custom("SF Pro", size: 16))
                             .foregroundColor(appSettings.buttonText)
                             .frame(maxWidth: .infinity, minHeight: 50)
@@ -95,13 +97,13 @@ struct ManageProfileView: View {
 
                 // Password Change Card
                 VStack(alignment: .leading, spacing: 16) {
-                    Text("Password")
+                    Text(NSLocalizedString("Password", bundle: appSettings.bundle, comment: ""))
                         .font(.custom("SF Pro", size: 12))
                         .foregroundColor(appSettings.secondaryText)
 
                     // New Password
                     SecureToggleField(
-                        placeholder: "Enter new password",
+                        placeholder: NSLocalizedString("Enter new password", bundle: appSettings.bundle, comment: ""),
                         text: $password,
                         show: $showPassword,
                         isFocused: focusedField == .newPassword
@@ -112,7 +114,7 @@ struct ManageProfileView: View {
 
                     // Confirm Password
                     SecureToggleField(
-                        placeholder: "Confirm new password",
+                        placeholder: NSLocalizedString("Confirm new password", bundle: appSettings.bundle, comment: ""),
                         text: $confirmPassword,
                         show: $showConfirmPassword,
                         isFocused: focusedField == .confirmPassword
@@ -122,7 +124,7 @@ struct ManageProfileView: View {
                     .background(appSettings.cardColor)
 
                     Button(action: { changePassword() }) {
-                        Text("Change Password")
+                        Text(NSLocalizedString("Change Password", bundle: appSettings.bundle, comment: ""))
                             .font(.custom("SF Pro", size: 16))
                             .foregroundColor(appSettings.buttonText)
                             .frame(maxWidth: .infinity, minHeight: 50)
@@ -140,7 +142,7 @@ struct ManageProfileView: View {
 
                 // Delete Account Button
                 Button(action: { showingDeleteConfirmation = true }) {
-                    Text("Delete Account")
+                    Text(NSLocalizedString("Delete Account", bundle: appSettings.bundle, comment: ""))
                         .font(.custom("SF Pro", size: 16))
                         .foregroundColor(appSettings.destructiveButton)
                         .frame(maxWidth: .infinity, minHeight: 50)
@@ -153,9 +155,9 @@ struct ManageProfileView: View {
                 .padding(.top, 16)
                 .alert(isPresented: $showingDeleteConfirmation) {
                     Alert(
-                        title: Text("Delete Account"),
-                        message: Text("Are you sure you want to delete your account? This action cannot be undone."),
-                        primaryButton: .destructive(Text("Delete")) { deleteAccount() },
+                        title: Text(NSLocalizedString("Delete Account", bundle: appSettings.bundle, comment: "")),
+                        message: Text(NSLocalizedString("Are you sure you want to delete your account? This action cannot be undone.", bundle: appSettings.bundle, comment: "")),
+                        primaryButton: .destructive(Text(NSLocalizedString("Delete", bundle: appSettings.bundle, comment: ""))) { deleteAccount() },
                         secondaryButton: .cancel()
                     )
                 }
@@ -168,16 +170,16 @@ struct ManageProfileView: View {
         .background(appSettings.bgColor.ignoresSafeArea())
         .onAppear { userName = userManager.displayName }
         .alert(alertMessage, isPresented: $showingAlert) {
-            Button("OK", role: .cancel) { }
+            Button(NSLocalizedString("OK", bundle: appSettings.bundle, comment: ""), role: .cancel) { }
         }
     }
 
     private func saveName() {
         userManager.updateDisplayName(to: userName) { error in
             if let error = error {
-                alertMessage = "Failed to update name: \(error.localizedDescription)"
+                alertMessage = NSLocalizedString("Failed to update name: \(error.localizedDescription)", bundle: appSettings.bundle, comment: "")
             } else {
-                alertMessage = "Name updated successfully."
+                alertMessage = NSLocalizedString("Name updated successfully.", bundle: appSettings.bundle, comment: "")
             }
             showingAlert = true
         }
@@ -185,29 +187,28 @@ struct ManageProfileView: View {
 
     private func changePassword() {
         guard !password.isEmpty else {
-            alertMessage = "Password cannot be empty."
+            alertMessage = NSLocalizedString("Password cannot be empty.", bundle: appSettings.bundle, comment: "")
             showingAlert = true
             return
         }
 
         guard password == confirmPassword else {
-            alertMessage = "Passwords do not match."
+            alertMessage = NSLocalizedString("Passwords do not match.", bundle: appSettings.bundle, comment: "")
             showingAlert = true
             return
         }
 
         guard let user = Auth.auth().currentUser else {
-            alertMessage = "No logged-in user."
+            alertMessage = NSLocalizedString("No logged-in user.", bundle: appSettings.bundle, comment: "")
             showingAlert = true
             return
         }
 
         user.updatePassword(to: password) { error in
             if let error = error {
-                alertMessage = "Failed to change password: \(error.localizedDescription)"
+                alertMessage = NSLocalizedString("Failed to change password: \(error.localizedDescription)", bundle: appSettings.bundle, comment: "")
             } else {
-                alertMessage = "Password changed successfully."
-                // Clear input fields
+                alertMessage = NSLocalizedString("Password changed successfully.", bundle: appSettings.bundle, comment: "")
                 password = ""
                 confirmPassword = ""
             }
@@ -219,7 +220,7 @@ struct ManageProfileView: View {
         guard let user = Auth.auth().currentUser else { return }
         user.delete { error in
             if let error = error {
-                alertMessage = "Failed to delete account: \(error.localizedDescription)"
+                alertMessage = NSLocalizedString("Failed to delete account: \(error.localizedDescription)", bundle: appSettings.bundle, comment: "")
                 showingAlert = true
             } else {
                 // Account deleted, log out

@@ -41,25 +41,45 @@ struct AuthView: View {
                     .shadow(color: appSettings.shadowColor, radius: 8, y: 4)
 
                 // Title
-                Text(isSignUp ? "Create Account" : "Welcome to Controlio")
-                    .font(.largeTitle)
-                    .fontWeight(.semibold)
-                    .foregroundColor(appSettings.primaryText)
+                Text(
+                    NSLocalizedString(
+                        isSignUp ? "Create Account" : "Welcome to Controlio",
+                        bundle: appSettings.bundle,
+                        comment: ""
+                    )
+                )
+                .font(.largeTitle)
+                .fontWeight(.semibold)
+                .foregroundColor(appSettings.primaryText)
 
                 // Input Fields
                 VStack(spacing: 12) {
-                    StyledTextField(placeholder: "Email", text: $email, isFocused: focusedField == .email)
-                        .focused($focusedField, equals: .email)
-                        .environmentObject(appSettings)
+                    StyledTextField(
+                        placeholder: NSLocalizedString("Email", bundle: appSettings.bundle, comment: ""),
+                        text: $email,
+                        isFocused: focusedField == .email
+                    )
+                    .focused($focusedField, equals: .email)
+                    .environmentObject(appSettings)
 
-                    SecureToggleField(placeholder: "Password", text: $password, show: $showPassword, isFocused: focusedField == .password)
-                        .focused($focusedField, equals: .password)
-                        .environmentObject(appSettings)
+                    SecureToggleField(
+                        placeholder: NSLocalizedString("Password", bundle: appSettings.bundle, comment: ""),
+                        text: $password,
+                        show: $showPassword,
+                        isFocused: focusedField == .password
+                    )
+                    .focused($focusedField, equals: .password)
+                    .environmentObject(appSettings)
 
                     if isSignUp {
-                        SecureToggleField(placeholder: "Confirm Password", text: $confirmPassword, show: $showConfirmPassword, isFocused: focusedField == .confirmPassword)
-                            .focused($focusedField, equals: .confirmPassword)
-                            .environmentObject(appSettings)
+                        SecureToggleField(
+                            placeholder: NSLocalizedString("Confirm Password", bundle: appSettings.bundle, comment: ""),
+                            text: $confirmPassword,
+                            show: $showConfirmPassword,
+                            isFocused: focusedField == .confirmPassword
+                        )
+                        .focused($focusedField, equals: .confirmPassword)
+                        .environmentObject(appSettings)
                     }
                 }
 
@@ -74,7 +94,7 @@ struct AuthView: View {
                 
                 // Primary button
                 StyledButton(
-                    title: isSignUp ? "Create Account" : "Login",
+                    title: NSLocalizedString(isSignUp ? "Create Account" : "Login", bundle: appSettings.bundle, comment: ""),
                     backgroundColor: appSettings.primaryButton,
                     textColor: appSettings.buttonText,
                     iconName: nil
@@ -84,10 +104,22 @@ struct AuthView: View {
 
                 // Switch screen
                 Button(action: onSwitch) {
-                    Text(isSignUp ? "Already have an account? " : "Don’t have an account? ")
-                        .foregroundColor(appSettings.secondaryText)
-                    + Text(isSignUp ? "Log in" : "Sign up")
-                        .foregroundColor(appSettings.primaryButton)
+                    Text(
+                        NSLocalizedString(
+                            isSignUp ? "Already have an account? " : "Don’t have an account? ",
+                            bundle: appSettings.bundle,
+                            comment: ""
+                        )
+                    )
+                    .foregroundColor(appSettings.secondaryText)
+                    + Text(
+                        NSLocalizedString(
+                            isSignUp ? "Log in" : "Sign up",
+                            bundle: appSettings.bundle,
+                            comment: ""
+                        )
+                    )
+                    .foregroundColor(appSettings.primaryButton)
                 }
                 .font(.footnote)
 
@@ -96,9 +128,11 @@ struct AuthView: View {
                     Rectangle()
                         .frame(height: 1)
                         .foregroundColor(appSettings.strokeColor)
-                    Text("or continue with")
-                        .font(.footnote)
-                        .foregroundColor(appSettings.secondaryText)
+                    Text(
+                        NSLocalizedString("or continue with", bundle: appSettings.bundle, comment: "")
+                    )
+                    .font(.footnote)
+                    .foregroundColor(appSettings.secondaryText)
                     Rectangle()
                         .frame(height: 1)
                         .foregroundColor(appSettings.strokeColor)
@@ -106,7 +140,7 @@ struct AuthView: View {
 
                 // Google Sign-In
                 StyledButton(
-                    title: "Sign in with Google",
+                    title: NSLocalizedString("Sign in with Google", bundle: appSettings.bundle, comment: ""),
                     backgroundColor: appSettings.cardColor,
                     textColor: appSettings.primaryText,
                     iconName: "google_icon"
@@ -126,13 +160,13 @@ struct AuthView: View {
         errorMessage = nil
 
         guard !email.isEmpty, !password.isEmpty else {
-            errorMessage = "Please fill in all fields."
+            errorMessage = NSLocalizedString("Please fill in all fields.", bundle: appSettings.bundle, comment: "")
             return
         }
 
         if isSignUp {
             guard password == confirmPassword else {
-                errorMessage = "Passwords do not match."
+                errorMessage = NSLocalizedString("Passwords do not match.", bundle: appSettings.bundle, comment: "")
                 return
             }
 

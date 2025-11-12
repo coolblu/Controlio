@@ -11,14 +11,14 @@ struct AppPreferencesView: View {
     @EnvironmentObject var appSettings: AppSettings
 
     let themes = ["Light", "Dark"]
-    let languages = ["System Default", "English", "Spanish"]
+    let languages = ["English", "French", "Spanish"]
 
     var body: some View {
         ScrollView {
             VStack(spacing: 32) {
 
                 // Title
-                Text("App Preferences")
+                Text(NSLocalizedString("App Preferences", bundle: appSettings.bundle, comment: ""))
                     .font(.custom("SF Pro", size: 32).weight(.bold))
                     .foregroundColor(appSettings.primaryText)
                     .frame(maxWidth: .infinity)
@@ -26,20 +26,20 @@ struct AppPreferencesView: View {
                     .padding(.top, 20)
 
                 // General Settings
-                SettingsCard(title: "General") {
-                    PickerRow(title: "Theme", selection: $appSettings.selectedTheme, options: themes)
-                    PickerRow(title: "Language", selection: $appSettings.selectedLanguage, options: languages)
+                SettingsCard(title: NSLocalizedString("General", bundle: appSettings.bundle, comment: "")) {
+                    PickerRow(title: NSLocalizedString("Theme", bundle: appSettings.bundle, comment: ""), selection: $appSettings.selectedTheme, options: themes)
+                    PickerRow(title: NSLocalizedString("Language", bundle: appSettings.bundle, comment: ""), selection: $appSettings.selectedLanguage, options: languages)
                 }
 
                 // Controller Settings
-                SettingsCard(title: "Controller") {
-                    ToggleRow(title: "Show Tips", isOn: $appSettings.showTips)
+                SettingsCard(title: NSLocalizedString("Controller", bundle: appSettings.bundle, comment: "")) {
+                    ToggleRow(title: NSLocalizedString("Show Tips", bundle: appSettings.bundle, comment: ""), isOn: $appSettings.showTips)
                 }
 
                 // Notification Settings
-                SettingsCard(title: "Notifications") {
-                    ToggleRow(title: "Connection Alerts", isOn: $appSettings.connectionAlerts)
-                    ToggleRow(title: "Update Reminders", isOn: $appSettings.updateReminders)
+                SettingsCard(title: NSLocalizedString("Notifications", bundle: appSettings.bundle, comment: "")) {
+                    ToggleRow(title: NSLocalizedString("Connection Alerts", bundle: appSettings.bundle, comment: ""), isOn: $appSettings.connectionAlerts)
+                    ToggleRow(title: NSLocalizedString("Update Reminders", bundle: appSettings.bundle, comment: ""), isOn: $appSettings.updateReminders)
                 }
 
                 Spacer()
@@ -85,17 +85,22 @@ struct PickerRow: View {
 
     var body: some View {
         HStack {
-            Text(title)
+            Text(NSLocalizedString(title, bundle: appSettings.bundle, comment: ""))
                 .font(.custom("SF Pro", size: 16))
                 .foregroundColor(appSettings.primaryText)
             Spacer()
-            Picker("", selection: $selection) {
+
+            Picker(selection: $selection, label:
+                Text(NSLocalizedString(selection, bundle: appSettings.bundle, comment: ""))
+                    .font(.custom("SF Pro", size: 16))
+            ) {
                 ForEach(options, id: \.self) { option in
-                    Text(option).tag(option)
+                    Text(NSLocalizedString(option, bundle: appSettings.bundle, comment: ""))
+                        .tag(option)
                 }
             }
             .pickerStyle(MenuPickerStyle())
-            .foregroundColor(appSettings.secondaryText)
+            .tint(appSettings.primaryButton)
         }
         .padding()
         .background(appSettings.cardColor)
@@ -115,7 +120,7 @@ struct ToggleRow: View {
 
     var body: some View {
         HStack {
-            Text(title)
+            Text(NSLocalizedString(title, bundle: appSettings.bundle, comment: ""))
                 .font(.custom("SF Pro", size: 16))
                 .foregroundColor(appSettings.primaryText)
             Spacer()

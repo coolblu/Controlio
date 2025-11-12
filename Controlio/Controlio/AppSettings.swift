@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 
 final class AppSettings: ObservableObject {
     @Published var showTips: Bool {
@@ -21,8 +22,10 @@ final class AppSettings: ObservableObject {
         didSet { saveSettings() }
     }
     @Published var selectedLanguage: String {
-        didSet { saveSettings() }
+        didSet { saveSettings(); languageDidChange.send() }
     }
+
+    let languageDidChange = PassthroughSubject<Void, Never>()
 
     private let defaults = UserDefaults.standard
 
@@ -31,9 +34,16 @@ final class AppSettings: ObservableObject {
         connectionAlerts = defaults.bool(forKey: "connectionAlerts")
         updateReminders = defaults.bool(forKey: "updateReminders")
         selectedTheme = defaults.string(forKey: "selectedTheme") ?? "Light"
-        selectedLanguage = defaults.string(forKey: "selectedLanguage") ?? "System Default"
+        selectedLanguage = defaults.string(forKey: "selectedLanguage") ?? "English"
 
-        // If keys were never set, initialize to defaults
+        // Validate language
+        let validLanguages = ["English", "French", "Spanish"]
+        if !validLanguages.contains(selectedLanguage) {
+            selectedLanguage = "English"
+            defaults.set(selectedLanguage, forKey: "selectedLanguage")
+        }
+
+        // If keys were never set, initialize other defaults
         if defaults.object(forKey: "showTips") == nil {
             resetToDefaults()
         }
@@ -52,8 +62,17 @@ final class AppSettings: ObservableObject {
         connectionAlerts = true
         updateReminders = true
         selectedTheme = "Light"
-        selectedLanguage = "System Default"
+        selectedLanguage = "English"
         saveSettings()
+    }
+
+    // Computed bundle for localization
+    var bundle: Bundle {
+        switch selectedLanguage {
+        case "French": return Bundle.main.path(forResource: "fr", ofType: "lproj").flatMap(Bundle.init(path:)) ?? .main
+        case "Spanish": return Bundle.main.path(forResource: "es", ofType: "lproj").flatMap(Bundle.init(path:)) ?? .main
+        default: return .main
+        }
     }
 }
 
@@ -62,23 +81,23 @@ extension AppSettings {
     var bgColor: Color {
         selectedTheme == "Dark" ? Color.black : Color(red: 0.957, green: 0.968, blue: 0.980)
     }
-    
+
     var cardColor: Color {
         selectedTheme == "Dark" ? Color(red: 0.18, green: 0.18, blue: 0.18) : Color.white
     }
-    
+
     var primaryText: Color {
         selectedTheme == "Dark" ? Color.white : Color.black
     }
-    
+
     var secondaryText: Color {
         selectedTheme == "Dark" ? Color.white.opacity(0.6) : Color.gray
     }
-    
+
     var primaryButton: Color {
         selectedTheme == "Dark" ? Color.orange.opacity(0.9) : Color.orange
     }
-    
+
     var buttonText: Color {
         Color.white
     }
@@ -94,7 +113,7 @@ extension AppSettings {
     var shadowColor: Color {
         selectedTheme == "Dark" ? Color.black.opacity(0.8) : Color.black.opacity(0.06)
     }
-    
+
     var strokeColor: Color {
         selectedTheme == "Dark" ? Color.white.opacity(0.3) : Color.black.opacity(0.3)
     }
