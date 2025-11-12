@@ -142,13 +142,18 @@ struct GamepadView: View {
     private func sendStick(id: Int, x: CGFloat, y: CGFloat, lastSent: inout Date) {
         let vx = clampDeadzone(x, dz: deadzone)
         let vy = clampDeadzone(y, dz: deadzone)
-        
-        let now = Date()
-        guard now.timeIntervalSince(lastSent) >= axInterval else { return }
-        lastSent = now
-        
+
         let sx = Int((max(-1, min(1, vx))) * 1000)
         let sy = Int((max(-1, min(1, vy))) * 1000)
+
+        let now = Date()
+        let forceNeutral = (sx == 0 && sy == 0)
+
+        if !forceNeutral && now.timeIntervalSince(lastSent) < axInterval {
+            return
+        }
+        lastSent = now
+
         mc.send(.ax(id: id, x: sx, y: sy), reliable: false)
     }
     

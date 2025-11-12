@@ -16,6 +16,14 @@ final class EventPump {
     private var accDX = 0, accDY = 0
     private var accSX = 0, accSY = 0
     
+    private var lastAX0Time: CFAbsoluteTime = 0
+    private var lastAX1Time: CFAbsoluteTime = 0
+    private var ax0Active = false
+    private var ax1Active = false
+    
+    private let axTimeout: CFAbsoluteTime = 0.12
+    private let axThreshold: CGFloat = 0.15
+
     private var timer: DispatchSourceTimer?
 
     init() {
@@ -62,12 +70,17 @@ final class EventPump {
                 let id = e.p.c ?? -1
                 let nx = CGFloat(e.p.k ?? 0) / 1000.0
                 let ny = CGFloat(e.p.v ?? 0) / 1000.0
+                
                 if id == 0 {
-                    KeyboardEmitter.shared.smoothLeftStick(x: nx, y: ny)
+                    self.lastAX0Time = CFAbsoluteTimeGetCurrent()
+                    self.ax0Active = (abs(nx) > self.axThreshold) || (abs(ny) > self.axThreshold)
+                    KeyboardEmitter.shared.smoothLeftStick(x: nx, y: ny, threshold: self.axThreshold)
                 } else if id == 1 {
-                    KeyboardEmitter.shared.smoothRightStickAsArrows(x: nx, y: ny)
+                    self.lastAX1Time = CFAbsoluteTimeGetCurrent()
+                    self.ax1Active = (abs(nx) > self.axThreshold) || (abs(ny) > self.axThreshold)
+                    KeyboardEmitter.shared.smoothRightStickAsArrows(x: nx, y: ny, threshold: self.axThreshold)
                 }
-
+                
             case .gs:
                 break
             }
@@ -80,10 +93,22 @@ final class EventPump {
             accDX = 0; accDY = 0
             MacInput.shared.moveMouseBy(dx: dx, dy: dy)
         }
+
         let sx = accSX, sy = accSY
         if sx != 0 || sy != 0 {
             accSX = 0; accSY = 0
             MacInput.shared.scrollBy(dx: sx, dy: sy)
+        }
+
+        let now = CFAbsoluteTimeGetCurrent()
+
+        if ax0Active && (now - lastAX0Time) > axTimeout {
+            ax0Active = false
+            KeyboardEmitter.shared.smoothLeftStick(x: 0, y: 0, threshold: axThreshold)
+        }
+        if ax1Active && (now - lastAX1Time) > axTimeout {
+            ax1Active = false
+            KeyboardEmitter.shared.smoothRightStickAsArrows(x: 0, y: 0, threshold: axThreshold)
         }
     }
 }
