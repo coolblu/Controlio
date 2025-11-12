@@ -56,36 +56,74 @@ final class KeyboardEmitter {
     }
 
     func dpad(x: Int, y: Int) {
-        let left: CGKeyCode = 123
-        let right: CGKeyCode = 124
-        let down: CGKeyCode = 125
-        let up: CGKeyCode = 126
-
-        sendKey(left, down: x < 0)
-        sendKey(right, down: x > 0)
-        sendKey(up, down: y < 0)
-        sendKey(down, down: y > 0)
+        arrow(.left,  isDown: x < 0)
+        arrow(.right, isDown: x > 0)
+        arrow(.up,    isDown: y < 0)
+        arrow(.down,  isDown: y > 0)
 
         if x == 0 {
-            sendKey(left, down: false)
-            sendKey(right, down: false)
+            arrow(.left,  isDown: false)
+            arrow(.right, isDown: false)
         }
         if y == 0 {
-            sendKey(up, down: false)
-            sendKey(down, down: false)
+            arrow(.up,   isDown: false)
+            arrow(.down, isDown: false)
+        }
+    }
+    
+    enum ArrowDir { case left, right, up, down }
+    
+    private func arrowKeyCode(_ dir: ArrowDir) -> CGKeyCode {
+        switch dir {
+        case .left:  return 123
+        case .right: return 124
+        case .down:  return 125
+        case .up:    return 126
+        }
+    }
+    
+    func arrow(_ dir: ArrowDir, isDown: Bool) {
+        sendKey(arrowKeyCode(dir), down: isDown)
+    }
+
+    func smoothRightStickAsArrows(x: CGFloat, y: CGFloat, threshold: CGFloat = 0.15) {
+        if x < -threshold {
+            arrow(.left, isDown: true)
+            arrow(.right, isDown: false)
+        } else if x > threshold {
+            arrow(.right, isDown: true)
+            arrow(.left, isDown: false)
+        } else {
+            arrow(.left, isDown: false)
+            arrow(.right, isDown: false)
+        }
+
+        if y > threshold {
+            arrow(.down, isDown: true)
+            arrow(.up,   isDown: false)
+        } else if y < -threshold {
+            arrow(.up,   isDown: true)
+            arrow(.down, isDown: false)
+        } else {
+            arrow(.up,   isDown: false)
+            arrow(.down, isDown: false)
         }
     }
 }
 
 enum GamepadKeyMap {
     static let mapping: [GPButton: CGKeyCode] = [
-        .a: 49,
-        .b: 11,
-        .x: 7,
-        .y: 16,
-        .l1: 12,
-        .r1: 14,
-        .select: 51,
-        .start: 53
+        // ABXY
+        .a: 49, // Space
+        .b: 11, // B
+        .x: 7, // X
+        .y: 16, // Y
+        // Shoulders
+        .l1: 12, // Q
+        .r1: 14, // E
+        // Start/Select
+        .select: 51, // Delete
+        .start: 53 // Escape
     ]
 }
+
