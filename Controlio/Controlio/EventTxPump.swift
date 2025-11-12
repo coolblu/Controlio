@@ -21,8 +21,7 @@ final class EventTxPump {
         self.mc = mc
         guard timer == nil else { return }
         let t = DispatchSource.makeTimerSource(queue: q)
-        // ~120 Hz
-        t.schedule(deadline: .now() + .milliseconds(8), repeating: .milliseconds(8))
+        t.schedule(deadline: .now() + .milliseconds(4), repeating: .milliseconds(4))
         t.setEventHandler { [weak self] in self?.flush() }
         t.resume()
         timer = t
@@ -66,7 +65,8 @@ final class EventTxPump {
             buffer.removeAll(keepingCapacity: true)
         }
         if !out.isEmpty {
-            mc.sendRaw(out, reliable: false)
+//            mc.sendRaw(out, reliable: false)
+            mc.sendRaw(out, reliable: true)
         }
     }
 }

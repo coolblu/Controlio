@@ -71,12 +71,13 @@ struct TrackpadView: View {
                 TouchPadSurface(
                     pointerMultiplier: pointerSensitivity,
                     scrollMultiplier:  scrollSensitivity,
+                    invertScroll: reverseScroll,
                     onPointer: { dx, dy in
                         EventTxPump.shared.queue(.pm(dx: dx, dy: dy))
                     },
                     onScroll: { dx, dy in
                         let m = reverseScroll ? -1 : 1
-                        EventTxPump.shared.queue(.sc(dx: dx * m, dy: dy * m))
+                        EventTxPump.shared.queue(.sc(dx: dx, dy: dy * m))
                     },
                     onLeftDown: {
                         isDragging = true

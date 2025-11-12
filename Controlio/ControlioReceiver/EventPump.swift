@@ -13,30 +13,46 @@ final class EventPump {
     static let shared = EventPump()
     private let q = DispatchQueue(label: "controlio.rx", qos: .userInteractive)
 
+    private var accDX = 0, accDY = 0
+    private var accSX = 0, accSY = 0
+    
+    private var timer: DispatchSourceTimer?
+
+    init() {
+        let t = DispatchSource.makeTimerSource(queue: q)
+        t.schedule(deadline: .now() + .milliseconds(4), repeating: .milliseconds(4)) // ~250 Hz
+        t.setEventHandler { [weak self] in self?.drain() }
+        t.resume()
+        timer = t
+    }
+
     func enqueue(_ e: Event) {
         q.async {
             switch e.t {
             case .pm:
-                MacInput.shared.moveMouseBy(dx: e.p.dx ?? 0, dy: e.p.dy ?? 0)
-
+                self.accDX += (e.p.dx ?? 0)
+                self.accDY += (e.p.dy ?? 0)
             case .sc:
-                MacInput.shared.scrollBy(dx: e.p.dx ?? 0, dy: e.p.dy ?? 0)
-
+                self.accSX += (e.p.dx ?? 0)
+                self.accSY += (e.p.dy ?? 0)
             case .bt:
-                if let c = e.p.c, c == 0 || c == 1 {
-                    MacInput.shared.click(button: c, isDown: (e.p.s ?? 0) == 1)
-                } else if let b = GPButton(rawValue: e.p.c ?? -1) {
-                    KeyboardEmitter.shared.press(b, isDown: (e.p.s ?? 0) == 1)
-                }
-
-            case .ax:
-                let x = CGFloat(e.p.k ?? 0) / 1000.0
-                let y = CGFloat(e.p.v ?? 0) / 1000.0
-                KeyboardEmitter.shared.smoothLeftStick(x: x, y: y)
-
-            case .gs:
+                MacInput.shared.click(button: e.p.c ?? 0, isDown: (e.p.s ?? 0) == 1)
+            case .ax, .gs:
                 break
             }
+        }
+    }
+    
+    private func drain() {
+        let dx = accDX, dy = accDY
+        if dx != 0 || dy != 0 {
+            accDX = 0; accDY = 0
+            MacInput.shared.moveMouseBy(dx: dx, dy: dy)
+        }
+        let sx = accSX, sy = accSY
+        if sx != 0 || sy != 0 {
+            accSX = 0; accSY = 0
+            MacInput.shared.scrollBy(dx: sx, dy: sy)
         }
     }
 }
