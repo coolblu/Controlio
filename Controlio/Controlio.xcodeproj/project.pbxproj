@@ -854,7 +854,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Controlio/Info.plist;
-				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Controlio uses the local network to discover and connect to your Mac.\n\ntcp_listener_socket_create bind(fd 4) failed [1: Operation not permitted]\n\nServer did not publish: errorDict [{\n    NSNetServicesErrorCode = 1;\n    NSNetServicesErrorDomain = 1;\n}].\n\nServer did not publish: errorDict [{\n    NSNetServicesErrorCode = \"-72000\";\n    NSNetServicesErrorDomain = 10;\nControlio uses the local network to discover and connect to your Mac.";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Controlio uses the local network to discover and connect to your Mac.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -884,7 +884,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Controlio/Info.plist;
-				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Controlio uses the local network to discover and connect to your Mac.\n\ntcp_listener_socket_create bind(fd 4) failed [1: Operation not permitted]\n\nServer did not publish: errorDict [{\n    NSNetServicesErrorCode = 1;\n    NSNetServicesErrorDomain = 1;\n}].\n\nServer did not publish: errorDict [{\n    NSNetServicesErrorCode = \"-72000\";\n    NSNetServicesErrorDomain = 10;\nControlio uses the local network to discover and connect to your Mac.";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Controlio uses the local network to discover and connect to your Mac.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
