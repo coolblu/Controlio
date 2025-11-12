@@ -66,6 +66,7 @@ struct HomeView: View {
                                 }) {
                                     Image(systemName: "line.3.horizontal")
                                         .font(.system(size: 20, weight: .semibold))
+                                        .foregroundColor(appSettings.primaryButton)
                                         .padding(12)
                                         .background(Circle().fill(appSettings.cardColor))
                                         .overlay(Circle().stroke(appSettings.strokeColor, lineWidth: 1))
@@ -82,10 +83,10 @@ struct HomeView: View {
                             .padding(.top, 8)
                             
                             // Greetings
-                            Text("Hi, \(userManager.displayName)!")
+                            Text(String(format: NSLocalizedString("Hi, %@!", bundle: appSettings.bundle, comment: ""), userManager.displayName))
                                 .font(.system(size: 34, weight: .bold, design: .rounded))
                                 .foregroundColor(appSettings.primaryText)
-                            Text("Choose your controller.")
+                            Text(NSLocalizedString("Choose your controller.", bundle: appSettings.bundle, comment: ""))
                                 .font(.title3)
                                 .foregroundColor(appSettings.secondaryText)
                             
@@ -93,33 +94,32 @@ struct HomeView: View {
                             LazyVGrid(columns: columns, spacing: 20) {
                                 ControllerCard(
                                     systemImage: "hand.tap",
-                                    title: "Trackpad",
-                                    subtitle: "Use your iPhone as a touchpad",
-                                    /* start trackpad */
+                                    title: NSLocalizedString("Trackpad", bundle: appSettings.bundle, comment: ""),
+                                    subtitle: NSLocalizedString("Use your iPhone as a touchpad", bundle: appSettings.bundle, comment: ""),
                                     action: { path.append(Route.trackpad) }
                                 )
                                 .environmentObject(appSettings)
                                 
                                 ControllerCard(
                                     systemImage: "gamecontroller",
-                                    title: "Gamepad",
-                                    subtitle: "Twin-stick layout",
+                                    title: NSLocalizedString("Gamepad", bundle: appSettings.bundle, comment: ""),
+                                    subtitle: NSLocalizedString("Twin-stick layout", bundle: appSettings.bundle, comment: ""),
                                     action: { path.append(Route.gamepad) }
                                 )
                                 .environmentObject(appSettings)
                                 
                                 ControllerCard(
                                     systemImage: "antenna.radiowaves.left.and.right",
-                                    title: "Motion",
-                                    subtitle: "Use motion to control",
+                                    title: NSLocalizedString("Motion", bundle: appSettings.bundle, comment: ""),
+                                    subtitle: NSLocalizedString("Use motion to control", bundle: appSettings.bundle, comment: ""),
                                     action: { /* start motion */ }
                                 )
                                 .environmentObject(appSettings)
                                 
                                 ControllerCard(
                                     systemImage: "steeringwheel",
-                                    title: "Racing",
-                                    subtitle: "Steer by tilting",
+                                    title: NSLocalizedString("Racing", bundle: appSettings.bundle, comment: ""),
+                                    subtitle: NSLocalizedString("Steer by tilting", bundle: appSettings.bundle, comment: ""),
                                     action: { /* start racing */ }
                                 )
                                 .environmentObject(appSettings)
@@ -132,7 +132,7 @@ struct HomeView: View {
                             let nameLast = mc.lastConnectedPeer?.displayName
                             
                             if isConnected {
-                                ConnectionBanner(deviceName: nameNow ?? "Connected")
+                                ConnectionBanner(deviceName: nameNow ?? NSLocalizedString("Connected", bundle: appSettings.bundle, comment: ""))
                                     .environmentObject(appSettings)
                             } else if wasManuallyDisconnected, let last = nameLast {
                                 DisconnectedBanner(deviceName: last)
@@ -142,26 +142,26 @@ struct HomeView: View {
                             // Action buttons
                             HStack(spacing: 16) {
                                 if isConnected {
-                                    Button("Disconnect") {
+                                    Button(NSLocalizedString("Disconnect", bundle: appSettings.bundle, comment: "")) {
                                         mc.userRequestedDisconnect()
                                     }
                                     .buttonStyle(PrimaryButtonStyle())
                                     .environmentObject(appSettings)
                                 } else if wasManuallyDisconnected, nameLast != nil {
-                                    Button("Reconnect") {
+                                    Button(NSLocalizedString("Reconnect", bundle: appSettings.bundle, comment: "")) {
                                         mc.userRequestedReconnect()
                                     }
                                     .buttonStyle(ReconnectButtonStyle())
                                     .environmentObject(appSettings)
                                 } else {
-                                    Button("Connect") {
+                                    Button(NSLocalizedString("Connect", bundle: appSettings.bundle, comment: "")) {
                                         mc.userRequestedReconnect()
                                     }
                                     .buttonStyle(PrimaryButtonStyle())
                                     .environmentObject(appSettings)
                                 }
                                 
-                                Button("Select Device") {
+                                Button(NSLocalizedString("Select Device", bundle: appSettings.bundle, comment: "")) {
                                     // navigate to device picker
                                 }
                                 .buttonStyle(OutlineButtonStyle())
@@ -172,7 +172,7 @@ struct HomeView: View {
                             Button(action: {
                                 path.append(Route.help)
                             }) {
-                                Text("Help & Tips")
+                                Text(NSLocalizedString("Help & Tips", bundle: appSettings.bundle, comment: ""))
                                     .font(.headline)
                                     .underline()
                                     .foregroundColor(appSettings.secondaryText)
@@ -184,7 +184,7 @@ struct HomeView: View {
                         .padding(.horizontal, 20)
                     }
                     .background(appSettings.bgColor.ignoresSafeArea())
-                    .onAppear{ mcHost.ensureBrowsing() }
+                    .onAppear { mcHost.ensureBrowsing() }
                     .navigationDestination(for: Route.self) { route in
                         switch route {
                         case .trackpad:
@@ -259,7 +259,7 @@ struct SideMenuView: View {
                                 showMenu = false
                                 navigateToManageProfile()
                             }) {
-                                Text("Manage Profile")
+                                Text(NSLocalizedString("Manage Profile", bundle: appSettings.bundle, comment: ""))
                                     .font(.custom("SF Pro", size: 16))
                                     .underline()
                                     .foregroundColor(appSettings.secondaryText)
@@ -267,12 +267,14 @@ struct SideMenuView: View {
                         }
                     }
 
-                    MenuButton(icon: "slider.horizontal.3", title: "App Preferences") {
+                    MenuButton(icon: "slider.horizontal.3",
+                               title: NSLocalizedString("App Preferences", bundle: appSettings.bundle, comment: "")) {
                         showMenu = false
                         navigateToAppPreferences()
                     }
 
-                    MenuButton(icon: "questionmark.circle", title: "Help") {
+                    MenuButton(icon: "questionmark.circle",
+                               title: NSLocalizedString("Help", bundle: appSettings.bundle, comment: "")) {
                         showMenu = false
                         navigateToHelp()
                     }
@@ -283,7 +285,7 @@ struct SideMenuView: View {
                         Spacer()
                         MenuButton(
                             icon: "rectangle.portrait.and.arrow.right",
-                            title: "Log Out",
+                            title: NSLocalizedString("Log Out", bundle: appSettings.bundle, comment: ""),
                             outlineColor: appSettings.primaryButton,
                             outlineWidth: 2
                         ) {
@@ -368,12 +370,12 @@ private struct ControllerCard: View {
                     .foregroundColor(appSettings.primaryText)
                     .frame(maxWidth: .infinity, alignment: .leading)
 
-                Text(title)
+                Text(NSLocalizedString(title, bundle: appSettings.bundle, comment: ""))
                     .font(.system(.title3, design: .rounded))
                     .fontWeight(.bold)
                     .foregroundColor(appSettings.primaryText)
 
-                Text(subtitle)
+                Text(NSLocalizedString(subtitle, bundle: appSettings.bundle, comment: ""))
                     .font(.subheadline)
                     .foregroundColor(appSettings.secondaryText)
             }
@@ -399,7 +401,7 @@ private struct ConnectionBanner: View {
         HStack(spacing: 12) {
             Image(systemName: "checkmark.circle.fill")
                 .foregroundColor(.green)
-            Text("Connected to: \(deviceName)")
+            Text(String(format: NSLocalizedString("Connected to: %@", bundle: appSettings.bundle, comment: ""), deviceName))
                 .font(.subheadline)
                 .fontWeight(.semibold)
                 .foregroundColor(appSettings.primaryText)
@@ -425,7 +427,7 @@ private struct DisconnectedBanner: View {
         HStack(spacing: 12) {
             Image(systemName: "xmark.octagon.fill")
                 .foregroundColor(.red)
-            Text("Disconnected from: \(deviceName)")
+            Text(String(format: NSLocalizedString("Disconnected from: %@", bundle: appSettings.bundle, comment: ""), deviceName))
                 .font(.subheadline)
                 .fontWeight(.semibold)
                 .foregroundColor(appSettings.primaryText)
