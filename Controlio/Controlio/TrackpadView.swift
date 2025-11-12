@@ -72,25 +72,25 @@ struct TrackpadView: View {
                     pointerMultiplier: pointerSensitivity,
                     scrollMultiplier:  scrollSensitivity,
                     onPointer: { dx, dy in
-                        mc.send(.pm(dx: dx, dy: dy))
+                        EventTxPump.shared.queue(.pm(dx: dx, dy: dy))
                     },
                     onScroll: { dx, dy in
                         let m = reverseScroll ? -1 : 1
-                        mc.send(.sc(dx: dx * m, dy: dy * m))
+                        EventTxPump.shared.queue(.sc(dx: dx * m, dy: dy * m))
                     },
                     onLeftDown: {
                         isDragging = true
-                        mc.send(.leftDown)
+                        mc.send(.leftDown, reliable: true)
                     },
                     onLeftUp: {
                         isDragging = false
-                        mc.send(.leftUp)
+                        mc.send(.leftUp,   reliable: true)
                     },
                     onLeftClick: {
-                        mc.send(.leftDown); mc.send(.leftUp)
+                        mc.send(.leftDown, reliable: true); mc.send(.leftUp, reliable: true)
                     },
                     onRightClick: {
-                        mc.send(.rightDown); mc.send(.rightUp)
+                        mc.send(.rightDown, reliable: true); mc.send(.rightUp, reliable: true)
                     }
                 )
                 .background(appSettings.cardColor)
@@ -136,6 +136,7 @@ struct TrackpadView: View {
         .onAppear {
             // start browsing + wire status updates
             mc.startBrowsingIfNeeded()
+            EventTxPump.shared.start(mc: mc)
         }
     }
 }

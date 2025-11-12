@@ -59,7 +59,6 @@ final class ReceiverVM: ObservableObject {
         }
         
         mc.onEvents = { events in
-            EventPump.shared.start()
             for e in events {
                 EventPump.shared.enqueue(e)
             }

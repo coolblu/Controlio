@@ -139,24 +139,24 @@ final class MCManager: NSObject, ObservableObject {
     }
     
     // send single event object as json
-    func send(_ event: Event) {
+    func send(_ event: Event, reliable: Bool = true) {
         let data = encodeLine(event)
         if data.isEmpty {
             log("[send] encode empty")
             return
         }
-        sendRaw(data)
+        sendRaw(data, reliable: reliable)
     }
     
     // send bytes
-    func sendRaw(_ data: Data) {
+    func sendRaw(_ data: Data, reliable: Bool = true) {
         let peers = session.connectedPeers
         guard !peers.isEmpty else {
             log("[send] no peers")
             return
         }
         do {
-            try session.send(data, toPeers: peers, with: .reliable)
+            try session.send(data, toPeers: peers, with: reliable ? .reliable : .unreliable)
         } catch {
             log("[send] error: \(error.localizedDescription)")
         }
@@ -197,7 +197,7 @@ extension MCManager: MCSessionDelegate {
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
         let events = decodeLines(data)
         if !events.isEmpty { onEvents?(events) }
-        log("[MC] didReceive \(events.count) event(s) from \(peerID.displayName)")
+//        log("[MC] didReceive \(events.count) event(s) from \(peerID.displayName)")
     }
     
     func session(_ session: MCSession, didReceive certificate: [Any]?, fromPeer peerID: MCPeerID, certificateHandler: @escaping (Bool) -> Void) {

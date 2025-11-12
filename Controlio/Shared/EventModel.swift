@@ -38,11 +38,12 @@ struct Event: Codable {
     }
 }
 
+fileprivate let _enc = JSONEncoder()
+fileprivate let _dec = JSONDecoder()
+
 // converts a single event to json
 func encodeLine(_ event: Event) -> Data {
-    let encoder = JSONEncoder()
-    encoder.outputFormatting = []
-    guard let jsonData = try? encoder.encode(event) else { return Data() }
+    guard let jsonData = try? _enc.encode(event) else { return Data() }
 
     var data = jsonData
     data.append(0x0A) // newline to separate events
@@ -54,10 +55,8 @@ func decodeLines(_ data: Data) -> [Event] {
     // split by newline
     let chunks = data.split(separator: 0x0A)
     var events: [Event] = []
-
-    let decoder = JSONDecoder()
     for chunk in chunks {
-        if let event = try? decoder.decode(Event.self, from: chunk) {
+        if let event = try? _dec.decode(Event.self, from: chunk) {
             events.append(event)
         }
     }
