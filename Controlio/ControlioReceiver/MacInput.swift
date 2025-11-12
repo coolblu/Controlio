@@ -10,6 +10,8 @@ import ApplicationServices
 
 final class MacInput {
     static let shared = MacInput()
+    private var rxRemX = 0, rxRemY = 0
+    private let FP_SCALE = 64
     
     private var isLeftDown = false
     
@@ -52,16 +54,25 @@ final class MacInput {
     }
     
     func moveMouseBy(dx: Int, dy: Int) {
+        rxRemX += dx
+        rxRemY += dy
+
+        let px = rxRemX / FP_SCALE
+        let py = rxRemY / FP_SCALE
+        if px == 0 && py == 0 { return }
+
+        rxRemX -= px * FP_SCALE
+        rxRemY -= py * FP_SCALE
+
         let cur = currentMouse()
-        let newPoint = clampToMainDisplay(CGPoint(x: cur.x + CGFloat(dx),
-                                                  y: cur.y + CGFloat(dy)))
-        // Use appropriate event type depending on button state for smoother drag
+        let newPoint = clampToMainDisplay(CGPoint(x: cur.x + CGFloat(px),
+                                                  y: cur.y + CGFloat(py)))
         let type: CGEventType = isLeftDown ? .leftMouseDragged : .mouseMoved
         let evt = CGEvent(mouseEventSource: nil, mouseType: type,
                           mouseCursorPosition: newPoint, mouseButton: .left)
         evt?.post(tap: .cghidEventTap)
     }
-    
+
     func click(button: Int, isDown: Bool) {
         let cur = currentMouse()
         let cgButton: CGMouseButton = (button == 0) ? .left : .right
