@@ -96,8 +96,8 @@ final class PadView: UIView, UIGestureRecognizerDelegate {
         isMultipleTouchEnabled = true
         backgroundColor = .clear
 
-        addGestureRecognizer(onePan)
-        addGestureRecognizer(twoPan)
+//        addGestureRecognizer(onePan)
+//        addGestureRecognizer(twoPan)
         addGestureRecognizer(tap)
         addGestureRecognizer(rightTap)
         addGestureRecognizer(longPress)
