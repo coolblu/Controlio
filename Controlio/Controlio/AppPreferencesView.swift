@@ -12,6 +12,7 @@ struct AppPreferencesView: View {
 
     let themes = ["Light", "Dark"]
     let languages = ["English", "French", "Spanish"]
+    let hapticStrength = ["Light", "Medium", "Heavy"]
 
     var body: some View {
         ScrollView {
@@ -27,19 +28,39 @@ struct AppPreferencesView: View {
 
                 // General Settings
                 SettingsCard(title: NSLocalizedString("General", bundle: appSettings.bundle, comment: "")) {
-                    PickerRow(title: NSLocalizedString("Theme", bundle: appSettings.bundle, comment: ""), selection: $appSettings.selectedTheme, options: themes)
-                    PickerRow(title: NSLocalizedString("Language", bundle: appSettings.bundle, comment: ""), selection: $appSettings.selectedLanguage, options: languages)
+                    PickerRow(
+                        title: NSLocalizedString("Theme", bundle: appSettings.bundle, comment: ""),
+                        selection: $appSettings.selectedTheme,
+                        options: themes
+                    )
+                    PickerRow(
+                        title: NSLocalizedString("Language", bundle: appSettings.bundle, comment: ""),
+                        selection: $appSettings.selectedLanguage,
+                        options: languages
+                    )
                 }
 
-                // Controller Settings
-                SettingsCard(title: NSLocalizedString("Controller", bundle: appSettings.bundle, comment: "")) {
-                    ToggleRow(title: NSLocalizedString("Show Tips", bundle: appSettings.bundle, comment: ""), isOn: $appSettings.showTips)
-                }
-
-                // Notification Settings
-                SettingsCard(title: NSLocalizedString("Notifications", bundle: appSettings.bundle, comment: "")) {
-                    ToggleRow(title: NSLocalizedString("Connection Alerts", bundle: appSettings.bundle, comment: ""), isOn: $appSettings.connectionAlerts)
-                    ToggleRow(title: NSLocalizedString("Update Reminders", bundle: appSettings.bundle, comment: ""), isOn: $appSettings.updateReminders)
+                // Accessibility Settings
+                SettingsCard(title: NSLocalizedString("Accessibility", bundle: appSettings.bundle, comment: "")) {
+                    ToggleRow(
+                        title: NSLocalizedString("Prevent Screen Sleep", bundle: appSettings.bundle, comment: ""),
+                        isOn: $appSettings.preventSleep
+                    )
+                    ToggleRow(
+                        title: NSLocalizedString("Sound Effects", bundle: appSettings.bundle, comment: ""),
+                        isOn: $appSettings.soundEffects
+                    )
+                    ToggleRow(
+                        title: NSLocalizedString("Vibration Feedback", bundle: appSettings.bundle, comment: ""),
+                        isOn: $appSettings.vibrationFeedback
+                    )
+                    PickerRow(
+                        title: NSLocalizedString("Haptic Strength", bundle: appSettings.bundle, comment: ""),
+                        selection: $appSettings.hapticStrength,
+                        options: hapticStrength
+                    )
+                    .disabled(!appSettings.vibrationFeedback)
+                    .opacity(appSettings.vibrationFeedback ? 1.0 : 0.5)
                 }
 
                 Spacer()

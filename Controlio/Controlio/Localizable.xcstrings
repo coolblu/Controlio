@@ -1,147 +1,460 @@
 {
-  "version" : "1.0",
   "sourceLanguage" : "en",
   "strings" : {
-    "Scrolling" : {
+    "" : {
+
+    },
+    "%lld" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
-            "value" : "Desplazamiento",
-            "state" : "translated"
+            "state" : "translated",
+            "value" : "%lld"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "value" : "Défilement",
-            "state" : "translated"
+            "state" : "translated",
+            "value" : "%lld"
+          }
+        }
+      }
+    },
+    "Accessibility" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accesibilidad"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accessibilité"
+          }
+        }
+      }
+    },
+    "Already have an account? " : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Ya tienes una cuenta?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vous avez déjà un compte ?"
+          }
+        }
+      }
+    },
+    "App Preferences" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preferencias De La Aplicación"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Préférences de l'application"
+          }
+        }
+      }
+    },
+    "Are you sure you want to delete your account? This action cannot be undone." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Êtes-vous sûr de vouloir supprimer votre compte ? Cette action ne peut pas être annulée."
+          }
+        }
+      }
+    },
+    "Battery" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Batería eléctrica"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Batterie"
+          }
+        }
+      }
+    },
+    "Change Password" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cambiar Contraseña"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Changer Le Mot De Passe"
+          }
+        }
+      }
+    },
+    "Choose your controller." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige tu controlador."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisissez votre contrôleur."
+          }
+        }
+      }
+    },
+    "Confirm new password" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirma la nueva contraseña"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirmer le nouveau mot de passe"
           }
         }
       }
     },
     "Confirm Password" : {
       "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Confirmer le mot de passe"
-          }
-        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Confirmar contraseña"
           }
-        }
-      }
-    },
-    "Log Out" : {
-      "localizations" : {
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Déconnexion"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cierra sesión"
+            "value" : "Confirmer le mot de passe"
           }
         }
       }
     },
-    "Twin-stick layout" : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "value" : "Disposition à deux bâtons",
-            "state" : "translated"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "value" : "Diseño de doble palo",
-            "state" : "translated"
-          }
-        }
-      }
-    },
-    "Theme" : {
+    "Connect" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tema"
+            "value" : "Conectar"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "value" : "Thème",
-            "state" : "translated"
+            "state" : "translated",
+            "value" : "Assurer la correspondance"
           }
         }
       }
     },
-    "Help & Tips" : {
+    "Connected" : {
       "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aide et conseils"
-          }
-        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ayuda Y Consejos"
+            "value" : "Relacionado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connecté"
           }
         }
       }
     },
-    "OK" : {
+    "Connected to: %@" : {
       "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "value" : "OK",
-            "state" : "translated"
-          }
-        },
         "es" : {
           "stringUnit" : {
-            "value" : "Vale",
-            "state" : "translated"
+            "state" : "translated",
+            "value" : "Conectado a: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connecté à : %@"
+          }
+        }
+      }
+    },
+    "Connection Alerts" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alertas De Conexión"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alertes De Connexion"
           }
         }
       }
     },
     "Controller" : {
+      "extractionState" : "stale",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Controlador"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Contrôleur"
           }
-        },
+        }
+      }
+    },
+    "Create Account" : {
+      "extractionState" : "manual",
+      "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Controlador"
+            "value" : "Crear Cuenta"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Créer Un Compte"
+          }
+        }
+      }
+    },
+    "Dark" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oscuridad"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sombre"
+          }
+        }
+      }
+    },
+    "Delete" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer"
+          }
+        }
+      }
+    },
+    "Delete Account" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Borrar Cuenta"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer le compte"
           }
         }
       }
     },
     "Device Controller" : {
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Controlador del dispositivo"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Contrôleur d'appareil"
           }
-        },
+        }
+      }
+    },
+    "Device Help" : {
+      "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Controlador del dispositivo"
+            "value" : "Ayuda Del Dispositivo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aide de l'appareil"
+          }
+        }
+      }
+    },
+    "Disconnect" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desconectar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se déconnecter"
+          }
+        }
+      }
+    },
+    "Disconnected from: %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desconectado de: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Déconnecté de : %@"
+          }
+        }
+      }
+    },
+    "Don’t have an account? " : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿No tienes una cuenta?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vous n'avez pas de compte ?"
+          }
+        }
+      }
+    },
+    "Done" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hecho"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marché conclu!"
+          }
+        }
+      }
+    },
+    "Drag" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resistencia"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Faire glisser"
+          }
+        }
+      }
+    },
+    "Email" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Correo electrónico"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E-mail"
+          }
+        }
+      }
+    },
+    "English" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inglés"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anglais"
           }
         }
       }
@@ -162,31 +475,48 @@
         }
       }
     },
-    "No devices found. Tap Scan Devices to refresh." : {
+    "Enter your name" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No se han encontrado dispositivos. Toque Escanear dispositivos para actualizar."
+            "value" : "Introduce tu nombre"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "value" : "Aucun appareil n'a été trouvé. Appuyez sur Scan Devices pour l'actualiser.",
-            "state" : "translated"
+            "state" : "translated",
+            "value" : "Entrez votre nom"
+          }
+        }
+      }
+    },
+    "French" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Francés"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Français"
           }
         }
       }
     },
     "Gamepad" : {
       "localizations" : {
-        "fr" : {
+        "es" : {
           "stringUnit" : {
-            "value" : "Gamepad",
-            "state" : "translated"
+            "state" : "translated",
+            "value" : "Gamepad"
           }
         },
-        "es" : {
+        "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gamepad"
@@ -194,67 +524,132 @@
         }
       }
     },
-    "Already have an account? " : {
+    "General" : {
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "General"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vous avez déjà un compte ?"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "value" : "¿Ya tienes una cuenta?",
-            "state" : "translated"
-          }
-        }
-      },
-      "extractionState" : "stale"
-    },
-    "Scan Devices" : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "value" : "Appareils de balayage",
-            "state" : "translated"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "value" : "Dispositivos De Escaneo",
-            "state" : "translated"
+            "value" : "Général"
           }
         }
       }
     },
-    "Motion" : {
+    "Haptic Strength" : {
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fuerza Háptica"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mouvement"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "value" : "Movimiento",
-            "state" : "translated"
+            "value" : "Force Haptique"
           }
         }
       }
     },
-    "Steer by tilting" : {
+    "Heavy" : {
+      "extractionState" : "manual",
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dirigir inclinando"
+            "value" : "Malo"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dirigez en inclinant"
+            "value" : "Lourd"
+          }
+        }
+      }
+    },
+    "Help" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ayuda"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aide"
+          }
+        }
+      }
+    },
+    "Help & Tips" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ayuda Y Consejos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aide et conseils"
+          }
+        }
+      }
+    },
+    "Hi, %@!" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¡Hola, %@!"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salut, %@ !"
+          }
+        }
+      }
+    },
+    "Interface" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Interfaz"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Interface"
+          }
+        }
+      }
+    },
+    "Language" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idioma"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Langue"
           }
         }
       }
@@ -276,432 +671,13 @@
         }
       }
     },
-    "Password changed successfully." : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Se ha cambiado la contraseña con éxito."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "value" : "Mot de passe modifié avec succès.",
-            "state" : "translated"
-          }
-        }
-      }
-    },
-    "Sign up" : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inscrivez-vous"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Regístrate"
-          }
-        }
-      },
-      "extractionState" : "stale"
-    },
-    "Reverse Scroll Direction" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "value" : "Dirección De Desplazamiento Inverso",
-            "state" : "translated"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Direction De Défilement Inversée"
-          }
-        }
-      }
-    },
-    "Battery" : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "value" : "Batterie",
-            "state" : "translated"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Batería eléctrica"
-          }
-        }
-      }
-    },
-    "Use your iPhone as a touchpad" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Usa tu iPhone como un panel táctil"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Utilisez votre iPhone comme pavé tactile"
-          }
-        }
-      }
-    },
-    "Device Help" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "value" : "Ayuda Del Dispositivo",
-            "state" : "translated"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aide de l'appareil"
-          }
-        }
-      }
-    },
-    "Don’t have an account? " : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "value" : "Vous n'avez pas de compte ?",
-            "state" : "translated"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "¿No tienes una cuenta?"
-          }
-        }
-      }
-    },
-    "Save Name" : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enregistrer le nom"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "value" : "Guardar Nombre",
-            "state" : "translated"
-          }
-        }
-      }
-    },
-    "Update Reminders" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "value" : "Actualizar recordatorios",
-            "state" : "translated"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "value" : "Mettre À Jour Les Rappels",
-            "state" : "translated"
-          }
-        }
-      }
-    },
-    "Connection Alerts" : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alertes De Connexion"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alertas De Conexión"
-          }
-        }
-      }
-    },
-    "Done" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "value" : "Hecho",
-            "state" : "translated"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Marché conclu!"
-          }
-        }
-      }
-    },
-    "Quick tips to keep your controller paired and working smoothly." : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Conseils rapides pour que votre contrôleur reste jumelé et fonctionne en douceur."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Consejos rápidos para mantener el mando emparejado y funcionando sin problemas."
-          }
-        }
-      }
-    },
-    "Welcome to Controlio" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bienvenue à Controlio"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bienvenido a Controlio"
-          }
-        }
-      }
-    },
-    "Scroll Speed" : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "value" : "Vitesse De Défilement",
-            "state" : "translated"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Velocidad De Desplazamiento"
-          }
-        }
-      }
-    },
-    "Trackpad Settings" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "value" : "Configuración Del Trackpad",
-            "state" : "translated"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "value" : "Paramètres Du Trackpad",
-            "state" : "translated"
-          }
-        }
-      }
-    },
-    "Notifications" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "value" : "Notificaciones",
-            "state" : "translated"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Notifications"
-          }
-        }
-      }
-    },
-    "or continue with" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O continuar con"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ou continuer avec"
-          }
-        }
-      }
-    },
-    "%lld" : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld"
-          }
-        }
-      }
-    },
-    "Create Account" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Créer Un Compte"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "value" : "Crear Cuenta",
-            "state" : "translated"
-          }
-        }
-      }
-    },
-    "Pointer" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "value" : "Indicador",
-            "state" : "translated"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pointeur"
-          }
-        }
-      }
-    },
-    "Password" : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mot de passe"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Contraseña"
-          }
-        }
-      }
-    },
-    "Enter your name" : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "value" : "Entrez votre nom",
-            "state" : "translated"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Introduce tu nombre"
-          }
-        }
-      }
-    },
-    "Racing" : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Course"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Carreras"
-          }
-        }
-      }
-    },
-    "Email" : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "E-mail"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Correo electrónico"
-          }
-        }
-      }
-    },
-    "Change Password" : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Changer Le Mot De Passe"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "value" : "Cambiar Contraseña",
-            "state" : "translated"
-          }
-        }
-      }
-    },
-    "Delete" : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "value" : "Supprimer",
-            "state" : "translated"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Eliminar"
-          }
-        }
-      }
-    },
     "Log in" : {
+      "extractionState" : "manual",
       "localizations" : {
         "es" : {
           "stringUnit" : {
-            "value" : "Iniciar sesión",
-            "state" : "translated"
+            "state" : "translated",
+            "value" : "Iniciar sesión"
           }
         },
         "fr" : {
@@ -710,358 +686,20 @@
             "value" : "Se connecter"
           }
         }
-      },
-      "extractionState" : "stale"
-    },
-    "Select Device" : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sélectionnez l'appareil"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Seleccionar dispositivo"
-          }
-        }
       }
     },
-    "Choose your controller." : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Choisissez votre contrôleur."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "value" : "Elige tu controlador.",
-            "state" : "translated"
-          }
-        }
-      }
-    },
-    "Passwords do not match." : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "value" : "Les mots de passe ne correspondent pas.",
-            "state" : "translated"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Las contraseñas no coinciden."
-          }
-        }
-      }
-    },
-    "No logged-in user." : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aucun utilisateur connecté."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "value" : "Ningun usuario ha iniciado sesión.",
-            "state" : "translated"
-          }
-        }
-      }
-    },
-    "General" : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Général"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "value" : "General",
-            "state" : "translated"
-          }
-        }
-      }
-    },
-    "Disconnect" : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "value" : "Se déconnecter",
-            "state" : "translated"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "value" : "Desconectar",
-            "state" : "translated"
-          }
-        }
-      }
-    },
-    "Trackpad" : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Trackpad"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Trackpad"
-          }
-        }
-      }
-    },
-    "App Preferences" : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Préférences de l'application"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Preferencias De La Aplicación"
-          }
-        }
-      }
-    },
-    "Drag" : {
+    "Log Out" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
-            "value" : "Resistencia",
-            "state" : "translated"
+            "state" : "translated",
+            "value" : "Cierra sesión"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Faire glisser"
-          }
-        }
-      }
-    },
-    "Hi, %@!" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "¡Hola, %@!"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "value" : "Salut, %@ !",
-            "state" : "translated"
-          }
-        }
-      }
-    },
-    "Please fill in all fields." : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "value" : "Veuillez remplir tous les champs.",
-            "state" : "translated"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Por favor, rellene todos los campos."
-          }
-        }
-      }
-    },
-    "Connected" : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Connecté"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Relacionado"
-          }
-        }
-      }
-    },
-    "Language" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Idioma"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Langue"
-          }
-        }
-      }
-    },
-    "Connected to: %@" : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "value" : "Connecté à : %@",
-            "state" : "translated"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Conectado a: %@"
-          }
-        }
-      }
-    },
-    "Use motion to control" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "value" : "Usa el movimiento para controlar",
-            "state" : "translated"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "value" : "Utiliser le mouvement pour contrôler",
-            "state" : "translated"
-          }
-        }
-      }
-    },
-    "Reset" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "value" : "Volver a poner",
-            "state" : "translated"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "value" : "Réinitialiser",
-            "state" : "translated"
-          }
-        }
-      }
-    },
-    "Confirm new password" : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "value" : "Confirmer le nouveau mot de passe",
-            "state" : "translated"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Confirma la nueva contraseña"
-          }
-        }
-      }
-    },
-    "Dark" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sombre"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "value" : "Oscuridad",
-            "state" : "translated"
-          }
-        }
-      }
-    },
-    "Show Tips" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mostrar Consejos"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "value" : "Montrez Des Conseils",
-            "state" : "translated"
-          }
-        }
-      }
-    },
-    "Name" : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nom"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nombre"
-          }
-        }
-      }
-    },
-    "Reconnect" : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "value" : "Reconnectez-vous",
-            "state" : "translated"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "value" : "Volver a conectar",
-            "state" : "translated"
-          }
-        }
-      }
-    },
-    "Password cannot be empty." : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La contraseña no puede estar vacía."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Le mot de passe ne peut pas être vide."
+            "value" : "Déconnexion"
           }
         }
       }
@@ -1082,102 +720,51 @@
         }
       }
     },
-    "Connect" : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Assurer la correspondance"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Conectar"
-          }
-        }
-      }
-    },
-    "" : {
-
-    },
-    "Help" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ayuda"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "value" : "Aide",
-            "state" : "translated"
-          }
-        }
-      }
-    },
-    "Sign in with Google" : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Connectez-vous avec Google"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inicia sesión con Google"
-          }
-        }
-      }
-    },
-    "Delete Account" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Borrar Cuenta"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Supprimer le compte"
-          }
-        }
-      }
-    },
-    "Are you sure you want to delete your account? This action cannot be undone." : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "value" : "¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.",
-            "state" : "translated"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Êtes-vous sûr de vouloir supprimer votre compte ? Cette action ne peut pas être annulée."
-          }
-        }
-      }
-    },
-    "French" : {
+    "Medium" : {
       "extractionState" : "manual",
       "localizations" : {
         "es" : {
           "stringUnit" : {
-            "value" : "Francés",
-            "state" : "translated"
+            "state" : "translated",
+            "value" : "Medio"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Français"
+            "value" : "Moyen"
+          }
+        }
+      }
+    },
+    "Motion" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Movimiento"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mouvement"
+          }
+        }
+      }
+    },
+    "Name" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nombre"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nom"
           }
         }
       }
@@ -1186,8 +773,8 @@
       "localizations" : {
         "es" : {
           "stringUnit" : {
-            "value" : "Nombre actualizado con éxito.",
-            "state" : "translated"
+            "state" : "translated",
+            "value" : "Nombre actualizado con éxito."
           }
         },
         "fr" : {
@@ -1198,35 +785,259 @@
         }
       }
     },
-    "English" : {
-      "extractionState" : "manual",
+    "No devices found. Tap Scan Devices to refresh." : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
-            "value" : "Inglés",
-            "state" : "translated"
+            "state" : "translated",
+            "value" : "No se han encontrado dispositivos. Toque Escanear dispositivos para actualizar."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Anglais"
+            "value" : "Aucun appareil n'a été trouvé. Appuyez sur Scan Devices pour l'actualiser."
           }
         }
       }
     },
-    "Disconnected from: %@" : {
+    "No logged-in user." : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
-            "value" : "Desconectado de: %@",
-            "state" : "translated"
+            "state" : "translated",
+            "value" : "Ningun usuario ha iniciado sesión."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Déconnecté de : %@"
+            "value" : "Aucun utilisateur connecté."
+          }
+        }
+      }
+    },
+    "Notifications" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notificaciones"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notifications"
+          }
+        }
+      }
+    },
+    "OK" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vale"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        }
+      }
+    },
+    "or continue with" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O continuar con"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ou continuer avec"
+          }
+        }
+      }
+    },
+    "Password" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contraseña"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mot de passe"
+          }
+        }
+      }
+    },
+    "Password cannot be empty." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La contraseña no puede estar vacía."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le mot de passe ne peut pas être vide."
+          }
+        }
+      }
+    },
+    "Password changed successfully." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se ha cambiado la contraseña con éxito."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mot de passe modifié avec succès."
+          }
+        }
+      }
+    },
+    "Passwords do not match." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las contraseñas no coinciden."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les mots de passe ne correspondent pas."
+          }
+        }
+      }
+    },
+    "Please fill in all fields." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Por favor, rellene todos los campos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veuillez remplir tous les champs."
+          }
+        }
+      }
+    },
+    "Pointer" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indicador"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pointeur"
+          }
+        }
+      }
+    },
+    "Prevent Screen Sleep" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Evitar El Sueño De La Pantalla"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Empêcher L'Écran De Dormir"
+          }
+        }
+      }
+    },
+    "Quick tips to keep your controller paired and working smoothly." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consejos rápidos para mantener el mando emparejado y funcionando sin problemas."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conseils rapides pour que votre contrôleur reste jumelé et fonctionne en douceur."
+          }
+        }
+      }
+    },
+    "Racing" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carreras"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Course"
+          }
+        }
+      }
+    },
+    "Reconnect" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volver a conectar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reconnectez-vous"
+          }
+        }
+      }
+    },
+    "Reset" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volver a poner"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réinitialiser"
           }
         }
       }
@@ -1235,14 +1046,110 @@
       "localizations" : {
         "es" : {
           "stringUnit" : {
-            "value" : "Restablecer a los valores predeterminados",
-            "state" : "translated"
+            "state" : "translated",
+            "value" : "Restablecer a los valores predeterminados"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "value" : "Réinitialiser les valeurs par défaut",
-            "state" : "translated"
+            "state" : "translated",
+            "value" : "Réinitialiser les valeurs par défaut"
+          }
+        }
+      }
+    },
+    "Reverse Scroll Direction" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dirección De Desplazamiento Inverso"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Direction De Défilement Inversée"
+          }
+        }
+      }
+    },
+    "Save Name" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardar Nombre"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistrer le nom"
+          }
+        }
+      }
+    },
+    "Scan Devices" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dispositivos De Escaneo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appareils de balayage"
+          }
+        }
+      }
+    },
+    "Scroll Speed" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Velocidad De Desplazamiento"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vitesse De Défilement"
+          }
+        }
+      }
+    },
+    "Scrolling" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desplazamiento"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Défilement"
+          }
+        }
+      }
+    },
+    "Select Device" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seleccionar dispositivo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sélectionnez l'appareil"
           }
         }
       }
@@ -1257,11 +1164,206 @@
         },
         "fr" : {
           "stringUnit" : {
-            "value" : "Sensibilité",
-            "state" : "translated"
+            "state" : "translated",
+            "value" : "Sensibilité"
+          }
+        }
+      }
+    },
+    "Sign in with Google" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inicia sesión con Google"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connectez-vous avec Google"
+          }
+        }
+      }
+    },
+    "Sign up" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regístrate"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inscrivez-vous"
+          }
+        }
+      }
+    },
+    "Sound Effects" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Efectos sonoros"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Effets Sonores"
+          }
+        }
+      }
+    },
+    "Steer by tilting" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dirigir inclinando"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dirigez en inclinant"
+          }
+        }
+      }
+    },
+    "Theme" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tema"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thème"
+          }
+        }
+      }
+    },
+    "Trackpad" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trackpad"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trackpad"
+          }
+        }
+      }
+    },
+    "Trackpad Settings" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configuración Del Trackpad"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paramètres Du Trackpad"
+          }
+        }
+      }
+    },
+    "Twin-stick layout" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diseño de doble palo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disposition à deux bâtons"
+          }
+        }
+      }
+    },
+    "Use motion to control" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usa el movimiento para controlar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utiliser le mouvement pour contrôler"
+          }
+        }
+      }
+    },
+    "Use your iPhone as a touchpad" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usa tu iPhone como un panel táctil"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utilisez votre iPhone comme pavé tactile"
+          }
+        }
+      }
+    },
+    "Vibration Feedback" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retroalimentación De Vibración"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rétroaction par vibration"
+          }
+        }
+      }
+    },
+    "Welcome to Controlio" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bienvenido a Controlio"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bienvenue à Controlio"
           }
         }
       }
     }
-  }
+  },
+  "version" : "1.0"
 }
