@@ -9,13 +9,13 @@ import SwiftUI
 import Combine
 
 final class AppSettings: ObservableObject {
-    @Published var showTips: Bool {
+    @Published var vibrationFeedback: Bool {
         didSet { saveSettings() }
     }
-    @Published var connectionAlerts: Bool {
+    @Published var hapticStrength: String {
         didSet { saveSettings() }
     }
-    @Published var updateReminders: Bool {
+    @Published var soundEffects: Bool {
         didSet { saveSettings() }
     }
     @Published var selectedTheme: String {
@@ -24,17 +24,24 @@ final class AppSettings: ObservableObject {
     @Published var selectedLanguage: String {
         didSet { saveSettings(); languageDidChange.send() }
     }
+    @Published var preventSleep: Bool {
+        didSet {
+            saveSettings()
+            UIApplication.shared.isIdleTimerDisabled = preventSleep
+        }
+    }
 
     let languageDidChange = PassthroughSubject<Void, Never>()
 
     private let defaults = UserDefaults.standard
 
     init() {
-        showTips = defaults.bool(forKey: "showTips")
-        connectionAlerts = defaults.bool(forKey: "connectionAlerts")
-        updateReminders = defaults.bool(forKey: "updateReminders")
+        vibrationFeedback = defaults.object(forKey: "vibrationFeedback") as? Bool ?? true
+        hapticStrength = defaults.string(forKey: "hapticStrength") ?? "Medium"
+        soundEffects = defaults.object(forKey: "soundEffects") as? Bool ?? true
         selectedTheme = defaults.string(forKey: "selectedTheme") ?? "Light"
         selectedLanguage = defaults.string(forKey: "selectedLanguage") ?? "English"
+        preventSleep = defaults.object(forKey: "preventSleep") as? Bool ?? false
 
         // Validate language
         let validLanguages = ["English", "French", "Spanish"]
@@ -50,19 +57,21 @@ final class AppSettings: ObservableObject {
     }
 
     private func saveSettings() {
-        defaults.set(showTips, forKey: "showTips")
-        defaults.set(connectionAlerts, forKey: "connectionAlerts")
-        defaults.set(updateReminders, forKey: "updateReminders")
+        defaults.set(vibrationFeedback, forKey: "vibrationFeedback")
+        defaults.set(hapticStrength, forKey: "hapticStrength")
+        defaults.set(soundEffects, forKey: "soundEffects")
         defaults.set(selectedTheme, forKey: "selectedTheme")
         defaults.set(selectedLanguage, forKey: "selectedLanguage")
+        defaults.set(preventSleep, forKey: "preventSleep")
     }
 
     private func resetToDefaults() {
-        showTips = true
-        connectionAlerts = true
-        updateReminders = true
+        vibrationFeedback = true
+        hapticStrength = "Medium"
+        soundEffects = true
         selectedTheme = "Light"
         selectedLanguage = "English"
+        preventSleep = false
         saveSettings()
     }
 
@@ -95,7 +104,7 @@ extension AppSettings {
     }
 
     var primaryButton: Color {
-        selectedTheme == "Dark" ? Color.orange.opacity(0.9) : Color.orange
+        Color.orange
     }
 
     var buttonText: Color {
