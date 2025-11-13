@@ -30,6 +30,12 @@ struct GamepadView: View {
     private let axInterval: TimeInterval = 1.0 / 60.0
     private let deadzone: CGFloat = 0.08
     
+    private let stickTick = Timer.publish(
+        every: 1.0 / 60.0,
+        on: .main,
+        in: .common
+    ).autoconnect()
+    
     @State private var hapticsReady = false
 
     var body: some View {
@@ -132,8 +138,17 @@ struct GamepadView: View {
             prepareHaptics()
             mc.startBrowsingIfNeeded()
         }
+        .onReceive(stickTick) { _ in
+            pollSticks()
+        }
     }
     
+    private func pollSticks() {
+        guard mc.sessionState == .connected else { return }
+        
+        sendStick(id: 0, x: leftStick.x,  y: leftStick.y,  lastSent: &lastAXSentLeft)
+        sendStick(id: 1, x: rightStick.x, y: rightStick.y, lastSent: &lastAXSentRight)
+    }
     private func sendButton(_ b: GPButton, _ down: Bool) {
         mc.send(down ? .gpDown(b) : .gpUp(b))
         hapticTap()
