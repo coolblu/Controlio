@@ -9,6 +9,7 @@ import SwiftUI
 
 struct DeviceHelpView: View {
     var onNavigateHome: (() -> Void)? = nil
+    let mcManager: MCManager
     @State private var selection: DeviceHelpTab = .connection
     @State private var showDeviceController = false
     @State private var showAppPreferences = false
@@ -16,7 +17,7 @@ struct DeviceHelpView: View {
     var body: some View {
         ZStack {
             NavigationLink(
-                destination: DeviceControllerView(onNavigateHome: onNavigateHome),
+                destination: DeviceControllerView(onNavigateHome: onNavigateHome, mcManager: mcManager),
                 isActive: $showDeviceController
             ) {
                 EmptyView()

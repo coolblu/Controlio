@@ -128,6 +128,7 @@ struct TrackpadView: View {
         .sheet(isPresented: $showSettings) {
                     TrackpadSettingsView(
                         onNavigateHome: onNavigateHome,
+                        mcManager: mc,
                         pointerSensitivity: $pointerSensitivity,
                         scrollSensitivity: $scrollSensitivity,
                         reverseScroll: $reverseScroll

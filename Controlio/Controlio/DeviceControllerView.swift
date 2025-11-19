@@ -6,13 +6,18 @@
 //
 
 import SwiftUI
+import MultipeerConnectivity
 
 struct DeviceControllerView: View {
     var onNavigateHome: (() -> Void)? = nil
     @State private var showAppPreferences = false
     @Environment(\.dismiss) private var dismiss
-    private let connectedDevices = DeviceControllerContent.connectedDevices
-    private let availableDevices = DeviceControllerContent.availableDevices
+    @StateObject private var viewModel: DeviceControllerViewModel
+
+    init(onNavigateHome: (() -> Void)? = nil, mcManager: MCManager) {
+        self.onNavigateHome = onNavigateHome
+        self._viewModel = StateObject(wrappedValue: DeviceControllerViewModel(mcManager: mcManager))
+    }
 
     var body: some View {
         ZStack {
@@ -57,6 +62,14 @@ struct DeviceControllerView: View {
         .background(DeviceHelpTheme.background.ignoresSafeArea())
         .navigationTitle("Device Controller")
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            viewModel.startBrowsing()
+            // Automatically start scanning when the view appears
+            viewModel.scanForDevices()
+        }
+        .onDisappear {
+            viewModel.stopBrowsing()
+        }
     }
 
     @ViewBuilder
@@ -64,7 +77,12 @@ struct DeviceControllerView: View {
         DeviceControllerSection(
             title: "Connected Devices",
             showScanButton: false,
-            devices: connectedDevices
+            devices: viewModel.connectedDevices,
+            isScanning: false,
+            onScanTap: {},
+            onDeviceAction: { device in
+                viewModel.toggleConnection(for: device)
+            }
         )
         .frame(minWidth: 320, maxWidth: .infinity)
     }
@@ -74,7 +92,14 @@ struct DeviceControllerView: View {
         DeviceControllerSection(
             title: "Available Devices",
             showScanButton: true,
-            devices: availableDevices
+            devices: viewModel.availableDevices,
+            isScanning: viewModel.isScanning,
+            onScanTap: {
+                viewModel.scanForDevices()
+            },
+            onDeviceAction: { device in
+                viewModel.toggleConnection(for: device)
+            }
         )
         .frame(minWidth: 320, maxWidth: .infinity)
     }
@@ -85,7 +110,10 @@ struct DeviceControllerView: View {
 private struct DeviceControllerSection: View {
     let title: String
     let showScanButton: Bool
-    let devices: [DeviceControllerDevice]
+    let devices: [DeviceInfo]
+    let isScanning: Bool
+    let onScanTap: () -> Void
+    let onDeviceAction: (DeviceInfo) -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -94,24 +122,33 @@ private struct DeviceControllerSection: View {
                     .font(.title3.weight(.semibold))
                 Spacer()
                 if showScanButton {
-                    Button(action: {}) {
-                        Label("Scan Devices", systemImage: "arrow.clockwise")
-                            .font(.subheadline.weight(.semibold))
-                            .padding(.vertical, 8)
-                            .padding(.horizontal, 14)
-                            .background(DeviceControllerTheme.scanButtonBackground)
-                            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                                    .stroke(DeviceControllerTheme.scanButtonBorder, lineWidth: 1)
-                            )
+                    Button(action: onScanTap) {
+                        HStack(spacing: 8) {
+                            if isScanning {
+                                ProgressView()
+                                    .scaleEffect(0.8)
+                            } else {
+                                Image(systemName: "arrow.clockwise")
+                            }
+                            Text(isScanning ? "Scanning..." : "Scan Devices")
+                                .font(.subheadline.weight(.semibold))
+                        }
+                        .padding(.vertical, 8)
+                        .padding(.horizontal, 14)
+                        .background(DeviceControllerTheme.scanButtonBackground)
+                        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                                .stroke(DeviceControllerTheme.scanButtonBorder, lineWidth: 1)
+                        )
                     }
                     .buttonStyle(.plain)
+                    .disabled(isScanning)
                 }
             }
 
             if devices.isEmpty {
-                Text("No devices found. Tap Scan Devices to refresh.")
+                Text(showScanButton ? "No devices found. Tap Scan Devices to refresh." : "No connected devices")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -119,7 +156,10 @@ private struct DeviceControllerSection: View {
             } else {
                 VStack(spacing: 16) {
                     ForEach(devices) { device in
-                        DeviceControllerCard(device: device)
+                        DeviceControllerCard(
+                            device: device,
+                            onAction: { onDeviceAction(device) }
+                        )
                     }
                 }
             }
@@ -137,10 +177,11 @@ private struct DeviceControllerSection: View {
 // MARK: - Card
 
 private struct DeviceControllerCard: View {
-    let device: DeviceControllerDevice
+    let device: DeviceInfo
+    let onAction: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 18) {
+        VStack(alignment: .leading, spacing: 16) {
             HStack(alignment: .top, spacing: 12) {
                 DeviceIcon(kind: device.kind)
                 VStack(alignment: .leading, spacing: 4) {
@@ -151,32 +192,20 @@ private struct DeviceControllerCard: View {
                         .foregroundStyle(.secondary)
                 }
                 Spacer()
-                StatusBadge(status: device.status)
+                StatusBadge(status: device.connectionStatus)
             }
 
-            VStack(alignment: .leading, spacing: 8) {
-                HStack {
-                    Text("Battery")
-                        .font(.subheadline.weight(.semibold))
-                    Spacer()
-                    Text(device.batteryPercentage)
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(.secondary)
-                }
-                BatteryBar(level: device.batteryLevel)
-            }
-
-            Button(action: {}) {
-                Text(device.status.actionTitle)
+            Button(action: onAction) {
+                Text(device.connectionStatus.actionTitle)
                     .font(.headline)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 12)
-                    .background(device.status.buttonBackground)
-                    .foregroundStyle(device.status.buttonForeground)
+                    .background(device.connectionStatus.buttonBackground)
+                    .foregroundStyle(device.connectionStatus.buttonForeground)
                     .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
                     .overlay(
                         RoundedRectangle(cornerRadius: 18, style: .continuous)
-                            .stroke(device.status.buttonBorder, lineWidth: device.status.buttonBorderWidth)
+                            .stroke(device.connectionStatus.buttonBorder, lineWidth: device.connectionStatus.buttonBorderWidth)
                     )
             }
             .buttonStyle(.plain)
@@ -195,7 +224,7 @@ private struct DeviceControllerCard: View {
 // MARK: - Components
 
 private struct DeviceIcon: View {
-    let kind: DeviceControllerDevice.Kind
+    let kind: DeviceInfo.Kind
 
     var body: some View {
         ZStack {
@@ -224,142 +253,6 @@ private struct StatusBadge: View {
     }
 }
 
-private struct BatteryBar: View {
-    let level: Double
-
-    var body: some View {
-        GeometryReader { geo in
-            ZStack(alignment: .leading) {
-                Capsule()
-                    .fill(DeviceControllerTheme.batteryTrack)
-                Capsule()
-                    .fill(DeviceControllerTheme.primary)
-                    .frame(width: max(4, geo.size.width * level))
-            }
-        }
-        .frame(height: 10)
-    }
-}
-
-// MARK: - Models
-
-private struct DeviceControllerDevice: Identifiable {
-    enum Kind {
-        case laptop
-        case desktop
-
-        var iconName: String {
-            switch self {
-            case .laptop: return "laptopcomputer"
-            case .desktop: return "desktopcomputer"
-            }
-        }
-    }
-
-    let id = UUID()
-    let name: String
-    let subtitle: String
-    let kind: Kind
-    let batteryLevel: Double
-    let status: DeviceConnectionStatus
-
-    var batteryPercentage: String {
-        let value = Int((batteryLevel * 100).rounded())
-        return "\(value)%"
-    }
-}
-
-private enum DeviceConnectionStatus {
-    case connected
-    case available
-
-    var displayName: String {
-        switch self {
-        case .connected: return "connected"
-        case .available: return "available"
-        }
-    }
-
-    var badgeBackground: Color {
-        switch self {
-        case .connected: return Color(red: 1.0, green: 0.894, blue: 0.839)
-        case .available: return Color(red: 0.862, green: 0.957, blue: 0.882)
-        }
-    }
-
-    var badgeForeground: Color {
-        switch self {
-        case .connected: return DeviceControllerTheme.primary
-        case .available: return Color(red: 0.129, green: 0.549, blue: 0.184)
-        }
-    }
-
-    var actionTitle: String {
-        switch self {
-        case .connected: return "Disconnect"
-        case .available: return "Connect"
-        }
-    }
-
-    var buttonBackground: Color {
-        switch self {
-        case .connected: return .white
-        case .available: return DeviceControllerTheme.primary
-        }
-    }
-
-    var buttonForeground: Color {
-        switch self {
-        case .connected: return DeviceControllerTheme.danger
-        case .available: return .white
-        }
-    }
-
-    var buttonBorder: Color {
-        switch self {
-        case .connected: return DeviceControllerTheme.danger
-        case .available: return .clear
-        }
-    }
-
-    var buttonBorderWidth: CGFloat {
-        switch self {
-        case .connected: return 1.5
-        case .available: return 0
-        }
-    }
-}
-
-// MARK: - Sample Content
-
-private enum DeviceControllerContent {
-    static let connectedDevices: [DeviceControllerDevice] = [
-        DeviceControllerDevice(
-            name: "MacBook Pro 16\"",
-            subtitle: "Laptop",
-            kind: .laptop,
-            batteryLevel: 0.9,
-            status: .connected
-        )
-    ]
-
-    static let availableDevices: [DeviceControllerDevice] = [
-        DeviceControllerDevice(
-            name: "Dell XPS 13",
-            subtitle: "Laptop",
-            kind: .laptop,
-            batteryLevel: 0.75,
-            status: .available
-        ),
-        DeviceControllerDevice(
-            name: "Gaming PC",
-            subtitle: "Desktop",
-            kind: .desktop,
-            batteryLevel: 1.0,
-            status: .available
-        )
-    ]
-}
 
 // MARK: - Theme
 
@@ -371,7 +264,6 @@ private enum DeviceControllerTheme {
     static let cardBorder = Color.black.opacity(0.06)
     static let cardShadow = Color.black.opacity(0.05)
     static let iconBackground = Color.white
-    static let batteryTrack = Color.black.opacity(0.08)
     static let danger = Color(red: 0.875, green: 0.157, blue: 0.212)
     static let scanButtonBackground = Color.white
     static let scanButtonBorder = Color.black.opacity(0.08)

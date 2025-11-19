@@ -227,7 +227,8 @@ extension MCManager: MCNearbyServiceAdvertiserDelegate, MCNearbyServiceBrowserDe
         if !discoveredPeers.contains(where: { $0 == peerID }) {
             DispatchQueue.main.async { self.discoveredPeers.append(peerID) }
         }
-        browser.invitePeer(peerID, to: session, withContext: nil, timeout: 10)
+        // we don't auto-invite, let user choose when to connect
+        // browser.invitePeer(peerID, to: session, withContext: nil, timeout: 10)
     }
 
     func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {

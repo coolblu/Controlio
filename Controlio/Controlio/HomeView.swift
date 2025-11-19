@@ -15,6 +15,7 @@ private enum Route: Hashable {
     case manageProfile
     case appPreferences
     case help
+    case deviceController
 }
 
 final class MCManagerWrapper: ObservableObject {
@@ -155,14 +156,20 @@ struct HomeView: View {
                                     .environmentObject(appSettings)
                                 } else {
                                     Button(NSLocalizedString("Connect", bundle: appSettings.bundle, comment: "")) {
-                                        mc.userRequestedReconnect()
+                                        // If we have discovered devices, try to auto-connect to the first one
+                                        // Otherwise, navigate to device selection
+                                        if let firstDevice = mc.discoveredPeers.first {
+                                            mc.connect(to: firstDevice)
+                                        } else {
+                                            path.append(Route.deviceController)
+                                        }
                                     }
                                     .buttonStyle(PrimaryButtonStyle())
                                     .environmentObject(appSettings)
                                 }
-                                
+
                                 Button(NSLocalizedString("Select Device", bundle: appSettings.bundle, comment: "")) {
-                                    // navigate to device picker
+                                    path.append(Route.deviceController)
                                 }
                                 .buttonStyle(OutlineButtonStyle())
                                 .environmentObject(appSettings)
@@ -196,7 +203,9 @@ struct HomeView: View {
                         case .appPreferences:
                             AppPreferencesView()
                         case .help:
-                            DeviceHelpView(onNavigateHome: { path = NavigationPath() })
+                            DeviceHelpView(onNavigateHome: { path = NavigationPath() }, mcManager: mc)
+                        case .deviceController:
+                            DeviceControllerView(onNavigateHome: { path = NavigationPath() }, mcManager: mc)
                         }
                     }
                 }
