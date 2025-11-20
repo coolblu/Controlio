@@ -76,8 +76,8 @@ struct GamepadView: View {
                         }
                     }
                     .padding(.horizontal, isLandscape ? 26 : 22)
-                    .padding(.top, isLandscape ? 0 : 4)
-                    .padding(.bottom, 4)
+                    .padding(.top, isLandscape ? 0 : 2)
+                    .padding(.bottom, 2)
 
                     HStack(spacing: 18) {
                         Spacer()
@@ -86,7 +86,7 @@ struct GamepadView: View {
                         Spacer()
                     }
                     .padding(.horizontal, isLandscape ? 24 : 20)
-                    .padding(.bottom, isLandscape ? 0 : 0)
+                    .padding(.bottom, 0)
 
                     HStack(alignment: .center, spacing: columnGap) {
                         DPad(keySize: dpadKey) { dir, down in
@@ -119,7 +119,7 @@ struct GamepadView: View {
                         .padding(.leading, isLandscape ? 4 : 0)
                     }
                     .padding(.horizontal, isLandscape ? 22 : 18)
-                    .padding(.vertical, isLandscape ? 0 : 2)
+                    .padding(.vertical, 0)
                     
                     HStack(alignment: .bottom, spacing: columnGap) {
                         Thumbstick(radius: stickRadius, value: $leftStick) { x, y in
@@ -137,8 +137,8 @@ struct GamepadView: View {
                         .padding(.leading, isLandscape ? 4 : 0)
                     }
                     .padding(.horizontal, isLandscape ? 20 : 16)
-                    .padding(.top, isLandscape ? 0 : 4)
-                    .padding(.bottom, isLandscape ? 6 : 8)
+                    .padding(.top, 0)
+                    .padding(.bottom, isLandscape ? 2 : 4)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             }
