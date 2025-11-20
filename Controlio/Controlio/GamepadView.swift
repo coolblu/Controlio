@@ -124,6 +124,14 @@ struct GamepadView: View {
             let clusterGap = max(minClusterGap, clampedClusterGap * secondaryScale)
             let columnGap = max(minColumnGap, clampedColumnGap * secondaryScale)
             let chipWidth = max(minChipWidth, clampedChipWidth * secondaryScale)
+            let midRowWidth =
+                dpadKey * 3 +
+                dpadSpacing * 2 +
+                abxySize * 2 +
+                clusterGap +
+                columnGap * 2 +
+                chipWidth
+            let midRowFrameWidth = min(midRowAvailable, midRowWidth)
 
             let stickGap = columnGap
             let stickRowAvailable = w - stickRowPadding * 2
@@ -132,6 +140,8 @@ struct GamepadView: View {
             let clampedStickRadius = max(minStickRadius, min(110, baseStickRadius))
             let maxStickRadiusByWidth = max(0, (stickRowAvailable - stickGap * 3) / 4)
             let stickRadius = min(clampedStickRadius, maxStickRadiusByWidth)
+            let stickRowWidth = stickRadius * 4 + stickGap
+            let stickRowFrameWidth = min(stickRowAvailable, stickRowWidth + stickGap)
             
             ZStack(alignment: .topLeading) {
                 appSettings.bgColor.ignoresSafeArea()
@@ -164,8 +174,6 @@ struct GamepadView: View {
                             }
                             hapticTap()
                         }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.trailing, isLandscape ? 4 : 0)
 
                         VStack(spacing: isLandscape ? 10 : 8) {
                             GPChip(label: "Select", horizontalPadding: chipHorizontalPadding) { down in sendButton(.select, down) }
@@ -183,9 +191,9 @@ struct GamepadView: View {
                             case .y: sendButton(.y, down)
                             }
                         }
-                        .frame(maxWidth: .infinity, alignment: .trailing)
-                        .padding(.leading, isLandscape ? 4 : 0)
                     }
+                    .frame(width: midRowFrameWidth, alignment: .center)
+                    .frame(maxWidth: .infinity)
                     .padding(.horizontal, middleRowPadding)
                     .padding(.vertical, 0)
                     
@@ -193,17 +201,15 @@ struct GamepadView: View {
                         Thumbstick(radius: stickRadius, value: $leftStick) { x, y in
                             sendStick(id: 0, x: x, y: y, lastSent: &lastAXSentLeft)
                         }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.trailing, isLandscape ? 4 : 0)
                         
                         Spacer(minLength: stickGap)
                         
                         Thumbstick(radius: stickRadius, value: $rightStick) { x, y in
                             sendStick(id: 1, x: x, y: y, lastSent: &lastAXSentRight)
                         }
-                        .frame(maxWidth: .infinity, alignment: .trailing)
-                        .padding(.leading, isLandscape ? 4 : 0)
                     }
+                    .frame(width: stickRowFrameWidth, alignment: .center)
+                    .frame(maxWidth: .infinity)
                     .padding(.horizontal, stickRowPadding)
                     .padding(.top, 0)
                     .padding(.bottom, isLandscape ? 2 : 4)
