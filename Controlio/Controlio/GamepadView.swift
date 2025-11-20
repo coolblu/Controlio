@@ -61,11 +61,12 @@ struct GamepadView: View {
             let columnGap: CGFloat      = isLandscape
                 ? max(24, min(32, min(w, h) * 0.04))
                 : max(20, min(28, min(w, h) * 0.04))
+            let verticalSpacing: CGFloat = isLandscape ? 6 : 4
             
             ZStack(alignment: .topLeading) {
                 appSettings.bgColor.ignoresSafeArea()
                 
-                VStack(spacing: isLandscape ? 6 : 6) {
+                VStack(spacing: verticalSpacing) {
                     HStack {
                         Shoulder(label: "L1", width: shoulderWidth, height: shoulderHeight) { down in
                             sendButton(.l1, down)
@@ -78,15 +79,6 @@ struct GamepadView: View {
                     .padding(.horizontal, isLandscape ? 26 : 22)
                     .padding(.top, isLandscape ? 0 : 2)
                     .padding(.bottom, 2)
-
-                    HStack(spacing: 18) {
-                        Spacer()
-                        GPChip(label: "Select") { down in sendButton(.select, down) }
-                        GPChip(label: "Start")  { down in sendButton(.start, down)  }
-                        Spacer()
-                    }
-                    .padding(.horizontal, isLandscape ? 24 : 20)
-                    .padding(.bottom, 0)
 
                     HStack(alignment: .center, spacing: columnGap) {
                         DPad(keySize: dpadKey) { dir, down in
@@ -104,8 +96,12 @@ struct GamepadView: View {
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.trailing, isLandscape ? 4 : 0)
-                        
-                        Spacer(minLength: columnGap)
+
+                        VStack(spacing: isLandscape ? 10 : 8) {
+                            GPChip(label: "Select") { down in sendButton(.select, down) }
+                            GPChip(label: "Start")  { down in sendButton(.start, down)  }
+                        }
+                        .padding(.horizontal, isLandscape ? 10 : 8)
                         
                         ABXY(buttonSize: abxySize, gap: clusterGap) { btn, down in
                             switch btn {
