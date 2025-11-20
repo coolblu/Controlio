@@ -220,23 +220,26 @@ struct GamepadView: View {
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                HStack(spacing: 12) {
-                    ConnectionIndicator(statusText: ui(for: mc.sessionState).0, dotColor: ui(for: mc.sessionState).1)
-                        .environmentObject(appSettings)
+                ConnectionIndicator(
+                    statusText: ui(for: mc.sessionState).0,
+                    dotColor: ui(for: mc.sessionState).1
+                )
+                .environmentObject(appSettings)
+            }
 
-                    Button(action: { showSettings = true }) {
-                        Image(systemName: "gearshape.fill")
-                            .font(.system(size: 14))
-                            .foregroundColor(appSettings.primaryButton)
-                            .padding(8)
-                            .background(appSettings.cardColor)
-                            .clipShape(Circle())
-                            .shadow(color: appSettings.shadowColor, radius: 4, y: 2)
-                            .overlay(
-                                Circle()
-                                    .stroke(appSettings.strokeColor, lineWidth: 1)
-                            )
-                    }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: { showSettings = true }) {
+                    Image(systemName: "gearshape.fill")
+                        .font(.system(size: 14))
+                        .foregroundColor(appSettings.primaryButton)
+                        .padding(8)
+                        .background(appSettings.cardColor)
+                        .clipShape(Circle())
+                        .shadow(color: appSettings.shadowColor, radius: 4, y: 2)
+                        .overlay(
+                            Circle()
+                                .stroke(appSettings.strokeColor, lineWidth: 1)
+                        )
                 }
             }
         }
