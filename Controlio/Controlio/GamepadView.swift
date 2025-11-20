@@ -56,7 +56,9 @@ struct GamepadView: View {
             let abxySize: CGFloat       = max(54, min(68, min(w, h) * 0.11))
             let dpadKey: CGFloat        = max(40, min(54, min(w, h) * 0.085))
             let clusterGap: CGFloat     = max(18, min(26, min(w, h) * 0.035))
-            let columnGap: CGFloat      = max(16, min(24, min(w, h) * 0.03))
+            let columnGap: CGFloat      = isLandscape
+                ? max(24, min(32, min(w, h) * 0.04))
+                : max(20, min(28, min(w, h) * 0.04))
             
             ZStack(alignment: .top) {
                 appSettings.bgColor.ignoresSafeArea()
@@ -76,9 +78,18 @@ struct GamepadView: View {
                             sendButton(.r1, down)
                         }
                     }
-                    .padding(.horizontal, isLandscape ? 24 : 20)
+                    .padding(.horizontal, isLandscape ? 26 : 22)
                     .padding(.top, isLandscape ? 4 : 8)
                     .padding(.bottom, 6)
+
+                    HStack(spacing: 18) {
+                        Spacer()
+                        GPChip(label: "Select") { down in sendButton(.select, down) }
+                        GPChip(label: "Start")  { down in sendButton(.start, down)  }
+                        Spacer()
+                    }
+                    .padding(.horizontal, isLandscape ? 24 : 20)
+                    .padding(.bottom, isLandscape ? 0 : 2)
                     
                     HStack(alignment: .center, spacing: columnGap) {
                         VStack(spacing: isLandscape ? 14 : 18) {
@@ -101,15 +112,9 @@ struct GamepadView: View {
                             }
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.trailing, isLandscape ? 4 : 0)
                         
-                        VStack(spacing: isLandscape ? 12 : 16) {
-                            HStack(spacing: 18) {
-                                GPChip(label: "Select") { down in sendButton(.select, down) }
-                                GPChip(label: "Start")  { down in sendButton(.start, down)  }
-                            }
-                            Spacer(minLength: stickRadius * 0.3)
-                        }
-                        .frame(maxWidth: .infinity)
+                        Spacer(minLength: columnGap)
                         
                         VStack(spacing: isLandscape ? 14 : 18) {
                             ABXY(buttonSize: abxySize, gap: clusterGap) { btn, down in
@@ -126,6 +131,7 @@ struct GamepadView: View {
                             }
                         }
                         .frame(maxWidth: .infinity, alignment: .trailing)
+                        .padding(.leading, isLandscape ? 4 : 0)
                     }
                     .padding(.horizontal, isLandscape ? 20 : 16)
                     .padding(.vertical, 8)
@@ -393,6 +399,7 @@ struct Thumbstick: View {
         let ringFill = isDark ? Color.white.opacity(0.08) : appSettings.cardColor
         let knobFill = isDark ? Color.white.opacity(0.22) : appSettings.cardColor
         let knobStroke = isDark ? Color.white.opacity(0.18) : appSettings.strokeColor
+        let hitRadius = radius * 1.4
 	
         return ZStack {
             Circle().strokeBorder(ringStroke, lineWidth: 2)
@@ -404,26 +411,27 @@ struct Thumbstick: View {
                 .overlay(Circle().stroke(knobStroke, lineWidth: 1))
                 .frame(width: max(58, radius * 0.7), height: max(58, radius * 0.7))
                 .offset(drag)
-                .gesture(
-                    DragGesture(minimumDistance: 0)
-                        .onChanged { g in
-                            let dx = g.translation.width
-                            let dy = g.translation.height
-                            let clamped = clampToCircle(CGSize(width: dx, height: dy), limit: radius)
-                            drag = clamped
-                            let nx = clamped.width / radius
-                            let ny = clamped.height / radius
-                            value = CGPoint(x: nx, y: ny)
-                            onChange(nx, ny)
-                        }
-                        .onEnded { _ in
-                            drag = .zero
-                            value = .zero
-                            onChange(0, 0)
-                        }
-                )
         }
         .frame(width: radius*2, height: radius*2)
+        .contentShape(Circle().inset(by: -max(hitRadius - radius, 0))) // bigger hit ring lets you start off the knob
+        .gesture(
+            DragGesture(minimumDistance: 0)
+                .onChanged { g in
+                    let dx = g.translation.width
+                    let dy = g.translation.height
+                    let clamped = clampToCircle(CGSize(width: dx, height: dy), limit: radius)
+                    drag = clamped
+                    let nx = clamped.width / radius
+                    let ny = clamped.height / radius
+                    value = CGPoint(x: nx, y: ny)
+                    onChange(nx, ny)
+                }
+                .onEnded { _ in
+                    drag = .zero
+                    value = .zero
+                    onChange(0, 0)
+                }
+        )
     }
     
     private func clampToCircle(_ v: CGSize, limit: CGFloat) -> CGSize {
