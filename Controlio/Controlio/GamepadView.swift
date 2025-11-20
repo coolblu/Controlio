@@ -60,15 +60,10 @@ struct GamepadView: View {
                 ? max(24, min(32, min(w, h) * 0.04))
                 : max(20, min(28, min(w, h) * 0.04))
             
-            ZStack(alignment: .top) {
+            ZStack(alignment: .topLeading) {
                 appSettings.bgColor.ignoresSafeArea()
                 
                 VStack(spacing: isLandscape ? 10 : 8) {
-                    if !isLandscape {
-                        ConnectionIndicator(statusText: statusText, dotColor: dotColor)
-                            .environmentObject(appSettings)
-                    }
-
                     HStack {
                         Shoulder(label: "L1", width: shoulderWidth, height: shoulderHeight) { down in
                             sendButton(.l1, down)
@@ -90,66 +85,66 @@ struct GamepadView: View {
                     }
                     .padding(.horizontal, isLandscape ? 24 : 20)
                     .padding(.bottom, isLandscape ? 0 : 2)
-                    
+
                     HStack(alignment: .center, spacing: columnGap) {
-                        VStack(spacing: isLandscape ? 14 : 18) {
-                            DPad(keySize: dpadKey) { dir, down in
-                                switch (dir, down) {
-                                case (.up, true):    mc.send(.gpDown(.dpadUp))
-                                case (.up, false):   mc.send(.gpUp(.dpadUp))
-                                case (.down, true):  mc.send(.gpDown(.dpadDown))
-                                case (.down, false): mc.send(.gpUp(.dpadDown))
-                                case (.left, true):  mc.send(.gpDown(.dpadLeft))
-                                case (.left, false): mc.send(.gpUp(.dpadLeft))
-                                case (.right, true): mc.send(.gpDown(.dpadRight))
-                                case (.right, false):mc.send(.gpUp(.dpadRight))
-                                }
-                                hapticTap()
+                        DPad(keySize: dpadKey) { dir, down in
+                            switch (dir, down) {
+                            case (.up, true):    mc.send(.gpDown(.dpadUp))
+                            case (.up, false):   mc.send(.gpUp(.dpadUp))
+                            case (.down, true):  mc.send(.gpDown(.dpadDown))
+                            case (.down, false): mc.send(.gpUp(.dpadDown))
+                            case (.left, true):  mc.send(.gpDown(.dpadLeft))
+                            case (.left, false): mc.send(.gpUp(.dpadLeft))
+                            case (.right, true): mc.send(.gpDown(.dpadRight))
+                            case (.right, false):mc.send(.gpUp(.dpadRight))
                             }
-                            
-                            Thumbstick(radius: stickRadius, value: $leftStick) { x, y in
-                                sendStick(id: 0, x: x, y: y, lastSent: &lastAXSentLeft)
-                            }
+                            hapticTap()
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.trailing, isLandscape ? 4 : 0)
                         
                         Spacer(minLength: columnGap)
                         
-                        VStack(spacing: isLandscape ? 14 : 18) {
-                            ABXY(buttonSize: abxySize, gap: clusterGap) { btn, down in
-                                switch btn {
-                                case .a: sendButton(.a, down)
-                                case .b: sendButton(.b, down)
-                                case .x: sendButton(.x, down)
-                                case .y: sendButton(.y, down)
-                                }
-                            }
-                            
-                            Thumbstick(radius: stickRadius, value: $rightStick) { x, y in
-                                sendStick(id: 1, x: x, y: y, lastSent: &lastAXSentRight)
+                        ABXY(buttonSize: abxySize, gap: clusterGap) { btn, down in
+                            switch btn {
+                            case .a: sendButton(.a, down)
+                            case .b: sendButton(.b, down)
+                            case .x: sendButton(.x, down)
+                            case .y: sendButton(.y, down)
                             }
                         }
                         .frame(maxWidth: .infinity, alignment: .trailing)
                         .padding(.leading, isLandscape ? 4 : 0)
                     }
-                    .padding(.horizontal, isLandscape ? 20 : 16)
-                    .padding(.vertical, 8)
+                    .padding(.horizontal, isLandscape ? 22 : 18)
+                    .padding(.vertical, isLandscape ? 2 : 6)
                     
-                    Spacer(minLength: 0)
+                    HStack(alignment: .bottom, spacing: columnGap) {
+                        Thumbstick(radius: stickRadius, value: $leftStick) { x, y in
+                            sendStick(id: 0, x: x, y: y, lastSent: &lastAXSentLeft)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.trailing, isLandscape ? 4 : 0)
+                        
+                        Spacer(minLength: columnGap)
+                        
+                        Thumbstick(radius: stickRadius, value: $rightStick) { x, y in
+                            sendStick(id: 1, x: x, y: y, lastSent: &lastAXSentRight)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                        .padding(.leading, isLandscape ? 4 : 0)
+                    }
+                    .padding(.horizontal, isLandscape ? 20 : 16)
+                    .padding(.top, isLandscape ? 4 : 8)
+                    .padding(.bottom, isLandscape ? 8 : 10)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                 
-                if isLandscape {
-                    HStack {
-                        ConnectionIndicator(statusText: statusText, dotColor: dotColor)
-                            .environmentObject(appSettings)
-                        Spacer()
-                    }
-                    .padding(.horizontal, 20)
-                    .padding(.bottom, 12)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-                }
+                ConnectionIndicator(statusText: statusText, dotColor: dotColor)
+                    .environmentObject(appSettings)
+                    .padding(.leading, 16)
+                    .padding(.top, isLandscape ? 6 : 10)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             }
         }
         .onAppear {
