@@ -13,6 +13,9 @@ struct GamepadView: View {
     @ObservedObject var mc: MCManager
     @EnvironmentObject var appSettings: AppSettings
     
+    var onNavigateHome: (() -> Void)? = nil
+    @State private var showSettings = false
+
     private func ui(for s: MCSessionState) -> (String, Color) {
         switch s {
         case .connected:
@@ -148,11 +151,33 @@ struct GamepadView: View {
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                ConnectionIndicator(statusText: ui(for: mc.sessionState).0, dotColor: ui(for: mc.sessionState).1)
+                HStack(spacing: 12) {
+                    ConnectionIndicator(statusText: ui(for: mc.sessionState).0, dotColor: ui(for: mc.sessionState).1)
                     .environmentObject(appSettings)
+
+                    Button(action: { showSettings = true }) {
+                        Image(systemName: "gearshape.fill")
+                            .font(.system(size: 14))
+                            .foregroundColor(appSettings.primaryButton)
+                            .padding(8)
+                            .background(appSettings.cardColor)
+                            .clipShape(Circle())
+                            .shadow(color: appSettings.shadowColor, radius: 4, y: 2)
+                            .overlay(
+                                Circle()
+                                    .stroke(appSettings.strokeColor, lineWidth: 1)
+                            )
+                    }
+                }
             }
         }
         .navigationBarTitleDisplayMode(.inline)
+        .sheet(isPresented: $showSettings) {
+            GamepadSettingsView(
+                onNavigateHome: onNavigateHome,
+                mcManager: mc
+            )
+        }
     }
     
     private func pollSticks() {
@@ -170,8 +195,16 @@ struct GamepadView: View {
         let vx = clampDeadzone(x, dz: deadzone)
         let vy = clampDeadzone(y, dz: deadzone)
 
-        let sx = Int((max(-1, min(1, vx))) * 1000)
-        let sy = Int((max(-1, min(1, vy))) * 1000)
+        // Apply inversion
+        let adjustedX = appSettings.invertHorizontal ? -vx : vx
+        let adjustedY = appSettings.invertVertical ? -vy : vy
+
+        // Apply sensitivity
+        let finalX = adjustedX * CGFloat(appSettings.horizontalSensitivity)
+        let finalY = adjustedY * CGFloat(appSettings.verticalSensitivity)
+
+        let sx = Int(max(-1, min(1, finalX)) * 1000)
+        let sy = Int(max(-1, min(1, finalY)) * 1000)
 
         let now = Date()
         let forceNeutral = (sx == 0 && sy == 0)

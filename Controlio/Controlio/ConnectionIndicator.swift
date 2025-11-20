@@ -41,7 +41,5 @@ struct ConnectionIndicator: View {
                 )
         )
         .shadow(color: appSettings.shadowColor, radius: 4, y: 2)
-        .padding(.horizontal, 16)
-        .padding(.top, 8)
     }
 }

@@ -63,6 +63,19 @@ struct AppPreferencesView: View {
                     .opacity(appSettings.vibrationFeedback ? 1.0 : 0.5)
                 }
 
+                Button {
+                    appSettings.resetToDefaults()
+                } label: {
+                    HStack {
+                        Spacer()
+                        Text(NSLocalizedString("Reset to Defaults", bundle: appSettings.bundle, comment: "Button to reset all app preferences"))
+                            .foregroundColor(appSettings.destructive)
+                        Spacer()
+                    }
+                    .padding()
+                    .background(appSettings.cardColor)
+                    .cornerRadius(8)
+                }
                 Spacer()
             }
             .padding(.horizontal, 20)
