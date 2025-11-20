@@ -17,19 +17,31 @@ struct DeviceHelpView: View {
     @EnvironmentObject var appSettings: AppSettings
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 24) {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text(NSLocalizedString("Device Help", bundle: appSettings.bundle, comment: "Main title for device help screen"))
-                        .font(.system(size: 34, weight: .bold, design: .rounded))
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    Text(NSLocalizedString("Quick tips to keep your controller paired and working smoothly.", bundle: appSettings.bundle, comment: "Subtitle for device help screen"))
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                .frame(maxWidth: .infinity)
+        ZStack {
+            NavigationLink(
+                destination: DeviceControllerView(onNavigateHome: onNavigateHome, mcManager: mcManager),
+                isActive: $showDeviceController
+            ) {
+                EmptyView()
+            }
+            .hidden()
+            NavigationLink(
+                destination: AppPreferencesView(),
+                isActive: $showAppPreferences
+            ) {
+                EmptyView()
+            }
+            .hidden()
+
+            ScrollView {
+                VStack(alignment: .leading, spacing: 24) {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Device Help")
+                            .font(.system(size: 34, weight: .bold, design: .rounded))
+                        Text("Quick tips to keep your controller paired and working smoothly.")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
 
                 DeviceHelpSegmentedControl(selection: $selection)
 
@@ -38,7 +50,6 @@ struct DeviceHelpView: View {
                         DeviceHelpCard(section: section)
                     }
                 }
-                .frame(maxWidth: .infinity)
             }
             .frame(maxWidth: .infinity)
         }
@@ -53,12 +64,6 @@ struct DeviceHelpView: View {
         }
         .background(DeviceHelpTheme.background.ignoresSafeArea())
         .navigationBarTitleDisplayMode(.inline)
-        .navigationDestination(isPresented: $showDeviceController) {
-            DeviceControllerView(onNavigateHome: onNavigateHome, mcManager: mcManager)
-        }
-        .navigationDestination(isPresented: $showAppPreferences) {
-            AppPreferencesView()
-        }
     }
 }
 
@@ -117,101 +122,118 @@ private struct DeviceHelpCallout {
 
     var background: Color {
         switch style {
-        case .success: return Color.green.opacity(0.15)
-        case .info: return Color.purple.opacity(0.15)
+        case .success: return Color(red: 0.835, green: 0.957, blue: 0.862)
+        case .info: return Color(red: 0.949, green: 0.922, blue: 0.996)
         }
     }
 
     var foreground: Color {
         switch style {
-        case .success: return Color.green
-        case .info: return Color.purple
+        case .success: return Color(red: 0.113, green: 0.502, blue: 0.263)
+        case .info: return Color(red: 0.314, green: 0.200, blue: 0.600)
         }
     }
 }
 
 private enum DeviceHelpContent {
-    static func connectionSections(bundle: Bundle) -> [DeviceHelpSection] {
-        [DeviceHelpSection(
-            title: NSLocalizedString("Trackpad Usage", bundle: bundle, comment: "Section title for trackpad usage help"),
-            subtitle: NSLocalizedString("Set up both Mac receiver and iPhone app for trackpad control.", bundle: bundle, comment: "Section subtitle for trackpad usage help"),
-            iconName: "macbook.and.iphone",
+    static let connectionSections: [DeviceHelpSection] = [
+        DeviceHelpSection(
+            title: "USB Connection",
+            subtitle: "Connect your controller directly via USB cable for the most reliable connection.",
+            iconName: "cable.connector.horizontal",
             iconColor: DeviceHelpTheme.orange,
             steps: [
                 DeviceHelpStep(
-                    title: NSLocalizedString("Run ControlioReceiver first", bundle: bundle, comment: "Step title for running receiver"),
-                    detail: NSLocalizedString("In Xcode choose Product → Scheme → ControlioReceiver, set Destination to My Mac, and press Run.", bundle: bundle, comment: "Step detail for running receiver")
+                    title: "Connect your controller using a data-capable USB cable",
+                    detail: "Make sure the cable supports data transfer, not just charging."
                 ),
                 DeviceHelpStep(
-                    title: NSLocalizedString("Grant Accessibility permissions", bundle: bundle, comment: "Step title for granting permissions"),
-                    detail: NSLocalizedString("System Settings → Privacy & Security → Accessibility → add the built ControlioReceiver app.", bundle: bundle, comment: "Step detail for granting permissions")
+                    title: "Wait for your system to recognize the device",
+                    detail: "macOS installs any required drivers automatically."
                 ),
                 DeviceHelpStep(
-                    title: NSLocalizedString("Locate the build quickly", bundle: bundle, comment: "Step title for locating build"),
-                    detail: NSLocalizedString("Use Products → Show Build Folder in Finder, open Debug, and select ControlioReceiver.app when prompted.", bundle: bundle, comment: "Step detail for locating build")
-                ),
-                DeviceHelpStep(
-                    title: NSLocalizedString("Rerun and detach", bundle: bundle, comment: "Step title for rerun and detach"),
-                    detail: NSLocalizedString("After granting access, run again and tap Debug → Detach from ControlioReceiver so it keeps listening.", bundle: bundle, comment: "Step detail for rerun and detach")
-                ),
-                DeviceHelpStep(
-                    title: NSLocalizedString("Switch to Controlio", bundle: bundle, comment: "Step title for switching to Controlio"),
-                    detail: NSLocalizedString("Change the active scheme to Controlio to prepare the iOS app.", bundle: bundle, comment: "Step detail for switching to Controlio")
-                ),
-                DeviceHelpStep(
-                    title: NSLocalizedString("Enable Developer Mode", bundle: bundle, comment: "Step title for enabling developer mode"),
-                    detail: NSLocalizedString("On iPhone open Settings → Privacy & Security → Developer Mode, enable it, and restart if requested.", bundle: bundle, comment: "Step detail for enabling developer mode")
-                ),
-                DeviceHelpStep(
-                    title: NSLocalizedString("Configure signing", bundle: bundle, comment: "Step title for configuring signing"),
-                    detail: NSLocalizedString("Select the Controlio target, open Signing & Capabilities, ensure your team is set, and give the bundle ID a unique suffix.", bundle: bundle, comment: "Step detail for configuring signing")
-                ),
-                DeviceHelpStep(
-                    title: NSLocalizedString("Deploy to device", bundle: bundle, comment: "Step title for deploying to device"),
-                    detail: NSLocalizedString("Plug in the iPhone, pick it under Product → Destination, and run the build.", bundle: bundle, comment: "Step detail for deploying to device")
-                ),
-                DeviceHelpStep(
-                    title: NSLocalizedString("Trust the developer profile", bundle: bundle, comment: "Step title for trusting developer profile"),
-                    detail: NSLocalizedString("First run shows a signing warning—on iPhone visit Settings → General → VPN & Device Management and trust Controlio.", bundle: bundle, comment: "Step detail for trusting developer profile")
-                ),
-                DeviceHelpStep(
-                    title: NSLocalizedString("Finalize trackpad access", bundle: bundle, comment: "Step title for finalizing trackpad access"),
-                    detail: NSLocalizedString("Run Controlio again, make sure Bluetooth is on for both devices, sign in, open the trackpad screen, and allow Local Network.", bundle: bundle, comment: "Step detail for finalizing trackpad access")
+                    title: "Open Controlio",
+                    detail: "Tap the Wi-Fi icon inside the app to confirm the controller is now paired."
                 )
             ],
             callout: DeviceHelpCallout(
-                message: NSLocalizedString("Leave ControlioReceiver open in the background so the trackpad reconnects instantly whenever you launch Controlio.", bundle: bundle, comment: "Callout message for trackpad usage"),
+                message: "USB connection provides the lowest latency and most stable experience.",
                 style: .success
             )
-        )]
-    }
-
-    static func usageSections(bundle: Bundle) -> [DeviceHelpSection] {
-        [DeviceHelpSection(
-            title: NSLocalizedString("Gamepad Usage", bundle: bundle, comment: "Section title for gamepad usage help"),
-            subtitle: NSLocalizedString("Configure game controls after trackpad setup.", bundle: bundle, comment: "Section subtitle for gamepad usage help"),
-            iconName: "gamecontroller.fill",
+        ),
+        DeviceHelpSection(
+            title: "Bluetooth Connection",
+            subtitle: "Connect wirelessly via Bluetooth for a cable-free experience.",
+            iconName: "bolt.horizontal.circle",
             iconColor: DeviceHelpTheme.purple,
             steps: [
                 DeviceHelpStep(
-                    title: NSLocalizedString("Mirror the trackpad prep", bundle: bundle, comment: "Step title for mirroring trackpad prep"),
-                    detail: NSLocalizedString("Keep ControlioReceiver running with Bluetooth enabled on both devices so controller input reaches your Mac.", bundle: bundle, comment: "Step detail for mirroring trackpad prep")
+                    title: "Put your controller into pairing mode",
+                    detail: "Hold the share + PS buttons (or equivalent) until the light blinks rapidly."
                 ),
                 DeviceHelpStep(
-                    title: NSLocalizedString("Remap controls as needed", bundle: bundle, comment: "Step title for remapping controls"),
-                    detail: NSLocalizedString("If a game does not already map actions to WASD or arrow keys, open its settings and rebind each action to the matching gamepad input.", bundle: bundle, comment: "Step detail for remapping controls")
+                    title: "Pair from Control Center",
+                    detail: "Open Settings → Bluetooth and select your controller from the list."
                 ),
                 DeviceHelpStep(
-                    title: NSLocalizedString("Example mapping", bundle: bundle, comment: "Step title for example mapping"),
-                    detail: NSLocalizedString("Set the analog stick forward action to send the keyboard input \"W\" (or your preferred key) so forward movement stays responsive.", bundle: bundle, comment: "Step detail for example mapping")
+                    title: "Reconnect inside Controlio",
+                    detail: "Return to Controlio and tap the Bluetooth icon to finish pairing."
                 )
             ],
             callout: DeviceHelpCallout(
-                message: NSLocalizedString("Most games remember your custom keybinds, so you only need to map them once per title.", bundle: bundle, comment: "Callout message for gamepad usage"),
+                message: "Wireless is great on-the-go, but keep your device charged for the best results.",
                 style: .info
             )
         )]
     }
+
+    static let usageSections: [DeviceHelpSection] = [
+        DeviceHelpSection(
+            title: "Controller Layout",
+            subtitle: "Familiarize yourself with the twin-stick layout before launching a session.",
+            iconName: "gamecontroller.fill",
+            iconColor: DeviceHelpTheme.orange,
+            steps: [
+                DeviceHelpStep(
+                    title: "Left stick for movement",
+                    detail: "Drag anywhere on the left pad to move your pointer or character."
+                ),
+                DeviceHelpStep(
+                    title: "Right stick for camera",
+                    detail: "The right pad handles camera or cursor precision adjustments."
+                ),
+                DeviceHelpStep(
+                    title: "Action buttons stay contextual",
+                    detail: "Controlio updates button labels depending on the active game or mode."
+                )
+            ],
+            callout: DeviceHelpCallout(
+                message: "Customize button mapping from Settings → Controller to match your style.",
+                style: .info
+            )
+        ),
+        DeviceHelpSection(
+            title: "Quick Gestures",
+            subtitle: "Gestures keep common actions within thumb reach.",
+            iconName: "hand.tap.fill",
+            iconColor: DeviceHelpTheme.purple,
+            steps: [
+                DeviceHelpStep(
+                    title: "Double tap for pause",
+                    detail: "Anywhere on the trackpad will trigger the pause overlay."
+                ),
+                DeviceHelpStep(
+                    title: "Two-finger swipe for volume",
+                    detail: "Swipe up or down with two fingers to adjust system volume."
+                ),
+                DeviceHelpStep(
+                    title: "Long press to recalibrate",
+                    detail: "Hold three fingers for two seconds to reset the gyro baseline."
+                )
+            ],
+            callout: nil
+        )
+    ]
 }
 
 private struct DeviceHelpSegmentedControl: View {
@@ -273,60 +295,42 @@ private struct DeviceHelpCard: View {
                 VStack(alignment: .leading, spacing: 6) {
                     Text(section.title)
                         .font(.headline)
-                        .fixedSize(horizontal: false, vertical: true)
                     Text(section.subtitle)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .lineLimit(nil)
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
             }
 
-            VStack(spacing: 22) {
+            VStack(spacing: 16) {
                 ForEach(Array(section.steps.enumerated()), id: \.element.id) { index, step in
-                    HStack(alignment: .top, spacing: 14) {
+                    HStack(alignment: .top, spacing: 12) {
                         Text("\(index + 1)")
-                            .font(.subheadline.weight(.medium))
+                            .font(.subheadline.weight(.semibold))
                             .foregroundStyle(DeviceHelpTheme.stepNumber)
                             .frame(width: 28, height: 28)
                             .background(
                                 Circle()
-                                    .fill(Color(uiColor: .systemBackground))
-                            )
-                            .overlay(
-                                Circle()
-                                    .stroke(DeviceHelpTheme.stepBorder, lineWidth: 1)
+                                    .fill(DeviceHelpTheme.stepBackground)
                             )
 
                         VStack(alignment: .leading, spacing: 4) {
                             Text(step.title)
                                 .font(.subheadline.weight(.semibold))
-                                .foregroundStyle(.primary)
-                                .fixedSize(horizontal: false, vertical: true)
-                                .lineLimit(nil)
                             Text(step.detail)
                                 .font(.footnote)
                                 .foregroundStyle(.secondary)
-                                .fixedSize(horizontal: false, vertical: true)
-                                .lineLimit(nil)
                         }
-                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
             }
 
             if let callout = section.callout {
-                HStack(alignment: .top, spacing: 10) {
+                HStack(alignment: .center, spacing: 10) {
                     Image(systemName: callout.iconName)
                         .font(.system(size: 18, weight: .semibold))
-                        .frame(width: 20, height: 20)
                     Text(callout.message)
                         .font(.subheadline.weight(.semibold))
                         .fixedSize(horizontal: false, vertical: true)
-                        .lineLimit(nil)
-                        .multilineTextAlignment(.leading)
-                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .foregroundStyle(callout.foreground)
                 .padding()
@@ -499,34 +503,29 @@ private struct RightRoundedRectangle: Shape {
 }
 
 enum DeviceHelpTheme {
-    // Main colors
-    static let background = Color(.systemGroupedBackground)
-    static let card = Color(.secondarySystemGroupedBackground)
-    static let cardBorder = Color(.separator).opacity(0.5)
+    static let background = Color(red: 0.953, green: 0.965, blue: 0.980)
+    static let card = Color.white
+    static let cardBorder = Color.black.opacity(0.06)
     static let shadow = Color.black.opacity(0.04)
-
-    // Brand colors that work in both modes
-    static let orange = Color.orange
-    static let purple = Color.purple
-
-    // control colors
-    static let segmentBackground = Color(.tertiarySystemGroupedBackground)
-    static let segmentActive = Color.accentColor.opacity(0.2)
-    static let segmentBorder = Color(.separator).opacity(0.3)
-    static let segmentTextActive = Color.accentColor
+    static let orange = Color(red: 0.996, green: 0.529, blue: 0.188)
+    static let purple = Color(red: 0.498, green: 0.278, blue: 0.851)
+    static let segmentBackground = Color.white
+    static let segmentActive = Color(red: 0.984, green: 0.890, blue: 0.784)
+    static let segmentBorder = Color.black.opacity(0.05)
+    static let segmentTextActive = Color(red: 0.424, green: 0.251, blue: 0.047)
     static let segmentTextInactive = Color.secondary
-
-    // Step colors (better visibility in dark mode)
-    static let stepBackground = Color(.systemFill)
-    static let stepNumber = Color.primary
-    static let stepBorder = Color(.separator)
-
-    // Bottom bar colors - using dynamic colors
-    static let bottomBarBackground = Color(.secondarySystemBackground)
+    static let stepBackground = Color.black.opacity(0.04)
+    static let stepNumber = Color.black.opacity(0.7)
+    static let bottomBarBackground = orange
     static let bottomBarShadow = Color.black.opacity(0.08)
-    static let bottomIconBackground = Color(.tertiarySystemFill)
-    static let bottomIconForeground = Color.primary
-    static let bottomIconStroke = Color(.separator).opacity(0.3)
-    static let bottomIconShadow = Color.black.opacity(0.1)
+    static let bottomIconBackground = Color(red: 0.216, green: 0.214, blue: 0.206)
+    static let bottomIconForeground = Color(red: 0.988, green: 0.965, blue: 0.902)
+    static let bottomIconStroke = Color.white.opacity(0.08)
+    static let bottomIconShadow = Color.black.opacity(0.25)
 }
 
+//#Preview {
+//    NavigationStack {
+//        DeviceHelpView()
+//    }
+//}

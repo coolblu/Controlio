@@ -51,7 +51,8 @@ final class AppSettings: ObservableObject {
         }
 
         // If keys were never set, initialize other defaults
-        if defaults.object(forKey: "showTips") == nil {
+        if defaults.object(forKey: "hasInitializedDefaults") == nil {
+            defaults.set(true, forKey: "hasInitializedDefaults")
             resetToDefaults()
         }
     }

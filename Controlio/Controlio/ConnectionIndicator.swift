@@ -29,8 +29,6 @@ struct ConnectionIndicator: View {
             .font(.footnote)
             .fontWeight(.semibold)
             .foregroundColor(appSettings.primaryText)
-
-            Spacer()
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 6)
