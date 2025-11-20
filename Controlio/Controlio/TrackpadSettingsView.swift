@@ -23,94 +23,94 @@ struct TrackpadSettingsView: View {
     @State private var showAppPreferences = false
 
     var body: some View {
-            NavigationStack {
-                Form {
-                    Section(
-                        header: Text(
-                            NSLocalizedString("Pointer", bundle: appSettings.bundle, comment: "")
-                        )
-                    ) {
-                        VStack(alignment: .leading, spacing: 8) {
-                            HStack {
-                                Text(
-                                    NSLocalizedString("Sensitivity", bundle: appSettings.bundle, comment: "")
+        NavigationStack {
+            Form {
+                Section(
+                    header: Text(
+                        NSLocalizedString("Pointer", bundle: appSettings.bundle, comment: "")
+                    )
+                ) {
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            Text(
+                                NSLocalizedString("Sensitivity", bundle: appSettings.bundle, comment: "")
+                            )
+                            Spacer()
+                            Text(
+                                String(
+                                    format: NSLocalizedString("%.1fx", bundle: appSettings.bundle, comment: ""),
+                                    pointerSensitivity
                                 )
-                                Spacer()
-                                Text(
-                                    String(
-                                        format: NSLocalizedString("%.1fx", bundle: appSettings.bundle, comment: ""),
-                                        pointerSensitivity
-                                    )
-                                )
-                                .foregroundColor(.secondary)
-                            }
-                            Slider(value: $pointerSensitivity, in: 0.5...3.0, step: 0.1)
+                            )
+                            .foregroundColor(.secondary)
                         }
-                    }
-
-                    Section(
-                        header: Text(
-                            NSLocalizedString("Scrolling", bundle: appSettings.bundle, comment: "")
-                        )
-                    ) {
-                        VStack(alignment: .leading, spacing: 8) {
-                            HStack {
-                                Text(
-                                    NSLocalizedString("Scroll Speed", bundle: appSettings.bundle, comment: "")
-                                )
-                                Spacer()
-                                Text(
-                                    String(
-                                        format: NSLocalizedString("%.1fx", bundle: appSettings.bundle, comment: ""),
-                                        scrollSensitivity
-                                    )
-                                )
-                                .foregroundColor(.secondary)
-                            }
-                            Slider(value: $scrollSensitivity, in: 0.5...3.0, step: 0.1)
-                        }
-
-                        Toggle(
-                            NSLocalizedString("Reverse Scroll Direction", bundle: appSettings.bundle, comment: ""),
-                            isOn: $reverseScroll
-                        )
-                    }
-
-                    Section(
-                        header: Text(
-                            NSLocalizedString("Reset", bundle: appSettings.bundle, comment: "")
-                        )
-                    ) {
-                        Button(action: {
-                            pointerSensitivity = 1.0
-                            scrollSensitivity = 1.0
-                            reverseScroll = false
-                        }) {
-                            HStack {
-                                Spacer()
-                                Text(
-                                    NSLocalizedString("Reset to Defaults", bundle: appSettings.bundle, comment: "")
-                                )
-                                .foregroundColor(.red)
-                                Spacer()
-                            }
-                        }
+                        Slider(value: $pointerSensitivity, in: 0.5...3.0, step: 0.1)
                     }
                 }
-                .navigationTitle(
-                    NSLocalizedString("Trackpad Settings", bundle: appSettings.bundle, comment: "")
-                )
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button(
-                            NSLocalizedString("Done", bundle: appSettings.bundle, comment: "")
-                        ) {
-                            dismiss()
+
+                Section(
+                    header: Text(
+                        NSLocalizedString("Scrolling", bundle: appSettings.bundle, comment: "")
+                    )
+                ) {
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            Text(
+                                NSLocalizedString("Scroll Speed", bundle: appSettings.bundle, comment: "")
+                            )
+                            Spacer()
+                            Text(
+                                String(
+                                    format: NSLocalizedString("%.1fx", bundle: appSettings.bundle, comment: ""),
+                                    scrollSensitivity
+                                )
+                            )
+                            .foregroundColor(.secondary)
+                        }
+                        Slider(value: $scrollSensitivity, in: 0.5...3.0, step: 0.1)
+                    }
+
+                    Toggle(
+                        NSLocalizedString("Reverse Scroll Direction", bundle: appSettings.bundle, comment: ""),
+                        isOn: $reverseScroll
+                    )
+                }
+
+                Section(
+                    header: Text(
+                        NSLocalizedString("Reset", bundle: appSettings.bundle, comment: "")
+                    )
+                ) {
+                    Button {
+                        pointerSensitivity = 1.0
+                        scrollSensitivity = 1.0
+                        reverseScroll = false
+                    } label: {
+                        HStack {
+                            Spacer()
+                            Text(
+                                NSLocalizedString("Reset to Defaults", bundle: appSettings.bundle, comment: "")
+                            )
+                            .foregroundColor(.red)
+                            Spacer()
                         }
                     }
                 }
             }
+            .navigationTitle(
+                NSLocalizedString("Trackpad Settings", bundle: appSettings.bundle, comment: "")
+            )
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(
+                        NSLocalizedString("Done", bundle: appSettings.bundle, comment: "")
+                    ) {
+                        dismiss()
+                    }
+                }
+            }
+            // 👇 These are now clearly *inside* the NavigationStack content
             .navigationDestination(isPresented: $showDeviceController) {
                 DeviceControllerView(onNavigateHome: onNavigateHome, mcManager: mcManager)
             }
@@ -133,3 +133,4 @@ struct TrackpadSettingsView: View {
             }
         }
     }
+}
