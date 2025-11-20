@@ -36,6 +36,9 @@
         }
       }
     },
+    "After granting access, run again and tap Debug → Detach from ControlioReceiver so it keeps listening." : {
+      "comment" : "Step detail for rerun and detach"
+    },
     "Already have an account? " : {
       "extractionState" : "manual",
       "localizations" : {
@@ -151,6 +154,9 @@
         }
       }
     },
+    "Change the active scheme to Controlio to prepare the iOS app." : {
+      "comment" : "Step detail for switching to Controlio"
+    },
     "Choose your controller." : {
       "localizations" : {
         "es" : {
@@ -166,6 +172,26 @@
           }
         }
       }
+    },
+    "Configure game controls after trackpad setup." : {
+      "comment" : "Section subtitle for gamepad usage help",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configura los controles del juego después de configurar el trackpad."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configurez les commandes du jeu après la configuration du pavé tactile."
+          }
+        }
+      }
+    },
+    "Configure signing" : {
+      "comment" : "Step title for configuring signing"
     },
     "Confirm new password" : {
       "localizations" : {
@@ -349,6 +375,23 @@
         }
       }
     },
+    "Controller Usage" : {
+      "comment" : "Tab title for controller usage help",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uso del controlador"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utilisation du contrôleur"
+          }
+        }
+      }
+    },
     "Create Account" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -415,6 +458,9 @@
         }
       }
     },
+    "Deploy to device" : {
+      "comment" : "Step title for deploying to device"
+    },
     "Desktop" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -448,6 +494,23 @@
         }
       }
     },
+    "Device Connection" : {
+      "comment" : "Tab title for device connection help",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conexión del dispositivo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connexion de l'appareil"
+          }
+        }
+      }
+    },
     "Device Controller" : {
       "localizations" : {
         "es" : {
@@ -465,6 +528,7 @@
       }
     },
     "Device Help" : {
+      "comment" : "Main title for device help screen",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -595,6 +659,9 @@
         }
       }
     },
+    "Enable Developer Mode" : {
+      "comment" : "Step title for enabling developer mode"
+    },
     "English" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -643,6 +710,15 @@
           }
         }
       }
+    },
+    "Example mapping" : {
+      "comment" : "Step title for example mapping"
+    },
+    "Finalize trackpad access" : {
+      "comment" : "Step title for finalizing trackpad access"
+    },
+    "First run shows a signing warning—on iPhone visit Settings → General → VPN & Device Management and trust Controlio." : {
+      "comment" : "Step detail for trusting developer profile"
     },
     "Forget Device" : {
       "comment" : "Context menu action to forget a device",
@@ -694,6 +770,23 @@
         }
       }
     },
+    "Gamepad Usage" : {
+      "comment" : "Section title for gamepad usage help",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uso del gamepad"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utilisation de la manette"
+          }
+        }
+      }
+    },
     "General" : {
       "localizations" : {
         "es" : {
@@ -706,6 +799,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Général"
+          }
+        }
+      }
+    },
+    "Grant Accessibility permissions" : {
+      "comment" : "Step title for granting permissions",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otorgar permisos de accesibilidad"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accorder les autorisations d'accessibilité"
           }
         }
       }
@@ -744,6 +854,7 @@
       }
     },
     "Help" : {
+      "comment" : "Help button accessibility label",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -791,6 +902,29 @@
         }
       }
     },
+    "Home" : {
+      "comment" : "Home button accessibility label"
+    },
+    "If a game does not already map actions to WASD or arrow keys, open its settings and rebind each action to the matching gamepad input." : {
+      "comment" : "Step detail for remapping controls"
+    },
+    "In Xcode choose Product → Scheme → ControlioReceiver, set Destination to My Mac, and press Run." : {
+      "comment" : "Step detail for running receiver",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En Xcode, elige Producto → Esquema → ControlioReceiver, establece el Destino en Mi Mac y presiona Ejecutar."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dans Xcode, choisissez Produit → Schéma → ControlioReceiver, définissez la Destination sur Mon Mac et appuyez sur Exécuter."
+          }
+        }
+      }
+    },
     "Interface" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -807,6 +941,9 @@
           }
         }
       }
+    },
+    "Keep ControlioReceiver running with Bluetooth enabled on both devices so controller input reaches your Mac." : {
+      "comment" : "Step detail for mirroring trackpad prep"
     },
     "Language" : {
       "localizations" : {
@@ -841,6 +978,23 @@
         }
       }
     },
+    "Leave ControlioReceiver open in the background so the trackpad reconnects instantly whenever you launch Controlio." : {
+      "comment" : "Callout message for trackpad usage",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deja ControlioReceiver abierto en segundo plano para que el trackpad se reconecte instantáneamente cuando inicies Controlio."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laissez ControlioReceiver ouvert en arrière-plan pour que le pavé tactile se reconnecte instantanément lorsque vous lancez Controlio."
+          }
+        }
+      }
+    },
     "Light" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -857,6 +1011,9 @@
           }
         }
       }
+    },
+    "Locate the build quickly" : {
+      "comment" : "Step title for locating build"
     },
     "Log in" : {
       "extractionState" : "manual",
@@ -923,6 +1080,12 @@
           }
         }
       }
+    },
+    "Mirror the trackpad prep" : {
+      "comment" : "Step title for mirroring trackpad prep"
+    },
+    "Most games remember your custom keybinds, so you only need to map them once per title." : {
+      "comment" : "Callout message for gamepad usage"
     },
     "Motion" : {
       "localizations" : {
@@ -1072,6 +1235,9 @@
         }
       }
     },
+    "On iPhone open Settings → Privacy & Security → Developer Mode, enable it, and restart if requested." : {
+      "comment" : "Step detail for enabling developer mode"
+    },
     "or continue with" : {
       "localizations" : {
         "es" : {
@@ -1168,6 +1334,9 @@
         }
       }
     },
+    "Plug in the iPhone, pick it under Product → Destination, and run the build." : {
+      "comment" : "Step detail for deploying to device"
+    },
     "Pointer" : {
       "localizations" : {
         "es" : {
@@ -1201,6 +1370,7 @@
       }
     },
     "Quick tips to keep your controller paired and working smoothly." : {
+      "comment" : "Subtitle for device help screen",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -1248,6 +1418,12 @@
         }
       }
     },
+    "Remap controls as needed" : {
+      "comment" : "Step title for remapping controls"
+    },
+    "Rerun and detach" : {
+      "comment" : "Step title for rerun and detach"
+    },
     "Reset" : {
       "localizations" : {
         "es" : {
@@ -1292,6 +1468,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Direction De Défilement Inversée"
+          }
+        }
+      }
+    },
+    "Run Controlio again, make sure Bluetooth is on for both devices, sign in, open the trackpad screen, and allow Local Network." : {
+      "comment" : "Step detail for finalizing trackpad access"
+    },
+    "Run ControlioReceiver first" : {
+      "comment" : "Step title for running receiver",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ejecuta ControlioReceiver primero"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exécutez d'abord ControlioReceiver"
           }
         }
       }
@@ -1394,6 +1590,9 @@
         }
       }
     },
+    "Select the Controlio target, open Signing & Capabilities, ensure your team is set, and give the bundle ID a unique suffix." : {
+      "comment" : "Step detail for configuring signing"
+    },
     "Sensitivity" : {
       "localizations" : {
         "es" : {
@@ -1409,6 +1608,29 @@
           }
         }
       }
+    },
+    "Set the analog stick forward action to send the keyboard input \"W\" (or your preferred key) so forward movement stays responsive." : {
+      "comment" : "Step detail for example mapping"
+    },
+    "Set up both Mac receiver and iPhone app for trackpad control." : {
+      "comment" : "Section subtitle for trackpad usage help",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configure tanto el receptor Mac como la aplicación iPhone para el control del trackpad."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configurez le récepteur Mac et l'application iPhone pour le contrôle du pavé tactile."
+          }
+        }
+      }
+    },
+    "Settings" : {
+      "comment" : "Settings button accessibility label"
     },
     "Sign in with Google" : {
       "localizations" : {
@@ -1475,6 +1697,26 @@
         }
       }
     },
+    "Switch to Controlio" : {
+      "comment" : "Step title for switching to Controlio"
+    },
+    "System Settings → Privacy & Security → Accessibility → add the built ControlioReceiver app." : {
+      "comment" : "Step detail for granting permissions",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajustes del Sistema → Privacidad y Seguridad → Accesibilidad → añade la aplicación ControlioReceiver compilada."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réglages Système → Confidentialité et sécurité → Accessibilité → ajoutez l'application ControlioReceiver compilée."
+          }
+        }
+      }
+    },
     "Theme" : {
       "localizations" : {
         "es" : {
@@ -1523,6 +1765,26 @@
         }
       }
     },
+    "Trackpad Usage" : {
+      "comment" : "Section title for trackpad usage help",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uso del trackpad"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utilisation du pavé tactile"
+          }
+        }
+      }
+    },
+    "Trust the developer profile" : {
+      "comment" : "Step title for trusting developer profile"
+    },
     "Twin-stick layout" : {
       "localizations" : {
         "es" : {
@@ -1554,6 +1816,9 @@
           }
         }
       }
+    },
+    "Use Products → Show Build Folder in Finder, open Debug, and select ControlioReceiver.app when prompted." : {
+      "comment" : "Step detail for locating build"
     },
     "Use your iPhone as a touchpad" : {
       "localizations" : {
@@ -1603,6 +1868,9 @@
           }
         }
       }
+    },
+    "Wireless connection" : {
+      "comment" : "WiFi button accessibility label"
     }
   },
   "version" : "1.1"
