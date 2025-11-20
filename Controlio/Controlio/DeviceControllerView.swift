@@ -33,10 +33,6 @@ struct DeviceControllerView: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
-                    Text(NSLocalizedString("Device Controller", bundle: appSettings.bundle, comment: ""))
-                        .font(.system(size: 34, weight: .bold, design: .rounded))
-                        .foregroundColor(appSettings.primaryText)
-
                     ViewThatFits(in: .horizontal) {
                         HStack(alignment: .top, spacing: 24) {
                             connectedSection
