@@ -218,31 +218,30 @@ struct GamepadView: View {
         .onReceive(stickTick) { _ in
             pollSticks()
         }
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                ConnectionIndicator(
-                    statusText: ui(for: mc.sessionState).0,
-                    dotColor: ui(for: mc.sessionState).1
-                )
-                .environmentObject(appSettings)
-            }
+        .navigationBarItems(
+            trailing:
+                HStack(spacing: 12) {
+                    ConnectionIndicator(
+                        statusText: ui(for: mc.sessionState).0,
+                        dotColor: ui(for: mc.sessionState).1
+                    )
+                    .environmentObject(appSettings)
 
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: { showSettings = true }) {
-                    Image(systemName: "gearshape.fill")
-                        .font(.system(size: 14))
-                        .foregroundColor(appSettings.primaryButton)
-                        .padding(8)
-                        .background(appSettings.cardColor)
-                        .clipShape(Circle())
-                        .shadow(color: appSettings.shadowColor, radius: 4, y: 2)
-                        .overlay(
-                            Circle()
-                                .stroke(appSettings.strokeColor, lineWidth: 1)
-                        )
+                    Button(action: { showSettings = true }) {
+                        Image(systemName: "gearshape.fill")
+                            .font(.system(size: 14))
+                            .foregroundColor(appSettings.primaryButton)
+                            .padding(8)
+                            .background(appSettings.cardColor)
+                            .clipShape(Circle())
+                            .shadow(color: appSettings.shadowColor, radius: 4, y: 2)
+                            .overlay(
+                                Circle()
+                                    .stroke(appSettings.strokeColor, lineWidth: 1)
+                            )
+                    }
                 }
-            }
-        }
+        )
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $showSettings) {
             GamepadSettingsView(
