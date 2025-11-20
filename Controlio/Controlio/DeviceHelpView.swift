@@ -69,7 +69,7 @@ struct DeviceHelpView: View {
         .background(DeviceHelpTheme.background.ignoresSafeArea())
         .navigationBarTitleDisplayMode(.inline)
         .navigationDestination(isPresented: $showDeviceController) {
-            DeviceControllerView(onNavigateHome: onNavigateHome)
+            DeviceControllerView(onNavigateHome: onNavigateHome, mcManager: mcManager)
         }
         .navigationDestination(isPresented: $showAppPreferences) {
             AppPreferencesView()
