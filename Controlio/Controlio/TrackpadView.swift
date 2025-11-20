@@ -29,14 +29,10 @@ struct TrackpadView: View {
     
     private func ui(for s: MCSessionState) -> (String, Color) {
         switch s {
-        case .connected:
-            return ("Connected", .green)
-        case .connecting:
-            return ("Connecting…", .orange)
-        case .notConnected:
-            return ("Disconnected", .red)
-        @unknown default:
-            return ("Disconnected", .red)
+        case .connected:    return ("Connected",   .green)
+        case .connecting:   return ("Connecting…", .orange)
+        case .notConnected: return ("Searching…",  .orange)
+        @unknown default:   return ("Searching…",  .orange)
         }
     }
         
@@ -132,7 +128,6 @@ struct TrackpadView: View {
         .sheet(isPresented: $showSettings) {
                     TrackpadSettingsView(
                         onNavigateHome: onNavigateHome,
-                        mcManager: mc,
                         pointerSensitivity: $pointerSensitivity,
                         scrollSensitivity: $scrollSensitivity,
                         reverseScroll: $reverseScroll

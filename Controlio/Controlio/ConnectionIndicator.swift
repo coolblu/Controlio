@@ -19,16 +19,10 @@ struct ConnectionIndicator: View {
                 .fill(dotColor)
                 .frame(width: 10, height: 10)
 
-            Text(
-                NSLocalizedString(
-                    statusText,
-                    bundle: appSettings.bundle,
-                    comment: ""
-                )
-            )
-            .font(.footnote)
-            .fontWeight(.semibold)
-            .foregroundColor(appSettings.primaryText)
+            Text(statusText)
+                .font(.footnote)
+                .fontWeight(.semibold)
+                .foregroundColor(appSettings.primaryText)
 
             Spacer()
         }

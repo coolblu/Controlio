@@ -79,6 +79,7 @@ final class MCManager: NSObject, ObservableObject {
     
     func userRequestedReconnect() {
         suppressAutoRetry = false
+        manuallyDisconnected = false
         startBrowsingIfNeeded()
     }
     
@@ -90,20 +91,6 @@ final class MCManager: NSObject, ObservableObject {
     private func log(_ s: String) {
         print(s)
         onDebug?(s)
-    }
-    
-    private func autoReconnectIfNeeded(for peer: MCPeerID) {
-        guard !suppressAutoRetry else { return }
-
-        guard connectedPeer == nil else { return }
-
-        guard let lastName = lastKnownDeviceName,
-              lastName == peer.displayName,
-              knownDeviceNames.contains(lastName) else {
-            return
-        }
-
-        connect(to: peer)
     }
     
     // MC state
@@ -123,61 +110,6 @@ final class MCManager: NSObject, ObservableObject {
     private var advertiser: MCNearbyServiceAdvertiser?
     private var browser: MCNearbyServiceBrowser?
         
-    private let knownDevicesDefaultsKey = "mc.knownDevices"
-    private let lastDeviceDefaultsKey  = "mc.lastDeviceName"
-    
-    var knownDeviceNames: [String] {
-        get {
-            UserDefaults.standard.stringArray(forKey: knownDevicesDefaultsKey) ?? []
-        }
-        set {
-            UserDefaults.standard.set(newValue, forKey: knownDevicesDefaultsKey)
-        }
-    }
-    
-    var lastKnownDeviceName: String? {
-        get {
-            UserDefaults.standard.string(forKey: lastDeviceDefaultsKey)
-        }
-        set {
-            let defaults = UserDefaults.standard
-            if let value = newValue {
-                defaults.set(value, forKey: lastDeviceDefaultsKey)
-            } else {
-                defaults.removeObject(forKey: lastDeviceDefaultsKey)
-            }
-        }
-    }
-    
-    private func rememberConnectedPeer(_ peer: MCPeerID) {
-        let name = peer.displayName
-
-        // Add to knownDevices if not already present
-        var known = knownDeviceNames
-        if !known.contains(name) {
-            known.append(name)
-            knownDeviceNames = known
-        }
-
-        // Update last-used device
-        lastKnownDeviceName = name
-    }
-    
-    func forgetDevice(named name: String) {
-        // Remove from known list
-        var known = knownDeviceNames
-        known.removeAll { $0 == name }
-        knownDeviceNames = known
-
-        if lastKnownDeviceName == name {
-            lastKnownDeviceName = nil
-        }
-
-        if connectedPeer?.displayName == name {
-            userRequestedDisconnect()
-        }
-    }
-
     override init() {
         super.init()
         session = MCSession(peer: peerID, securityIdentity: nil, encryptionPreference: .required)
@@ -246,7 +178,6 @@ extension MCManager: MCSessionDelegate {
                 self.connectedPeer = peerID
                 self.lastConnectedPeer = peerID
                 self.manuallyDisconnected = false
-                self.rememberConnectedPeer(peerID)
             case .notConnected:
                 if let any = session.connectedPeers.first {
                     self.connectedPeer = any
@@ -296,7 +227,7 @@ extension MCManager: MCNearbyServiceAdvertiserDelegate, MCNearbyServiceBrowserDe
         if !discoveredPeers.contains(where: { $0 == peerID }) {
             DispatchQueue.main.async { self.discoveredPeers.append(peerID) }
         }
-        autoReconnectIfNeeded(for: peerID)
+        browser.invitePeer(peerID, to: session, withContext: nil, timeout: 10)
     }
 
     func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {

@@ -9,7 +9,6 @@ import SwiftUI
 
 struct DeviceHelpView: View {
     var onNavigateHome: (() -> Void)? = nil
-    let mcManager: MCManager
     @State private var selection: DeviceHelpTab = .connection
     @State private var showDeviceController = false
     @State private var showAppPreferences = false
@@ -17,7 +16,7 @@ struct DeviceHelpView: View {
     var body: some View {
         ZStack {
             NavigationLink(
-                destination: DeviceControllerView(onNavigateHome: onNavigateHome, mcManager: mcManager),
+                destination: DeviceControllerView(onNavigateHome: onNavigateHome),
                 isActive: $showDeviceController
             ) {
                 EmptyView()
@@ -76,6 +75,8 @@ struct DeviceHelpView: View {
         }
     }
 }
+
+// MARK: - Data
 
 private enum DeviceHelpTab: CaseIterable, Identifiable {
     case connection
@@ -228,6 +229,8 @@ private enum DeviceHelpContent {
         )
     ]
 }
+
+// MARK: - Components
 
 private struct DeviceHelpSegmentedControl: View {
     @Binding var selection: DeviceHelpTab
@@ -500,6 +503,8 @@ private struct RightRoundedRectangle: Shape {
         return path
     }
 }
+
+// MARK: - Theme
 
 enum DeviceHelpTheme {
     // Main colors
