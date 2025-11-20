@@ -457,6 +457,16 @@ struct DPad: View {
     @State private var r = false
     @EnvironmentObject var appSettings: AppSettings
 
+    init(
+        keySize: CGFloat,
+        spacing: CGFloat = 10,
+        onChange: @escaping (DPadDir, Bool) -> Void
+    ) {
+        self.keySize = keySize
+        self.spacing = spacing
+        self.onChange = onChange
+    }
+
     var body: some View {
         VStack(spacing: spacing) {
             dKey("▲", pressed: $u) { onChange(.up, $0) }
