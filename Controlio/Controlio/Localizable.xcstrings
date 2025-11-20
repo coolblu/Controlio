@@ -386,6 +386,23 @@
         }
       }
     },
+    "Disconnected" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desconectado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Déconnecté"
+          }
+        }
+      }
+    },
     "Disconnected from: %@" : {
       "localizations" : {
         "es" : {
@@ -1301,7 +1318,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trackpad"
+            "value" : "Pavé tactile"
           }
         }
       }
