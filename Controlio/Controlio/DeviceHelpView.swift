@@ -118,15 +118,15 @@ private struct DeviceHelpCallout {
 
     var background: Color {
         switch style {
-        case .success: return Color(red: 0.835, green: 0.957, blue: 0.862)
-        case .info: return Color(red: 0.949, green: 0.922, blue: 0.996)
+        case .success: return Color.green.opacity(0.15)
+        case .info: return Color.purple.opacity(0.15)
         }
     }
 
     var foreground: Color {
         switch style {
-        case .success: return Color(red: 0.113, green: 0.502, blue: 0.263)
-        case .info: return Color(red: 0.314, green: 0.200, blue: 0.600)
+        case .success: return Color.green
+        case .info: return Color.purple
         }
     }
 }
@@ -294,7 +294,7 @@ private struct DeviceHelpCard: View {
                             .frame(width: 28, height: 28)
                             .background(
                                 Circle()
-                                    .fill(Color.white)
+                                    .fill(Color(uiColor: .systemBackground))
                             )
                             .overlay(
                                 Circle()
@@ -492,25 +492,34 @@ private struct RightRoundedRectangle: Shape {
 // Theme
 
 enum DeviceHelpTheme {
-    static let background = Color(red: 0.953, green: 0.965, blue: 0.980)
-    static let card = Color.white
-    static let cardBorder = Color.black.opacity(0.06)
+    // Main colors
+    static let background = Color(uiColor: .systemGroupedBackground)
+    static let card = Color(uiColor: .secondarySystemGroupedBackground)
+    static let cardBorder = Color(uiColor: .separator).opacity(0.5)
     static let shadow = Color.black.opacity(0.04)
-    static let orange = Color(red: 0.996, green: 0.529, blue: 0.188)
-    static let purple = Color(red: 0.498, green: 0.278, blue: 0.851)
-    static let segmentBackground = Color.white
-    static let segmentActive = Color(red: 0.984, green: 0.890, blue: 0.784)
-    static let segmentBorder = Color.black.opacity(0.05)
-    static let segmentTextActive = Color(red: 0.424, green: 0.251, blue: 0.047)
+
+    // Brand colors that work in both modes
+    static let orange = Color.orange
+    static let purple = Color.purple
+
+    // control colors
+    static let segmentBackground = Color(uiColor: .tertiarySystemGroupedBackground)
+    static let segmentActive = Color.accentColor.opacity(0.2)
+    static let segmentBorder = Color(uiColor: .separator).opacity(0.3)
+    static let segmentTextActive = Color.accentColor
     static let segmentTextInactive = Color.secondary
-    static let stepBackground = Color.black.opacity(0.04)
-    static let stepNumber = Color.black.opacity(0.7)
-    static let stepBorder = Color.black.opacity(0.15)
-    static let bottomBarBackground = orange
+
+    // Step colors (better visibility in dark mode)
+    static let stepBackground = Color(uiColor: .systemFill)
+    static let stepNumber = Color.primary
+    static let stepBorder = Color(uiColor: .separator)
+
+    // Bottom bar colors - using dynamic colors
+    static let bottomBarBackground = Color(uiColor: .secondarySystemBackground)
     static let bottomBarShadow = Color.black.opacity(0.08)
-    static let bottomIconBackground = Color(red: 0.216, green: 0.214, blue: 0.206)
-    static let bottomIconForeground = Color(red: 0.988, green: 0.965, blue: 0.902)
-    static let bottomIconStroke = Color.white.opacity(0.08)
-    static let bottomIconShadow = Color.black.opacity(0.25)
+    static let bottomIconBackground = Color(uiColor: .tertiarySystemFill)
+    static let bottomIconForeground = Color.primary
+    static let bottomIconStroke = Color(uiColor: .separator).opacity(0.3)
+    static let bottomIconShadow = Color.black.opacity(0.1)
 }
 
