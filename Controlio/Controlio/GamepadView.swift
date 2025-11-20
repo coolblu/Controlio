@@ -55,7 +55,9 @@ struct GamepadView: View {
             let stickRadius: CGFloat    = max(70, min(110, min(w, h) * 0.18))
             let abxySize: CGFloat       = max(54, min(68, min(w, h) * 0.11))
             let dpadKey: CGFloat        = max(40, min(54, min(w, h) * 0.085))
-            let clusterGap: CGFloat     = max(18, min(26, min(w, h) * 0.035))
+            let clusterGap: CGFloat     = isLandscape
+                ? max(22, min(32, min(w, h) * 0.045))
+                : max(24, min(34, min(w, h) * 0.05))
             let columnGap: CGFloat      = isLandscape
                 ? max(24, min(32, min(w, h) * 0.04))
                 : max(20, min(28, min(w, h) * 0.04))
@@ -63,7 +65,7 @@ struct GamepadView: View {
             ZStack(alignment: .topLeading) {
                 appSettings.bgColor.ignoresSafeArea()
                 
-                VStack(spacing: isLandscape ? 10 : 8) {
+                VStack(spacing: isLandscape ? 6 : 6) {
                     HStack {
                         Shoulder(label: "L1", width: shoulderWidth, height: shoulderHeight) { down in
                             sendButton(.l1, down)
@@ -74,8 +76,8 @@ struct GamepadView: View {
                         }
                     }
                     .padding(.horizontal, isLandscape ? 26 : 22)
-                    .padding(.top, isLandscape ? 4 : 8)
-                    .padding(.bottom, 6)
+                    .padding(.top, isLandscape ? 0 : 4)
+                    .padding(.bottom, 4)
 
                     HStack(spacing: 18) {
                         Spacer()
@@ -84,7 +86,7 @@ struct GamepadView: View {
                         Spacer()
                     }
                     .padding(.horizontal, isLandscape ? 24 : 20)
-                    .padding(.bottom, isLandscape ? 0 : 2)
+                    .padding(.bottom, isLandscape ? 0 : 0)
 
                     HStack(alignment: .center, spacing: columnGap) {
                         DPad(keySize: dpadKey) { dir, down in
@@ -117,7 +119,7 @@ struct GamepadView: View {
                         .padding(.leading, isLandscape ? 4 : 0)
                     }
                     .padding(.horizontal, isLandscape ? 22 : 18)
-                    .padding(.vertical, isLandscape ? 2 : 6)
+                    .padding(.vertical, isLandscape ? 0 : 2)
                     
                     HStack(alignment: .bottom, spacing: columnGap) {
                         Thumbstick(radius: stickRadius, value: $leftStick) { x, y in
@@ -135,8 +137,8 @@ struct GamepadView: View {
                         .padding(.leading, isLandscape ? 4 : 0)
                     }
                     .padding(.horizontal, isLandscape ? 20 : 16)
-                    .padding(.top, isLandscape ? 4 : 8)
-                    .padding(.bottom, isLandscape ? 8 : 10)
+                    .padding(.top, isLandscape ? 0 : 4)
+                    .padding(.bottom, isLandscape ? 6 : 8)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             }
