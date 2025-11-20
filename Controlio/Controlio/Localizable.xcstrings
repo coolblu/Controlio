@@ -85,7 +85,41 @@
         }
       }
     },
+    "Available" : {
+      "comment" : "Device connection status: available",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disponible"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disponible"
+          }
+        }
+      }
+    },
+    "Available Devices" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dispositivos disponibles"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appareils disponibles"
+          }
+        }
+      }
+    },
     "Battery" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -166,6 +200,7 @@
       }
     },
     "Connect" : {
+      "comment" : "Button to connect to device",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -182,6 +217,7 @@
       }
     },
     "Connected" : {
+      "comment" : "Device connection status: connected",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -193,6 +229,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Connecté"
+          }
+        }
+      }
+    },
+    "Connected Devices" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dispositivos conectados"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appareils connectés"
           }
         }
       }
@@ -209,6 +261,56 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Connecté à : %@"
+          }
+        }
+      }
+    },
+    "Connecting" : {
+      "comment" : "Device connection status: connecting",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conectando"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connexion en cours"
+          }
+        }
+      }
+    },
+    "Connecting to: %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conectando a: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connexion à : %@"
+          }
+        }
+      }
+    },
+    "Connecting..." : {
+      "comment" : "Disabled button while connecting",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conectando..."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connexion en cours…"
           }
         }
       }
@@ -313,6 +415,39 @@
         }
       }
     },
+    "Desktop" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sobremesa"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ordinateur de bureau"
+          }
+        }
+      }
+    },
+    "Device" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dispositivo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appareil"
+          }
+        }
+      }
+    },
     "Device Controller" : {
       "localizations" : {
         "es" : {
@@ -346,6 +481,7 @@
       }
     },
     "Disconnect" : {
+      "comment" : "Button to disconnect from device",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -357,6 +493,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Se déconnecter"
+          }
+        }
+      }
+    },
+    "Disconnected" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desconectado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Déconnecté"
           }
         }
       }
@@ -491,6 +644,23 @@
         }
       }
     },
+    "Forget Device" : {
+      "comment" : "Context menu action to forget a device",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Olvidar dispositivo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oublier cet appareil"
+          }
+        }
+      }
+    },
     "French" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -513,13 +683,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gamepad"
+            "value" : "Mando de Juego"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gamepad"
+            "value" : "Manette de jeu"
           }
         }
       }
@@ -650,6 +820,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Langue"
+          }
+        }
+      }
+    },
+    "Laptop" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Portátil"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ordinateur portable"
           }
         }
       }
@@ -785,7 +972,25 @@
         }
       }
     },
+    "No connected devices" : {
+      "comment" : "Shown when there are no currently connected devices",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No hay dispositivos conectados"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun appareil connecté"
+          }
+        }
+      }
+    },
     "No devices found. Tap Scan Devices to refresh." : {
+      "comment" : "Shown when no available devices are found",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -830,6 +1035,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Notifications"
+          }
+        }
+      }
+    },
+    "Offline" : {
+      "comment" : "Device connection status: offline\nLabel for offline device",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin conexión"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hors ligne"
           }
         }
       }
@@ -1091,6 +1313,7 @@
       }
     },
     "Scan Devices" : {
+      "comment" : "Button to start device scan",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -1102,6 +1325,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Appareils de balayage"
+          }
+        }
+      }
+    },
+    "Scanning..." : {
+      "comment" : "Indicates scanning in progress",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscando…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recherche en cours…"
           }
         }
       }
@@ -1256,13 +1496,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trackpad"
+            "value" : "Panel Táctil"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trackpad"
+            "value" : "Pavé Tactile"
           }
         }
       }
@@ -1272,7 +1512,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Configuración Del Trackpad"
+            "value" : "Configuración Del Trackpad Panel Táctil"
           }
         },
         "fr" : {
@@ -1365,5 +1605,5 @@
       }
     }
   },
-  "version" : "1.0"
+  "version" : "1.1"
 }
