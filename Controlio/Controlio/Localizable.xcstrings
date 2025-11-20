@@ -86,10 +86,37 @@
       }
     },
     "Available" : {
-      "comment" : "Device connection status: available"
+      "comment" : "Device connection status: available",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disponible"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disponible"
+          }
+        }
+      }
     },
     "Available Devices" : {
-
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dispositivos disponibles"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appareils disponibles"
+          }
+        }
+      }
     },
     "Battery" : {
       "extractionState" : "stale",
@@ -207,7 +234,20 @@
       }
     },
     "Connected Devices" : {
-
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dispositivos conectados"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appareils connectés"
+          }
+        }
+      }
     },
     "Connected to: %@" : {
       "localizations" : {
@@ -226,13 +266,54 @@
       }
     },
     "Connecting" : {
-      "comment" : "Device connection status: connecting"
+      "comment" : "Device connection status: connecting",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conectando"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connexion en cours"
+          }
+        }
+      }
     },
     "Connecting to: %@" : {
-
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conectando a: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connexion à : %@"
+          }
+        }
+      }
     },
     "Connecting..." : {
-      "comment" : "Disabled button while connecting"
+      "comment" : "Disabled button while connecting",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conectando..."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connexion en cours…"
+          }
+        }
+      }
     },
     "Connection Alerts" : {
       "extractionState" : "manual",
@@ -334,8 +415,38 @@
         }
       }
     },
+    "Desktop" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sobremesa"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ordinateur de bureau"
+          }
+        }
+      }
+    },
     "Device" : {
-
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dispositivo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appareil"
+          }
+        }
+      }
     },
     "Device Controller" : {
       "localizations" : {
@@ -534,7 +645,21 @@
       }
     },
     "Forget Device" : {
-      "comment" : "Context menu action to forget a device"
+      "comment" : "Context menu action to forget a device",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Olvidar dispositivo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oublier cet appareil"
+          }
+        }
+      }
     },
     "French" : {
       "extractionState" : "manual",
@@ -699,6 +824,23 @@
         }
       }
     },
+    "Laptop" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Portátil"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ordinateur portable"
+          }
+        }
+      }
+    },
     "Light" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -831,7 +973,21 @@
       }
     },
     "No connected devices" : {
-      "comment" : "Shown when there are no currently connected devices"
+      "comment" : "Shown when there are no currently connected devices",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No hay dispositivos conectados"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun appareil connecté"
+          }
+        }
+      }
     },
     "No devices found. Tap Scan Devices to refresh." : {
       "comment" : "Shown when no available devices are found",
@@ -884,7 +1040,21 @@
       }
     },
     "Offline" : {
-      "comment" : "Device connection status: offline\nLabel for offline device"
+      "comment" : "Device connection status: offline\nLabel for offline device",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin conexión"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hors ligne"
+          }
+        }
+      }
     },
     "OK" : {
       "localizations" : {
@@ -1160,7 +1330,21 @@
       }
     },
     "Scanning..." : {
-      "comment" : "Indicates scanning in progress"
+      "comment" : "Indicates scanning in progress",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscando…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recherche en cours…"
+          }
+        }
+      }
     },
     "Scroll Speed" : {
       "localizations" : {

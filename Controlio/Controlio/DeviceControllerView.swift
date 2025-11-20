@@ -229,11 +229,16 @@ private struct DeviceControllerCard: View {
             HStack(alignment: .top, spacing: 12) {
                 DeviceIcon(kind: device.kind)
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(device.name)
-                        .font(.headline)
-                    Text(device.subtitle)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                    Text(device.name).font(.headline)
+                    Text(
+                        NSLocalizedString(
+                            device.subtitle,
+                            bundle: appSettings.bundle,
+                            comment: ""
+                        )
+                    )
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
                 }
                 Spacer()
                 StatusBadge(status: device.connectionStatus)
