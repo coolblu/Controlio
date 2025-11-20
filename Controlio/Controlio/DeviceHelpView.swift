@@ -65,8 +65,6 @@ struct DeviceHelpView: View {
     }
 }
 
-// MARK: - Data
-
 private enum DeviceHelpTab: CaseIterable, Identifiable {
     case connection
     case usage
@@ -235,8 +233,6 @@ private enum DeviceHelpContent {
         )
     ]
 }
-
-// MARK: - Components
 
 private struct DeviceHelpSegmentedControl: View {
     @Binding var selection: DeviceHelpTab
@@ -491,8 +487,6 @@ private struct RightRoundedRectangle: Shape {
         return path
     }
 }
-
-// MARK: - Theme
 
 enum DeviceHelpTheme {
     static let background = Color(red: 0.953, green: 0.965, blue: 0.980)

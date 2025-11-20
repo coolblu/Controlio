@@ -9,7 +9,6 @@ import SwiftUI
 import MultipeerConnectivity
 import Combine
 
-// MARK: - Device Model
 struct DeviceInfo: Identifiable {
     enum Kind {
         case laptop
@@ -32,6 +31,8 @@ struct DeviceInfo: Identifiable {
     let name: String
     let kind: Kind
     let isConnected: Bool
+    let isReachable: Bool
+    let isConnecting: Bool
 
     var subtitle: String {
         switch kind {
@@ -43,7 +44,16 @@ struct DeviceInfo: Identifiable {
     }
 
     var connectionStatus: DeviceConnectionStatus {
-        isConnected ? .connected : .available
+        if isConnected {
+            return .connected
+        }
+        if isConnecting {
+            return .connecting
+        }
+        if !isReachable {
+            return .offline
+        }
+        return .available
     }
 }
 
@@ -51,12 +61,14 @@ enum DeviceConnectionStatus {
     case connected
     case available
     case connecting
+    case offline
 
     var displayName: String {
         switch self {
         case .connected: return "connected"
         case .available: return "available"
         case .connecting: return "connecting..."
+        case .offline: return "offline"
         }
     }
 
@@ -65,6 +77,7 @@ enum DeviceConnectionStatus {
         case .connected: return Color(red: 1.0, green: 0.894, blue: 0.839)
         case .available: return Color(red: 0.862, green: 0.957, blue: 0.882)
         case .connecting: return Color.gray.opacity(0.2)
+        case .offline: return Color.black.opacity(0.06)
         }
     }
 
@@ -73,6 +86,7 @@ enum DeviceConnectionStatus {
         case .connected: return Color(red: 1.0, green: 0.451, blue: 0.216)
         case .available: return Color(red: 0.129, green: 0.549, blue: 0.184)
         case .connecting: return Color.gray
+        case .offline: return Color.gray
         }
     }
 
@@ -81,6 +95,7 @@ enum DeviceConnectionStatus {
         case .connected: return "Disconnect"
         case .available: return "Connect"
         case .connecting: return "Connecting..."
+        case .offline: return "Offline"
         }
     }
 
@@ -89,6 +104,7 @@ enum DeviceConnectionStatus {
         case .connected: return .white
         case .available: return Color(red: 1.0, green: 0.451, blue: 0.216)
         case .connecting: return Color.gray.opacity(0.2)
+        case .offline: return Color.clear
         }
     }
 
@@ -97,6 +113,7 @@ enum DeviceConnectionStatus {
         case .connected: return Color(red: 0.875, green: 0.157, blue: 0.212)
         case .available: return .white
         case .connecting: return Color.gray
+        case .offline: return Color.gray
         }
     }
 
@@ -105,6 +122,7 @@ enum DeviceConnectionStatus {
         case .connected: return Color(red: 0.875, green: 0.157, blue: 0.212)
         case .available: return .clear
         case .connecting: return Color.gray.opacity(0.3)
+        case .offline: return Color.black.opacity(0.08)
         }
     }
 
@@ -113,11 +131,20 @@ enum DeviceConnectionStatus {
         case .connected: return 1.5
         case .available: return 0
         case .connecting: return 1
+        case .offline: return 1
+        }
+    }
+
+    var isActionEnabled: Bool {
+        switch self {
+        case .connecting, .offline:
+            return false
+        case .connected, .available:
+            return true
         }
     }
 }
 
-// MARK: - View Model
 @MainActor
 class DeviceControllerViewModel: ObservableObject {
     @Published private(set) var connectedDevices: [DeviceInfo] = []
@@ -169,33 +196,68 @@ class DeviceControllerViewModel: ObservableObject {
     }
 
     private func refreshDevices() {
-        // Get connected device
-        if let connectedPeer = mcManager.connectedPeer {
-            connectedDevices = [createDeviceInfo(from: connectedPeer, isConnected: true)]
-        } else {
-            connectedDevices = []
+        let connectedPeer = mcManager.connectedPeer
+        let discoveredPeers = mcManager.discoveredPeers
+        let knownNames = mcManager.knownDeviceNames
+        let connectingName = connectingToPeer?.displayName
+        
+        var connected: [DeviceInfo] = []
+        var available: [DeviceInfo] = []
+        
+        for peer in discoveredPeers {
+            let isConnected = (peer == connectedPeer)
+            let isConnecting = (connectingToPeer == peer)
+
+            let info = createDeviceInfo(
+                from: peer,
+                isConnected: isConnected,
+                isReachable: true,
+                isConnecting: isConnecting
+            )
+
+            if isConnected {
+                connected.append(info)
+            } else {
+                available.append(info)
+            }
+        }
+        for name in knownNames {
+            guard !discoveredPeers.contains(where: { $0.displayName == name }) else { continue }
+
+            let kind = detectDeviceKind(from: name)
+            let stubPeer = MCPeerID(displayName: name)
+            
+            let isTarget = (connectingName == name)
+
+            let info = DeviceInfo(
+                id: name,
+                peerID: stubPeer,
+                name: name,
+                kind: kind,
+                isConnected: false,
+                isReachable: isTarget,
+                isConnecting: isTarget
+            )
+
+            available.append(info)
         }
 
-        // Get available devices (excluding connected one)
-        availableDevices = mcManager.discoveredPeers
-            .filter { peer in
-                peer != mcManager.connectedPeer
-            }
-            .map { peer in
-                createDeviceInfo(from: peer, isConnected: false)
-            }
+        connectedDevices = connected
+        availableDevices = available
     }
 
-    private func createDeviceInfo(from peerID: MCPeerID, isConnected: Bool) -> DeviceInfo {
+    private func createDeviceInfo(from peerID: MCPeerID, isConnected: Bool, isReachable: Bool, isConnecting: Bool) -> DeviceInfo {
         let name = peerID.displayName
         let kind = detectDeviceKind(from: name)
 
         return DeviceInfo(
-            id: peerID.displayName,
+            id: name,
             peerID: peerID,
             name: name,
             kind: kind,
-            isConnected: isConnected
+            isConnected: isConnected,
+            isReachable: isReachable,
+            isConnecting: isConnecting
         )
     }
 
@@ -213,13 +275,8 @@ class DeviceControllerViewModel: ObservableObject {
         return .unknown
     }
 
-    // MARK: - Public Actions
-
     func scanForDevices() {
         isScanning = true
-
-        // Clear discovered peers and start fresh
-        mcManager.forgetDiscoveredPeers()
 
         // Start browsing
         mcManager.startBrowsingIfNeeded()
@@ -232,10 +289,19 @@ class DeviceControllerViewModel: ObservableObject {
             }
         }
     }
+    
+    func forget(_ device: DeviceInfo) {
+        mcManager.forgetDevice(named: device.name)
+        refreshDevices()
+    }
 
     func connect(to device: DeviceInfo) {
         guard !device.isConnected else { return }
+
         connectingToPeer = device.peerID
+
+        refreshDevices()
+        mcManager.userRequestedReconnect()
         mcManager.connect(to: device.peerID)
     }
 

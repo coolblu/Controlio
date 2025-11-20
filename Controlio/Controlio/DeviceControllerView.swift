@@ -9,6 +9,8 @@ import SwiftUI
 import MultipeerConnectivity
 
 struct DeviceControllerView: View {
+    @EnvironmentObject var appSettings: AppSettings
+
     var onNavigateHome: (() -> Void)? = nil
     @State private var showAppPreferences = false
     @Environment(\.dismiss) private var dismiss
@@ -31,8 +33,9 @@ struct DeviceControllerView: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
-                    Text("Device Controller")
+                    Text(NSLocalizedString("Device Controller", bundle: appSettings.bundle, comment: ""))
                         .font(.system(size: 34, weight: .bold, design: .rounded))
+                        .foregroundColor(appSettings.primaryText)
 
                     ViewThatFits(in: .horizontal) {
                         HStack(alignment: .top, spacing: 24) {
@@ -59,29 +62,31 @@ struct DeviceControllerView: View {
                 onHelpTap: { dismiss() }
             )
         }
-        .background(DeviceHelpTheme.background.ignoresSafeArea())
-        .navigationTitle("Device Controller")
+        .background(appSettings.bgColor.ignoresSafeArea())
+        .navigationTitle(
+            NSLocalizedString("Device Controller", bundle: appSettings.bundle, comment: "")
+        )
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             viewModel.startBrowsing()
             // Automatically start scanning when the view appears
             viewModel.scanForDevices()
         }
-        .onDisappear {
-            viewModel.stopBrowsing()
-        }
     }
 
     @ViewBuilder
     private var connectedSection: some View {
         DeviceControllerSection(
-            title: "Connected Devices",
+            title: NSLocalizedString("Connected Devices", bundle: appSettings.bundle, comment: ""),
             showScanButton: false,
             devices: viewModel.connectedDevices,
             isScanning: false,
             onScanTap: {},
             onDeviceAction: { device in
                 viewModel.toggleConnection(for: device)
+            },
+            onForget: { device in
+                viewModel.forget(device)
             }
         )
         .frame(minWidth: 320, maxWidth: .infinity)
@@ -90,7 +95,7 @@ struct DeviceControllerView: View {
     @ViewBuilder
     private var availableSection: some View {
         DeviceControllerSection(
-            title: "Available Devices",
+            title: NSLocalizedString("Available Devices", bundle: appSettings.bundle, comment: ""),
             showScanButton: true,
             devices: viewModel.availableDevices,
             isScanning: viewModel.isScanning,
@@ -99,13 +104,14 @@ struct DeviceControllerView: View {
             },
             onDeviceAction: { device in
                 viewModel.toggleConnection(for: device)
+            },
+            onForget: { device in
+                viewModel.forget(device)
             }
         )
         .frame(minWidth: 320, maxWidth: .infinity)
     }
 }
-
-// MARK: - Section
 
 private struct DeviceControllerSection: View {
     let title: String
@@ -114,6 +120,8 @@ private struct DeviceControllerSection: View {
     let isScanning: Bool
     let onScanTap: () -> Void
     let onDeviceAction: (DeviceInfo) -> Void
+    let onForget: (DeviceInfo) -> Void
+    @EnvironmentObject var appSettings: AppSettings
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -130,29 +138,46 @@ private struct DeviceControllerSection: View {
                             } else {
                                 Image(systemName: "arrow.clockwise")
                             }
-                            Text(isScanning ? "Scanning..." : "Scan Devices")
+                            let scanTitle = isScanning
+                                ? NSLocalizedString("Scanning...", bundle: appSettings.bundle, comment: "Indicates scanning in progress")
+                                : NSLocalizedString("Scan Devices", bundle: appSettings.bundle, comment: "Button to start device scan")
+
+                            Text(scanTitle)
                                 .font(.subheadline.weight(.semibold))
                         }
                         .padding(.vertical, 8)
                         .padding(.horizontal, 14)
-                        .background(DeviceControllerTheme.scanButtonBackground)
+                        .background(appSettings.cardColor)
                         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
                         .overlay(
                             RoundedRectangle(cornerRadius: 16, style: .continuous)
-                                .stroke(DeviceControllerTheme.scanButtonBorder, lineWidth: 1)
+                                .stroke(appSettings.strokeColor, lineWidth: 1)
                         )
                     }
                     .buttonStyle(.plain)
                     .disabled(isScanning)
                 }
+
             }
 
             if devices.isEmpty {
-                Text(showScanButton ? "No devices found. Tap Scan Devices to refresh." : "No connected devices")
+                let message = showScanButton
+                    ? NSLocalizedString(
+                        "No devices found. Tap Scan Devices to refresh.",
+                        bundle: appSettings.bundle,
+                        comment: "Shown when no available devices are found"
+                    )
+                    : NSLocalizedString(
+                        "No connected devices",
+                        bundle: appSettings.bundle,
+                        comment: "Shown when there are no currently connected devices"
+                    )
+
+                Text(message)
                     .font(.footnote)
                     .foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.vertical, 40)
+                    .padding(.vertical, 4)
             } else {
                 VStack(spacing: 16) {
                     ForEach(devices) { device in
@@ -160,25 +185,48 @@ private struct DeviceControllerSection: View {
                             device: device,
                             onAction: { onDeviceAction(device) }
                         )
+                        .contextMenu {
+                            Button(role: .destructive) {
+                                onForget(device)
+                            } label: {
+                                Label(
+                                    NSLocalizedString("Forget Device", bundle: appSettings.bundle, comment: "Context menu action to forget a device"),
+                                    systemImage: "trash"
+                                )
+                            }
+                        }
                     }
                 }
             }
         }
         .padding(20)
-        .background(DeviceControllerTheme.sectionBackground)
+        .background(appSettings.cardColor)
         .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: 26, style: .continuous)
-                .stroke(DeviceControllerTheme.sectionBorder, lineWidth: 1)
+                .stroke(appSettings.strokeColor, lineWidth: 1)
         )
+        .shadow(color: appSettings.shadowColor, radius: 6, x: 0, y: 4)
     }
 }
-
-// MARK: - Card
 
 private struct DeviceControllerCard: View {
     let device: DeviceInfo
     let onAction: () -> Void
+    @EnvironmentObject var appSettings: AppSettings
+    
+    private var localizedActionTitle: String {
+        switch device.connectionStatus {
+        case .connected:
+            return NSLocalizedString("Disconnect", bundle: appSettings.bundle, comment: "Button to disconnect from device")
+        case .available:
+            return NSLocalizedString("Connect", bundle: appSettings.bundle, comment: "Button to connect to device")
+        case .connecting:
+            return NSLocalizedString("Connecting...", bundle: appSettings.bundle, comment: "Disabled button while connecting")
+        case .offline:
+            return NSLocalizedString("Offline", bundle: appSettings.bundle, comment: "Label for offline device")
+        }
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -196,7 +244,7 @@ private struct DeviceControllerCard: View {
             }
 
             Button(action: onAction) {
-                Text(device.connectionStatus.actionTitle)
+                Text(localizedActionTitle)
                     .font(.headline)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 12)
@@ -205,68 +253,74 @@ private struct DeviceControllerCard: View {
                     .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
                     .overlay(
                         RoundedRectangle(cornerRadius: 18, style: .continuous)
-                            .stroke(device.connectionStatus.buttonBorder, lineWidth: device.connectionStatus.buttonBorderWidth)
+                            .stroke(
+                                device.connectionStatus.buttonBorder,
+                                lineWidth: device.connectionStatus.buttonBorderWidth
+                            )
                     )
             }
             .buttonStyle(.plain)
+            .disabled(!device.connectionStatus.isActionEnabled)
         }
-        .padding(18)
-        .background(DeviceControllerTheme.cardBackground)
-        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .padding(16)
+        .background(appSettings.cardColor)
+        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: 24, style: .continuous)
-                .stroke(DeviceControllerTheme.cardBorder, lineWidth: 1)
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .stroke(appSettings.strokeColor, lineWidth: 1)
         )
-        .shadow(color: DeviceControllerTheme.cardShadow, radius: 8, x: 0, y: 3)
+        .shadow(color: appSettings.shadowColor, radius: 10, x: 0, y: 6)
     }
 }
 
-// MARK: - Components
-
 private struct DeviceIcon: View {
     let kind: DeviceInfo.Kind
+    @EnvironmentObject var appSettings: AppSettings
 
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .fill(DeviceControllerTheme.iconBackground)
+                .fill(appSettings.cardColor)
                 .frame(width: 52, height: 52)
             Image(systemName: kind.iconName)
                 .font(.system(size: 24, weight: .semibold))
-                .foregroundStyle(DeviceControllerTheme.primary)
+                .foregroundStyle(.primary)
         }
     }
 }
 
 private struct StatusBadge: View {
+    @EnvironmentObject var appSettings: AppSettings
+
     let status: DeviceConnectionStatus
 
+    private var localizedStatus: String {
+        switch status {
+        case .connected:
+            return NSLocalizedString("Connected", bundle: appSettings.bundle, comment: "Device connection status: connected")
+        case .available:
+            return NSLocalizedString("Available", bundle: appSettings.bundle, comment: "Device connection status: available")
+        case .connecting:
+            return NSLocalizedString("Connecting", bundle: appSettings.bundle, comment: "Device connection status: connecting")
+        case .offline:
+            return NSLocalizedString("Offline", bundle: appSettings.bundle, comment: "Device connection status: offline")
+        }
+    }
+    
     var body: some View {
-        Text(status.displayName)
-            .font(.caption.weight(.bold))
-            .textCase(.lowercase)
-            .padding(.vertical, 6)
-            .padding(.horizontal, 12)
-            .background(status.badgeBackground)
+        Text(localizedStatus.uppercased())
+            .font(.caption2.weight(.semibold))
+            .padding(.horizontal, 10)
+            .padding(.vertical, 4)
             .foregroundStyle(status.badgeForeground)
+            .background(status.badgeBackground)
             .clipShape(Capsule())
     }
 }
 
-
-// MARK: - Theme
-
 private enum DeviceControllerTheme {
-    static let primary = DeviceHelpTheme.orange
-    static let sectionBackground = Color.white
-    static let sectionBorder = Color.black.opacity(0.05)
-    static let cardBackground = Color.white
-    static let cardBorder = Color.black.opacity(0.06)
-    static let cardShadow = Color.black.opacity(0.05)
-    static let iconBackground = Color.white
     static let danger = Color(red: 0.875, green: 0.157, blue: 0.212)
-    static let scanButtonBackground = Color.white
-    static let scanButtonBorder = Color.black.opacity(0.08)
+    static let primary = Color(red: 1.0, green: 0.451, blue: 0.216)
 }
 
 //#Preview {
