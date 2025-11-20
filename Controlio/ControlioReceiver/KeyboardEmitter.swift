@@ -13,6 +13,9 @@ import os
 final class KeyboardEmitter {
     static let shared = KeyboardEmitter()
 
+    private let eventSource = CGEventSource(stateID: .hidSystemState)
+    private let debugKeyEvents = ProcessInfo.processInfo.environment["CONTROLIO_DEBUG_KEYS"] == "1"
+    
     private let repeatInitialDelay: TimeInterval = 0.20
     private let repeatHz: Double = 30.0
     private var repeatInterval: TimeInterval { 1.0 / repeatHz }
@@ -25,8 +28,12 @@ final class KeyboardEmitter {
     private let timerQueue = DispatchQueue(label: "controlio.keyrepeat.timers", qos: .userInteractive)
     
     private func postKey(_ keyCode: CGKeyCode, down: Bool, isRepeat: Bool) {
-        guard let ev = CGEvent(keyboardEventSource: nil, virtualKey: keyCode, keyDown: down) else { return }
+        guard let ev = CGEvent(keyboardEventSource: eventSource, virtualKey: keyCode, keyDown: down) else { return }
+        ev.flags = [] // ensure no stale modifier flags (prevent accidental Control/Fn combos)
         ev.setIntegerValueField(.keyboardEventAutorepeat, value: isRepeat ? 1 : 0)
+        if debugKeyEvents {
+            print("KeyEmitter: keyCode=\(keyCode) down=\(down) repeat=\(isRepeat) flags=\(ev.flags.rawValue)")
+        }
         ev.post(tap: .cghidEventTap)
     }
     
@@ -123,20 +130,20 @@ final class KeyboardEmitter {
         // Horizontal
         let leftOn  = x < -threshold
         let rightOn = x >  threshold
-        sendKey(left,  down: leftOn)
-        sendKey(right, down: rightOn)
+        sendKey(left,  down: leftOn,  repeatable: false)
+        sendKey(right, down: rightOn, repeatable: false)
         if !leftOn && !rightOn {
-            sendKey(left,  down: false)
-            sendKey(right, down: false)
+            sendKey(left,  down: false, repeatable: false)
+            sendKey(right, down: false, repeatable: false)
         }
 
         let downOn = y >  threshold
         let upOn   = y < -threshold
-        sendKey(down, down: downOn)
-        sendKey(up,   down: upOn)
+        sendKey(down, down: downOn, repeatable: false)
+        sendKey(up,   down: upOn,   repeatable: false)
         if !upOn && !downOn {
-            sendKey(up,   down: false)
-            sendKey(down, down: false)
+            sendKey(up,   down: false, repeatable: false)
+            sendKey(down, down: false, repeatable: false)
         }
     }
 
@@ -168,7 +175,7 @@ final class KeyboardEmitter {
     }
     
     func arrow(_ dir: ArrowDir, isDown: Bool) {
-        sendKey(arrowKeyCode(dir), down: isDown)
+        sendKey(arrowKeyCode(dir), down: isDown, repeatable: false)
     }
 
     func smoothRightStickAsArrows(x: CGFloat, y: CGFloat, threshold: CGFloat = 0.15) {

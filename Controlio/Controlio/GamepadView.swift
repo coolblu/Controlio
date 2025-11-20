@@ -45,97 +45,98 @@ struct GamepadView: View {
     var body: some View {
         GeometryReader { geo in
             let (statusText, dotColor) = ui(for: mc.sessionState)
-            let isDark = appSettings.selectedTheme == "Dark"
 
             let w = geo.size.width
             let h = geo.size.height
+            let isLandscape = w > h
             // responsive sizing
             let shoulderHeight: CGFloat = max(36, min(52, h * 0.06))
             let shoulderWidth: CGFloat  = max(100, min(160, w * 0.35))
             let stickRadius: CGFloat    = max(70, min(110, min(w, h) * 0.18))
             let abxySize: CGFloat       = max(54, min(68, min(w, h) * 0.11))
             let dpadKey: CGFloat        = max(40, min(54, min(w, h) * 0.085))
-            let clusterGap: CGFloat     = max(18, min(26, min(w, h) * 0.035))
+            let clusterGap: CGFloat     = isLandscape
+                ? max(22, min(32, min(w, h) * 0.045))
+                : max(24, min(34, min(w, h) * 0.05))
+            let columnGap: CGFloat      = isLandscape
+                ? max(24, min(32, min(w, h) * 0.04))
+                : max(20, min(28, min(w, h) * 0.04))
+            let verticalSpacing: CGFloat = isLandscape ? 6 : 4
             
-            ZStack {
+            ZStack(alignment: .topLeading) {
                 appSettings.bgColor.ignoresSafeArea()
                 
-                VStack(spacing: 0) {
-                    ConnectionIndicator(statusText: statusText, dotColor: dotColor)
-                        .environmentObject(appSettings)
-
+                VStack(spacing: verticalSpacing) {
                     HStack {
                         Shoulder(label: "L1", width: shoulderWidth, height: shoulderHeight) { down in
                             sendButton(.l1, down)
                         }
-                        Spacer(minLength: 16)
+                        Spacer(minLength: isLandscape ? 20 : 16)
                         Shoulder(label: "R1", width: shoulderWidth, height: shoulderHeight) { down in
                             sendButton(.r1, down)
                         }
                     }
-                    .padding(.horizontal, 20)
-                    .padding(.top, 8)
-                    .padding(.bottom, 12)
-                    
-                    HStack(alignment: .center) {
-                        VStack(spacing: 18) {
-                            DPad(keySize: dpadKey) { dir, down in
-                                switch (dir, down) {
-                                case (.up, true):    mc.send(.gpDown(.dpadUp))
-                                case (.up, false):   mc.send(.gpUp(.dpadUp))
-                                case (.down, true):  mc.send(.gpDown(.dpadDown))
-                                case (.down, false): mc.send(.gpUp(.dpadDown))
-                                case (.left, true):  mc.send(.gpDown(.dpadLeft))
-                                case (.left, false): mc.send(.gpUp(.dpadLeft))
-                                case (.right, true): mc.send(.gpDown(.dpadRight))
-                                case (.right, false):mc.send(.gpUp(.dpadRight))
-                                }
-                                hapticTap()
+                    .padding(.horizontal, isLandscape ? 26 : 22)
+                    .padding(.top, isLandscape ? 0 : 2)
+                    .padding(.bottom, 2)
+
+                    HStack(alignment: .center, spacing: columnGap) {
+                        DPad(keySize: dpadKey) { dir, down in
+                            switch (dir, down) {
+                            case (.up, true):    mc.send(.gpDown(.dpadUp))
+                            case (.up, false):   mc.send(.gpUp(.dpadUp))
+                            case (.down, true):  mc.send(.gpDown(.dpadDown))
+                            case (.down, false): mc.send(.gpUp(.dpadDown))
+                            case (.left, true):  mc.send(.gpDown(.dpadLeft))
+                            case (.left, false): mc.send(.gpUp(.dpadLeft))
+                            case (.right, true): mc.send(.gpDown(.dpadRight))
+                            case (.right, false):mc.send(.gpUp(.dpadRight))
                             }
-                            Spacer(minLength: 0)
+                            hapticTap()
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        
-                        VStack(spacing: 16) {
-                            HStack(spacing: 18) {
-                                GPChip(label: "Select") { down in sendButton(.select, down) }
-                                GPChip(label: "Start")  { down in sendButton(.start, down)  }
-                            }
+                        .padding(.trailing, isLandscape ? 4 : 0)
+
+                        VStack(spacing: isLandscape ? 10 : 8) {
+                            GPChip(label: "Select") { down in sendButton(.select, down) }
+                            GPChip(label: "Start")  { down in sendButton(.start, down)  }
                         }
-                        .frame(maxWidth: .infinity)
+                        .padding(.horizontal, isLandscape ? 10 : 8)
                         
-                        VStack(spacing: 18) {
-                            ABXY(buttonSize: abxySize, gap: clusterGap) { btn, down in
-                                switch btn {
-                                case .a: sendButton(.a, down)
-                                case .b: sendButton(.b, down)
-                                case .x: sendButton(.x, down)
-                                case .y: sendButton(.y, down)
-                                }
+                        ABXY(buttonSize: abxySize, gap: clusterGap) { btn, down in
+                            switch btn {
+                            case .a: sendButton(.a, down)
+                            case .b: sendButton(.b, down)
+                            case .x: sendButton(.x, down)
+                            case .y: sendButton(.y, down)
                             }
-                            Spacer(minLength: 0)
                         }
                         .frame(maxWidth: .infinity, alignment: .trailing)
+                        .padding(.leading, isLandscape ? 4 : 0)
                     }
-                    .padding(.horizontal, 24)
-                    .frame(height: h * 0.46)
+                    .padding(.horizontal, isLandscape ? 22 : 18)
+                    .padding(.vertical, 0)
                     
-                    HStack(alignment: .bottom) {
+                    HStack(alignment: .bottom, spacing: columnGap) {
                         Thumbstick(radius: stickRadius, value: $leftStick) { x, y in
                             sendStick(id: 0, x: x, y: y, lastSent: &lastAXSentLeft)
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.trailing, isLandscape ? 4 : 0)
                         
-                        Spacer(minLength: 24)
+                        Spacer(minLength: columnGap)
                         
                         Thumbstick(radius: stickRadius, value: $rightStick) { x, y in
                             sendStick(id: 1, x: x, y: y, lastSent: &lastAXSentRight)
                         }
                         .frame(maxWidth: .infinity, alignment: .trailing)
+                        .padding(.leading, isLandscape ? 4 : 0)
                     }
-                    .padding(.horizontal, 28)
-                    .padding(.bottom, 18)
+                    .padding(.horizontal, isLandscape ? 20 : 16)
+                    .padding(.top, 0)
+                    .padding(.bottom, isLandscape ? 2 : 4)
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             }
         }
         .onAppear {
@@ -145,6 +146,13 @@ struct GamepadView: View {
         .onReceive(stickTick) { _ in
             pollSticks()
         }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                ConnectionIndicator(statusText: ui(for: mc.sessionState).0, dotColor: ui(for: mc.sessionState).1)
+                    .environmentObject(appSettings)
+            }
+        }
+        .navigationBarTitleDisplayMode(.inline)
     }
     
     private func pollSticks() {
@@ -385,6 +393,7 @@ struct Thumbstick: View {
         let ringFill = isDark ? Color.white.opacity(0.08) : appSettings.cardColor
         let knobFill = isDark ? Color.white.opacity(0.22) : appSettings.cardColor
         let knobStroke = isDark ? Color.white.opacity(0.18) : appSettings.strokeColor
+        let hitRadius = radius * 1.4
 	
         return ZStack {
             Circle().strokeBorder(ringStroke, lineWidth: 2)
@@ -396,26 +405,27 @@ struct Thumbstick: View {
                 .overlay(Circle().stroke(knobStroke, lineWidth: 1))
                 .frame(width: max(58, radius * 0.7), height: max(58, radius * 0.7))
                 .offset(drag)
-                .gesture(
-                    DragGesture(minimumDistance: 0)
-                        .onChanged { g in
-                            let dx = g.translation.width
-                            let dy = g.translation.height
-                            let clamped = clampToCircle(CGSize(width: dx, height: dy), limit: radius)
-                            drag = clamped
-                            let nx = clamped.width / radius
-                            let ny = clamped.height / radius
-                            value = CGPoint(x: nx, y: ny)
-                            onChange(nx, ny)
-                        }
-                        .onEnded { _ in
-                            drag = .zero
-                            value = .zero
-                            onChange(0, 0)
-                        }
-                )
         }
         .frame(width: radius*2, height: radius*2)
+        .contentShape(Circle().inset(by: -max(hitRadius - radius, 0))) // bigger hit ring lets you start off the knob
+        .gesture(
+            DragGesture(minimumDistance: 0)
+                .onChanged { g in
+                    let dx = g.translation.width
+                    let dy = g.translation.height
+                    let clamped = clampToCircle(CGSize(width: dx, height: dy), limit: radius)
+                    drag = clamped
+                    let nx = clamped.width / radius
+                    let ny = clamped.height / radius
+                    value = CGPoint(x: nx, y: ny)
+                    onChange(nx, ny)
+                }
+                .onEnded { _ in
+                    drag = .zero
+                    value = .zero
+                    onChange(0, 0)
+                }
+        )
     }
     
     private func clampToCircle(_ v: CGSize, limit: CGFloat) -> CGSize {
