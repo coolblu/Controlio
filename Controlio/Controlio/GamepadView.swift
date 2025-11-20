@@ -218,8 +218,8 @@ struct GamepadView: View {
         .onReceive(stickTick) { _ in
             pollSticks()
         }
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
+        .toolbar(content: {
+            ToolbarItemGroup(placement: .navigationBarTrailing) {
                 HStack(spacing: 12) {
                     ConnectionIndicator(statusText: ui(for: mc.sessionState).0, dotColor: ui(for: mc.sessionState).1)
                     .environmentObject(appSettings)
@@ -239,7 +239,7 @@ struct GamepadView: View {
                     }
                 }
             }
-        }
+        })
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $showSettings) {
             GamepadSettingsView(
