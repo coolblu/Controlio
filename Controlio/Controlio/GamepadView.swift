@@ -372,10 +372,20 @@ struct Shoulder: View {
 
 private struct GPChip: View {
     let label: String
-    let horizontalPadding: CGFloat = 14
+    let horizontalPadding: CGFloat
     let onChange: (Bool) -> Void
     @State private var pressed = false
     @EnvironmentObject var appSettings: AppSettings
+
+    init(
+        label: String,
+        horizontalPadding: CGFloat = 14,
+        onChange: @escaping (Bool) -> Void
+    ) {
+        self.label = label
+        self.horizontalPadding = horizontalPadding
+        self.onChange = onChange
+    }
 
     var body: some View {
         let isDark = appSettings.selectedTheme == "Dark"
@@ -449,7 +459,7 @@ enum DPadDir { case up, down, left, right }
 
 struct DPad: View {
     let keySize: CGFloat
-    let spacing: CGFloat = 10
+    let spacing: CGFloat
     let onChange: (DPadDir, Bool) -> Void
     @State private var u = false
     @State private var d = false
