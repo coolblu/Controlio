@@ -52,19 +52,86 @@ struct GamepadView: View {
             let w = geo.size.width
             let h = geo.size.height
             let isLandscape = w > h
-            // responsive sizing
+            let isCompactWidth = w < 360
+            let isUltraCompact = w < 340
+            let verticalSpacing: CGFloat = isLandscape ? 6 : 4
+
             let shoulderHeight: CGFloat = max(36, min(52, h * 0.06))
             let shoulderWidth: CGFloat  = max(100, min(160, w * 0.35))
-            let stickRadius: CGFloat    = max(70, min(110, min(w, h) * 0.18))
-            let abxySize: CGFloat       = max(54, min(68, min(w, h) * 0.11))
-            let dpadKey: CGFloat        = max(40, min(54, min(w, h) * 0.085))
-            let clusterGap: CGFloat     = isLandscape
+
+            let middleRowPadding: CGFloat = isLandscape ? 22 : (isUltraCompact ? 12 : (isCompactWidth ? 14 : 18))
+            let stickRowPadding: CGFloat = isLandscape ? 20 : (isUltraCompact ? 12 : (isCompactWidth ? 14 : 16))
+
+            let baseDpadKey: CGFloat = max(40, min(54, min(w, h) * 0.085))
+            let baseDpadSpacing: CGFloat = 10
+            let baseAbxySize: CGFloat = max(54, min(68, min(w, h) * 0.11))
+            let baseClusterGap: CGFloat = isLandscape
                 ? max(22, min(32, min(w, h) * 0.045))
                 : max(24, min(34, min(w, h) * 0.05))
-            let columnGap: CGFloat      = isLandscape
-                ? max(24, min(32, min(w, h) * 0.04))
-                : max(20, min(28, min(w, h) * 0.04))
-            let verticalSpacing: CGFloat = isLandscape ? 6 : 4
+            let baseColumnGap: CGFloat = {
+                let base = isLandscape
+                    ? max(24, min(32, min(w, h) * 0.04))
+                    : max(22, min(28, min(w, h) * 0.04))
+                return isCompactWidth ? base * 0.85 : base
+            }()
+            let baseChipWidth: CGFloat = isCompactWidth ? 72 : 82
+            let chipHorizontalPadding: CGFloat = isCompactWidth ? 10 : 12
+            let chipStackPadding: CGFloat = isLandscape ? 10 : (isCompactWidth ? 6 : 8)
+
+            let midRowAvailable = w - middleRowPadding * 2
+            let estimatedMidWidth =
+                baseDpadKey * 3 +
+                baseDpadSpacing * 2 +
+                baseAbxySize * 2 +
+                baseClusterGap +
+                baseColumnGap * 2 +
+                baseChipWidth
+            let primaryScale = min(1, midRowAvailable / estimatedMidWidth)
+
+            var dpadKey = baseDpadKey * primaryScale
+            var dpadSpacing = baseDpadSpacing * primaryScale
+            var abxySize = baseAbxySize * primaryScale
+            var clusterGap = baseClusterGap * primaryScale
+            var columnGap = baseColumnGap * primaryScale
+            var chipWidth = baseChipWidth * primaryScale
+
+            let minDpadKey: CGFloat = isCompactWidth ? 28 : 34
+            let minDpadSpacing: CGFloat = isCompactWidth ? 7 : 8
+            let minAbxySize: CGFloat = isCompactWidth ? 41 : 46
+            let minClusterGap: CGFloat = isCompactWidth ? 12 : 16
+            let minColumnGap: CGFloat = isCompactWidth ? 10 : 14
+            let minChipWidth: CGFloat = isCompactWidth ? 56 : 64
+
+            dpadKey = max(minDpadKey, dpadKey)
+            dpadSpacing = max(minDpadSpacing, dpadSpacing)
+            abxySize = max(minAbxySize, abxySize)
+            clusterGap = max(minClusterGap, clusterGap)
+            columnGap = max(minColumnGap, columnGap)
+            chipWidth = max(minChipWidth, chipWidth)
+
+            let adjustedMidWidth =
+                dpadKey * 3 +
+                dpadSpacing * 2 +
+                abxySize * 2 +
+                clusterGap +
+                columnGap * 2 +
+                chipWidth
+            let secondaryScale = min(1, midRowAvailable / adjustedMidWidth)
+
+            dpadKey = max(minDpadKey, dpadKey * secondaryScale)
+            dpadSpacing = max(minDpadSpacing, dpadSpacing * secondaryScale)
+            abxySize = max(minAbxySize, abxySize * secondaryScale)
+            clusterGap = max(minClusterGap, clusterGap * secondaryScale)
+            columnGap = max(minColumnGap, columnGap * secondaryScale)
+            chipWidth = max(minChipWidth, chipWidth * secondaryScale)
+
+            let stickGap = columnGap
+            let stickRowAvailable = w - stickRowPadding * 2
+            let baseStickRadius = min(w, h) * 0.18
+            let minStickRadius: CGFloat = isCompactWidth ? 54 : 64
+            let clampedStickRadius = max(minStickRadius, min(110, baseStickRadius))
+            let maxStickRadiusByWidth = max(0, (stickRowAvailable - stickGap * 3) / 4)
+            let stickRadius = min(clampedStickRadius, maxStickRadiusByWidth)
             
             ZStack(alignment: .topLeading) {
                 appSettings.bgColor.ignoresSafeArea()
@@ -84,7 +151,7 @@ struct GamepadView: View {
                     .padding(.bottom, 2)
 
                     HStack(alignment: .center, spacing: columnGap) {
-                        DPad(keySize: dpadKey) { dir, down in
+                        DPad(keySize: dpadKey, spacing: dpadSpacing) { dir, down in
                             switch (dir, down) {
                             case (.up, true):    mc.send(.gpDown(.dpadUp))
                             case (.up, false):   mc.send(.gpUp(.dpadUp))
@@ -101,10 +168,12 @@ struct GamepadView: View {
                         .padding(.trailing, isLandscape ? 4 : 0)
 
                         VStack(spacing: isLandscape ? 10 : 8) {
-                            GPChip(label: "Select") { down in sendButton(.select, down) }
-                            GPChip(label: "Start")  { down in sendButton(.start, down)  }
+                            GPChip(label: "Select", horizontalPadding: chipHorizontalPadding) { down in sendButton(.select, down) }
+                                .frame(width: chipWidth)
+                            GPChip(label: "Start", horizontalPadding: chipHorizontalPadding) { down in sendButton(.start, down)  }
+                                .frame(width: chipWidth)
                         }
-                        .padding(.horizontal, isLandscape ? 10 : 8)
+                        .padding(.horizontal, chipStackPadding)
                         
                         ABXY(buttonSize: abxySize, gap: clusterGap) { btn, down in
                             switch btn {
@@ -117,17 +186,17 @@ struct GamepadView: View {
                         .frame(maxWidth: .infinity, alignment: .trailing)
                         .padding(.leading, isLandscape ? 4 : 0)
                     }
-                    .padding(.horizontal, isLandscape ? 22 : 18)
+                    .padding(.horizontal, middleRowPadding)
                     .padding(.vertical, 0)
                     
-                    HStack(alignment: .bottom, spacing: columnGap) {
+                    HStack(alignment: .bottom, spacing: stickGap) {
                         Thumbstick(radius: stickRadius, value: $leftStick) { x, y in
                             sendStick(id: 0, x: x, y: y, lastSent: &lastAXSentLeft)
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.trailing, isLandscape ? 4 : 0)
                         
-                        Spacer(minLength: columnGap)
+                        Spacer(minLength: stickGap)
                         
                         Thumbstick(radius: stickRadius, value: $rightStick) { x, y in
                             sendStick(id: 1, x: x, y: y, lastSent: &lastAXSentRight)
@@ -135,7 +204,7 @@ struct GamepadView: View {
                         .frame(maxWidth: .infinity, alignment: .trailing)
                         .padding(.leading, isLandscape ? 4 : 0)
                     }
-                    .padding(.horizontal, isLandscape ? 20 : 16)
+                    .padding(.horizontal, stickRowPadding)
                     .padding(.top, 0)
                     .padding(.bottom, isLandscape ? 2 : 4)
                 }
@@ -303,6 +372,7 @@ struct Shoulder: View {
 
 private struct GPChip: View {
     let label: String
+    let horizontalPadding: CGFloat = 14
     let onChange: (Bool) -> Void
     @State private var pressed = false
     @EnvironmentObject var appSettings: AppSettings
@@ -318,7 +388,10 @@ private struct GPChip: View {
         Text(label)
             .font(.subheadline)
             .foregroundStyle(text)
-            .padding(.vertical, 8).padding(.horizontal, 14)
+            .padding(.vertical, 8)
+            .padding(.horizontal, horizontalPadding)
+            .lineLimit(1)
+            .minimumScaleFactor(0.9)
             .background(fill)
             .overlay(Capsule().stroke(stroke, lineWidth: 1))
             .clipShape(Capsule())
@@ -376,6 +449,7 @@ enum DPadDir { case up, down, left, right }
 
 struct DPad: View {
     let keySize: CGFloat
+    let spacing: CGFloat = 10
     let onChange: (DPadDir, Bool) -> Void
     @State private var u = false
     @State private var d = false
@@ -384,9 +458,9 @@ struct DPad: View {
     @EnvironmentObject var appSettings: AppSettings
 
     var body: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: spacing) {
             dKey("▲", pressed: $u) { onChange(.up, $0) }
-            HStack(spacing: 10) {
+            HStack(spacing: spacing) {
                 dKey("◀", pressed: $l) { onChange(.left, $0) }
                 Rectangle().fill(Color.clear).frame(width: keySize, height: keySize)
                 dKey("▶", pressed: $r) { onChange(.right, $0) }
