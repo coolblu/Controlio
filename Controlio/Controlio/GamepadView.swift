@@ -139,12 +139,6 @@ struct GamepadView: View {
                     .padding(.bottom, isLandscape ? 8 : 10)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                
-                ConnectionIndicator(statusText: statusText, dotColor: dotColor)
-                    .environmentObject(appSettings)
-                    .padding(.leading, 16)
-                    .padding(.top, isLandscape ? 6 : 10)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             }
         }
         .onAppear {
@@ -154,6 +148,13 @@ struct GamepadView: View {
         .onReceive(stickTick) { _ in
             pollSticks()
         }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                ConnectionIndicator(statusText: ui(for: mc.sessionState).0, dotColor: ui(for: mc.sessionState).1)
+                    .environmentObject(appSettings)
+            }
+        }
+        .navigationBarTitleDisplayMode(.inline)
     }
     
     private func pollSticks() {
