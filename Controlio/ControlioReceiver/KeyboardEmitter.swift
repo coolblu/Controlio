@@ -123,20 +123,20 @@ final class KeyboardEmitter {
         // Horizontal
         let leftOn  = x < -threshold
         let rightOn = x >  threshold
-        sendKey(left,  down: leftOn)
-        sendKey(right, down: rightOn)
+        sendKey(left,  down: leftOn,  repeatable: false)
+        sendKey(right, down: rightOn, repeatable: false)
         if !leftOn && !rightOn {
-            sendKey(left,  down: false)
-            sendKey(right, down: false)
+            sendKey(left,  down: false, repeatable: false)
+            sendKey(right, down: false, repeatable: false)
         }
 
         let downOn = y >  threshold
         let upOn   = y < -threshold
-        sendKey(down, down: downOn)
-        sendKey(up,   down: upOn)
+        sendKey(down, down: downOn, repeatable: false)
+        sendKey(up,   down: upOn,   repeatable: false)
         if !upOn && !downOn {
-            sendKey(up,   down: false)
-            sendKey(down, down: false)
+            sendKey(up,   down: false, repeatable: false)
+            sendKey(down, down: false, repeatable: false)
         }
     }
 
@@ -168,7 +168,7 @@ final class KeyboardEmitter {
     }
     
     func arrow(_ dir: ArrowDir, isDown: Bool) {
-        sendKey(arrowKeyCode(dir), down: isDown)
+        sendKey(arrowKeyCode(dir), down: isDown, repeatable: false)
     }
 
     func smoothRightStickAsArrows(x: CGFloat, y: CGFloat, threshold: CGFloat = 0.15) {
