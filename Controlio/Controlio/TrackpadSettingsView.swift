@@ -9,6 +9,7 @@ import SwiftUI
 
 struct TrackpadSettingsView: View {
     var onNavigateHome: (() -> Void)? = nil
+    let mcManager: MCManager
     @Environment(\.dismiss) var dismiss
     @Binding var pointerSensitivity: Double
     @Binding var scrollSensitivity: Double
@@ -16,17 +17,17 @@ struct TrackpadSettingsView: View {
     @State private var showDeviceController = false
     @State private var showDeviceHelp = false
     @State private var showAppPreferences = false
-    
+
     var body: some View {
         NavigationView {
             ZStack {
                 NavigationLink(
-                    destination: DeviceControllerView(onNavigateHome: onNavigateHome),
+                    destination: DeviceControllerView(onNavigateHome: onNavigateHome, mcManager: mcManager),
                     isActive: $showDeviceController
                 ) { EmptyView() }
                     .hidden()
                 NavigationLink(
-                    destination: DeviceHelpView(onNavigateHome: onNavigateHome),
+                    destination: DeviceHelpView(onNavigateHome: onNavigateHome, mcManager: mcManager),
                     isActive: $showDeviceHelp
                 ) { EmptyView() }
                     .hidden()

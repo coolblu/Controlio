@@ -15,6 +15,7 @@ private enum Route: Hashable {
     case manageProfile
     case appPreferences
     case help
+    case deviceController
 }
 
 final class MCManagerWrapper: ObservableObject {
@@ -127,12 +128,23 @@ struct HomeView: View {
                             
                             // Connection status
                             let isConnected = mc.sessionState == .connected
+                            let isConnecting = mc.sessionState == .connecting
                             let wasManuallyDisconnected = mc.manuallyDisconnected
                             let nameNow = mc.connectedDeviceName
                             let nameLast = mc.lastConnectedPeer?.displayName
-                            
+                            let lastKnown = mc.lastKnownDeviceName
+
                             if isConnected {
                                 ConnectionBanner(deviceName: nameNow ?? NSLocalizedString("Connected", bundle: appSettings.bundle, comment: ""))
+                                    .environmentObject(appSettings)
+                            } else if isConnecting {
+                                let displayName =
+                                    nameNow ??
+                                    lastKnown ??
+                                    nameLast ??
+                                    NSLocalizedString("Device", bundle: appSettings.bundle, comment: "")
+
+                                ConnectingBanner(deviceName: displayName)
                                     .environmentObject(appSettings)
                             } else if wasManuallyDisconnected, let last = nameLast {
                                 DisconnectedBanner(deviceName: last)
@@ -156,13 +168,21 @@ struct HomeView: View {
                                 } else {
                                     Button(NSLocalizedString("Connect", bundle: appSettings.bundle, comment: "")) {
                                         mc.userRequestedReconnect()
+                                        if let lastName = mc.lastKnownDeviceName,
+                                           let lastPeer = mc.discoveredPeers.first(where: { $0.displayName == lastName }) {
+                                            mc.connect(to: lastPeer)
+                                        } else if let firstPeer = mc.discoveredPeers.first {
+                                            mc.connect(to: firstPeer)
+                                        } else {
+                                            path.append(Route.deviceController)
+                                        }
                                     }
                                     .buttonStyle(PrimaryButtonStyle())
                                     .environmentObject(appSettings)
                                 }
-                                
+
                                 Button(NSLocalizedString("Select Device", bundle: appSettings.bundle, comment: "")) {
-                                    // navigate to device picker
+                                    path.append(Route.deviceController)
                                 }
                                 .buttonStyle(OutlineButtonStyle())
                                 .environmentObject(appSettings)
@@ -196,7 +216,9 @@ struct HomeView: View {
                         case .appPreferences:
                             AppPreferencesView()
                         case .help:
-                            DeviceHelpView(onNavigateHome: { path = NavigationPath() })
+                            DeviceHelpView(onNavigateHome: { path = NavigationPath() }, mcManager: mc)
+                        case .deviceController:
+                            DeviceControllerView(onNavigateHome: { path = NavigationPath() }, mcManager: mc)
                         }
                     }
                 }
@@ -405,6 +427,35 @@ private struct ConnectionBanner: View {
                 .font(.subheadline)
                 .fontWeight(.semibold)
                 .foregroundColor(appSettings.primaryText)
+        }
+        .padding(.horizontal, 18)
+        .padding(.vertical, 14)
+        .frame(maxWidth: .infinity)
+        .background(appSettings.cardColor)
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .stroke(appSettings.strokeColor, lineWidth: 1)
+        )
+        .shadow(color: appSettings.shadowColor, radius: 6, x: 0, y: 2)
+    }
+}
+
+private struct ConnectingBanner: View {
+    let deviceName: String
+    @EnvironmentObject var appSettings: AppSettings
+
+    var body: some View {
+        HStack(spacing: 12) {
+            ProgressView()
+                .progressViewStyle(CircularProgressViewStyle())
+            Text(String(
+                format: NSLocalizedString("Connecting to: %@", bundle: appSettings.bundle, comment: ""),
+                deviceName
+            ))
+            .font(.subheadline)
+            .fontWeight(.semibold)
+            .foregroundColor(appSettings.primaryText)
         }
         .padding(.horizontal, 18)
         .padding(.vertical, 14)
