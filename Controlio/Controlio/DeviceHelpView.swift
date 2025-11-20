@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct DeviceHelpView: View {
     var onNavigateHome: (() -> Void)? = nil
@@ -13,6 +14,7 @@ struct DeviceHelpView: View {
     @State private var selection: DeviceHelpTab = .connection
     @State private var showDeviceController = false
     @State private var showAppPreferences = false
+    @EnvironmentObject var appSettings: AppSettings
 
     var body: some View {
         ZStack {
@@ -41,15 +43,15 @@ struct DeviceHelpView: View {
                             .foregroundStyle(.secondary)
                     }
 
-                    DeviceHelpSegmentedControl(selection: $selection)
+                DeviceHelpSegmentedControl(selection: $selection)
 
-                    VStack(spacing: 20) {
-                        ForEach(selection.sections) { section in
-                            DeviceHelpCard(section: section)
-                        }
+                VStack(spacing: 20) {
+                    ForEach(selection.sections(bundle: appSettings.bundle)) { section in
+                        DeviceHelpCard(section: section)
                     }
                 }
             }
+            .frame(maxWidth: .infinity)
         }
         .padding(20)
         .safeAreaInset(edge: .bottom, spacing: 0) {
@@ -71,17 +73,17 @@ private enum DeviceHelpTab: CaseIterable, Identifiable {
 
     var id: Self { self }
 
-    var title: String {
+    func title(bundle: Bundle) -> String {
         switch self {
-        case .connection: return "Device Connection"
-        case .usage: return "Controller Usage"
+        case .connection: return NSLocalizedString("Device Connection", bundle: bundle, comment: "Tab title for device connection help")
+        case .usage: return NSLocalizedString("Controller Usage", bundle: bundle, comment: "Tab title for controller usage help")
         }
     }
 
-    var sections: [DeviceHelpSection] {
+    func sections(bundle: Bundle) -> [DeviceHelpSection] {
         switch self {
-        case .connection: return DeviceHelpContent.connectionSections
-        case .usage: return DeviceHelpContent.usageSections
+        case .connection: return DeviceHelpContent.connectionSections(bundle: bundle)
+        case .usage: return DeviceHelpContent.usageSections(bundle: bundle)
         }
     }
 }
@@ -182,8 +184,8 @@ private enum DeviceHelpContent {
                 message: "Wireless is great on-the-go, but keep your device charged for the best results.",
                 style: .info
             )
-        )
-    ]
+        )]
+    }
 
     static let usageSections: [DeviceHelpSection] = [
         DeviceHelpSection(
@@ -237,6 +239,7 @@ private enum DeviceHelpContent {
 private struct DeviceHelpSegmentedControl: View {
     @Binding var selection: DeviceHelpTab
     @Namespace private var namespace
+    @EnvironmentObject var appSettings: AppSettings
 
     var body: some View {
         HStack(spacing: 8) {
@@ -244,7 +247,7 @@ private struct DeviceHelpSegmentedControl: View {
                 Button {
                     selection = tab
                 } label: {
-                    Text(tab.title)
+                    Text(tab.title(bundle: appSettings.bundle))
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(selection == tab ? DeviceHelpTheme.segmentTextActive : DeviceHelpTheme.segmentTextInactive)
                         .frame(maxWidth: .infinity)
@@ -356,8 +359,12 @@ struct DeviceHelpBottomBar: View {
         case vertical
     }
 
-    private let items: [DeviceHelpBottomBarItem]
+    @EnvironmentObject var appSettings: AppSettings
     private let orientation: Orientation
+    private let onHomeTap: () -> Void
+    private let onSettingsTap: () -> Void
+    private let onWifiTap: () -> Void
+    private let onHelpTap: () -> Void
 
     init(
         orientation: Orientation = .horizontal,
@@ -367,11 +374,18 @@ struct DeviceHelpBottomBar: View {
         onHelpTap: @escaping () -> Void = {}
     ) {
         self.orientation = orientation
-        self.items = [
-            .init(systemName: "house.fill", accessibilityLabel: "Home", action: onHomeTap),
-            .init(systemName: "gearshape.fill", accessibilityLabel: "Settings", action: onSettingsTap),
-            .init(systemName: "wifi", accessibilityLabel: "Wireless connection", action: onWifiTap),
-            .init(systemName: "questionmark.circle", accessibilityLabel: "Help", action: onHelpTap)
+        self.onHomeTap = onHomeTap
+        self.onSettingsTap = onSettingsTap
+        self.onWifiTap = onWifiTap
+        self.onHelpTap = onHelpTap
+    }
+
+    private var items: [DeviceHelpBottomBarItem] {
+        [
+            .init(systemName: "house.fill", accessibilityLabel: NSLocalizedString("Home", bundle: appSettings.bundle, comment: "Home button accessibility label"), action: onHomeTap),
+            .init(systemName: "gearshape.fill", accessibilityLabel: NSLocalizedString("Settings", bundle: appSettings.bundle, comment: "Settings button accessibility label"), action: onSettingsTap),
+            .init(systemName: "wifi", accessibilityLabel: NSLocalizedString("Wireless connection", bundle: appSettings.bundle, comment: "WiFi button accessibility label"), action: onWifiTap),
+            .init(systemName: "questionmark.circle", accessibilityLabel: NSLocalizedString("Help", bundle: appSettings.bundle, comment: "Help button accessibility label"), action: onHelpTap)
         ]
     }
 
