@@ -45,10 +45,10 @@ struct GamepadView: View {
     var body: some View {
         GeometryReader { geo in
             let (statusText, dotColor) = ui(for: mc.sessionState)
-            let isDark = appSettings.selectedTheme == "Dark"
 
             let w = geo.size.width
             let h = geo.size.height
+            let isLandscape = w > h
             // responsive sizing
             let shoulderHeight: CGFloat = max(36, min(52, h * 0.06))
             let shoulderWidth: CGFloat  = max(100, min(160, w * 0.35))
@@ -56,29 +56,32 @@ struct GamepadView: View {
             let abxySize: CGFloat       = max(54, min(68, min(w, h) * 0.11))
             let dpadKey: CGFloat        = max(40, min(54, min(w, h) * 0.085))
             let clusterGap: CGFloat     = max(18, min(26, min(w, h) * 0.035))
+            let columnGap: CGFloat      = max(16, min(24, min(w, h) * 0.03))
             
             ZStack(alignment: .top) {
                 appSettings.bgColor.ignoresSafeArea()
                 
-                VStack(spacing: 0) {
-                    ConnectionIndicator(statusText: statusText, dotColor: dotColor)
-                        .environmentObject(appSettings)
+                VStack(spacing: isLandscape ? 10 : 8) {
+                    if !isLandscape {
+                        ConnectionIndicator(statusText: statusText, dotColor: dotColor)
+                            .environmentObject(appSettings)
+                    }
 
                     HStack {
                         Shoulder(label: "L1", width: shoulderWidth, height: shoulderHeight) { down in
                             sendButton(.l1, down)
                         }
-                        Spacer(minLength: 16)
+                        Spacer(minLength: isLandscape ? 20 : 16)
                         Shoulder(label: "R1", width: shoulderWidth, height: shoulderHeight) { down in
                             sendButton(.r1, down)
                         }
                     }
-                    .padding(.horizontal, 20)
-                    .padding(.top, 8)
-                    .padding(.bottom, 12)
+                    .padding(.horizontal, isLandscape ? 24 : 20)
+                    .padding(.top, isLandscape ? 4 : 8)
+                    .padding(.bottom, 6)
                     
-                    HStack(alignment: .center) {
-                        VStack(spacing: 18) {
+                    HStack(alignment: .center, spacing: columnGap) {
+                        VStack(spacing: isLandscape ? 14 : 18) {
                             DPad(keySize: dpadKey) { dir, down in
                                 switch (dir, down) {
                                 case (.up, true):    mc.send(.gpDown(.dpadUp))
@@ -92,19 +95,23 @@ struct GamepadView: View {
                                 }
                                 hapticTap()
                             }
-                            Spacer(minLength: 0)
+                            
+                            Thumbstick(radius: stickRadius, value: $leftStick) { x, y in
+                                sendStick(id: 0, x: x, y: y, lastSent: &lastAXSentLeft)
+                            }
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                         
-                        VStack(spacing: 16) {
+                        VStack(spacing: isLandscape ? 12 : 16) {
                             HStack(spacing: 18) {
                                 GPChip(label: "Select") { down in sendButton(.select, down) }
                                 GPChip(label: "Start")  { down in sendButton(.start, down)  }
                             }
+                            Spacer(minLength: stickRadius * 0.3)
                         }
                         .frame(maxWidth: .infinity)
                         
-                        VStack(spacing: 18) {
+                        VStack(spacing: isLandscape ? 14 : 18) {
                             ABXY(buttonSize: abxySize, gap: clusterGap) { btn, down in
                                 switch btn {
                                 case .a: sendButton(.a, down)
@@ -113,32 +120,30 @@ struct GamepadView: View {
                                 case .y: sendButton(.y, down)
                                 }
                             }
-                            Spacer(minLength: 0)
+                            
+                            Thumbstick(radius: stickRadius, value: $rightStick) { x, y in
+                                sendStick(id: 1, x: x, y: y, lastSent: &lastAXSentRight)
+                            }
                         }
                         .frame(maxWidth: .infinity, alignment: .trailing)
                     }
-                    .padding(.horizontal, 24)
-                    .padding(.bottom, 12)
+                    .padding(.horizontal, isLandscape ? 20 : 16)
+                    .padding(.vertical, 8)
                     
-                    HStack(alignment: .bottom) {
-                        Thumbstick(radius: stickRadius, value: $leftStick) { x, y in
-                            sendStick(id: 0, x: x, y: y, lastSent: &lastAXSentLeft)
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        
-                        Spacer(minLength: 24)
-                        
-                        Thumbstick(radius: stickRadius, value: $rightStick) { x, y in
-                            sendStick(id: 1, x: x, y: y, lastSent: &lastAXSentRight)
-                        }
-                        .frame(maxWidth: .infinity, alignment: .trailing)
-                    }
-                    .padding(.horizontal, 28)
-                    .padding(.bottom, 12)
-                    
-                    Spacer()
+                    Spacer(minLength: 0)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                
+                if isLandscape {
+                    HStack {
+                        ConnectionIndicator(statusText: statusText, dotColor: dotColor)
+                            .environmentObject(appSettings)
+                        Spacer()
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 12)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                }
             }
         }
         .onAppear {
