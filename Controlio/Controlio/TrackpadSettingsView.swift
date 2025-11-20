@@ -10,61 +10,77 @@ import SwiftUI
 struct TrackpadSettingsView: View {
     var onNavigateHome: (() -> Void)? = nil
     let mcManager: MCManager
+    
     @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var appSettings: AppSettings
+
     @Binding var pointerSensitivity: Double
     @Binding var scrollSensitivity: Double
     @Binding var reverseScroll: Bool
+    
     @State private var showDeviceController = false
     @State private var showDeviceHelp = false
     @State private var showAppPreferences = false
 
     var body: some View {
-        NavigationView {
-            ZStack {
-                NavigationLink(
-                    destination: DeviceControllerView(onNavigateHome: onNavigateHome, mcManager: mcManager),
-                    isActive: $showDeviceController
-                ) { EmptyView() }
-                    .hidden()
-                NavigationLink(
-                    destination: DeviceHelpView(onNavigateHome: onNavigateHome, mcManager: mcManager),
-                    isActive: $showDeviceHelp
-                ) { EmptyView() }
-                    .hidden()
-                NavigationLink(
-                    destination: AppPreferencesView(),
-                    isActive: $showAppPreferences
-                ) { EmptyView() }
-                    .hidden()
-
+            NavigationStack {
                 Form {
-                    Section(header: Text("Pointer")) {
+                    Section(
+                        header: Text(
+                            NSLocalizedString("Pointer", bundle: appSettings.bundle, comment: "")
+                        )
+                    ) {
                         VStack(alignment: .leading, spacing: 8) {
                             HStack {
-                                Text("Sensitivity")
+                                Text(
+                                    NSLocalizedString("Sensitivity", bundle: appSettings.bundle, comment: "")
+                                )
                                 Spacer()
-                                Text(String(format: "%.1fx", pointerSensitivity))
-                                    .foregroundColor(.secondary)
+                                Text(
+                                    String(
+                                        format: NSLocalizedString("%.1fx", bundle: appSettings.bundle, comment: ""),
+                                        pointerSensitivity
+                                    )
+                                )
+                                .foregroundColor(.secondary)
                             }
                             Slider(value: $pointerSensitivity, in: 0.5...3.0, step: 0.1)
                         }
                     }
-                    
-                    Section(header: Text("Scrolling")) {
+
+                    Section(
+                        header: Text(
+                            NSLocalizedString("Scrolling", bundle: appSettings.bundle, comment: "")
+                        )
+                    ) {
                         VStack(alignment: .leading, spacing: 8) {
                             HStack {
-                                Text("Scroll Speed")
+                                Text(
+                                    NSLocalizedString("Scroll Speed", bundle: appSettings.bundle, comment: "")
+                                )
                                 Spacer()
-                                Text(String(format: "%.1fx", scrollSensitivity))
-                                    .foregroundColor(.secondary)
+                                Text(
+                                    String(
+                                        format: NSLocalizedString("%.1fx", bundle: appSettings.bundle, comment: ""),
+                                        scrollSensitivity
+                                    )
+                                )
+                                .foregroundColor(.secondary)
                             }
                             Slider(value: $scrollSensitivity, in: 0.5...3.0, step: 0.1)
                         }
-                        
-                        Toggle("Reverse Scroll Direction", isOn: $reverseScroll)
+
+                        Toggle(
+                            NSLocalizedString("Reverse Scroll Direction", bundle: appSettings.bundle, comment: ""),
+                            isOn: $reverseScroll
+                        )
                     }
-                    
-                    Section(header: Text("Reset")) {
+
+                    Section(
+                        header: Text(
+                            NSLocalizedString("Reset", bundle: appSettings.bundle, comment: "")
+                        )
+                    ) {
                         Button(action: {
                             pointerSensitivity = 1.0
                             scrollSensitivity = 1.0
@@ -72,34 +88,48 @@ struct TrackpadSettingsView: View {
                         }) {
                             HStack {
                                 Spacer()
-                                Text("Reset to Defaults")
-                                    .foregroundColor(.red)
+                                Text(
+                                    NSLocalizedString("Reset to Defaults", bundle: appSettings.bundle, comment: "")
+                                )
+                                .foregroundColor(.red)
                                 Spacer()
                             }
                         }
                     }
                 }
-            }
-            .navigationTitle("Trackpad Settings")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") {
-                        dismiss()
+                .navigationTitle(
+                    NSLocalizedString("Trackpad Settings", bundle: appSettings.bundle, comment: "")
+                )
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(
+                            NSLocalizedString("Done", bundle: appSettings.bundle, comment: "")
+                        ) {
+                            dismiss()
+                        }
                     }
                 }
             }
-        }
-        .safeAreaInset(edge: .bottom, spacing: 0) {
-            DeviceHelpBottomBar(
-                onHomeTap: {
-                    dismiss()
-                    onNavigateHome?()
-                },
-                onSettingsTap: { showAppPreferences = true },
-                onWifiTap: { showDeviceController = true },
-                onHelpTap: { showDeviceHelp = true }
-            )
+            .navigationDestination(isPresented: $showDeviceController) {
+                DeviceControllerView(onNavigateHome: onNavigateHome, mcManager: mcManager)
+            }
+            .navigationDestination(isPresented: $showDeviceHelp) {
+                DeviceHelpView(onNavigateHome: onNavigateHome, mcManager: mcManager)
+            }
+            .navigationDestination(isPresented: $showAppPreferences) {
+                AppPreferencesView()
+            }
+            .safeAreaInset(edge: .bottom, spacing: 0) {
+                DeviceHelpBottomBar(
+                    onHomeTap: {
+                        dismiss()
+                        onNavigateHome?()
+                    },
+                    onSettingsTap: { showAppPreferences = true },
+                    onWifiTap: { showDeviceController = true },
+                    onHelpTap: { showDeviceHelp = true }
+                )
+            }
         }
     }
-}
