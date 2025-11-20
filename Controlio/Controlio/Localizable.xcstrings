@@ -558,13 +558,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gamepad"
+            "value" : "Mando de Juego"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gamepad"
+            "value" : "Manette de jeu"
           }
         }
       }
@@ -1312,13 +1312,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trackpad"
+            "value" : "Panel Táctil"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pavé tactile"
+            "value" : "Pavé Tactile"
           }
         }
       }
@@ -1328,7 +1328,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Configuración Del Trackpad"
+            "value" : "Configuración Del Trackpad Panel Táctil"
           }
         },
         "fr" : {
