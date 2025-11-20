@@ -88,12 +88,12 @@ struct GamepadView: View {
                 baseChipWidth
             let primaryScale = min(1, midRowAvailable / estimatedMidWidth)
 
-            var dpadKey = baseDpadKey * primaryScale
-            var dpadSpacing = baseDpadSpacing * primaryScale
-            var abxySize = baseAbxySize * primaryScale
-            var clusterGap = baseClusterGap * primaryScale
-            var columnGap = baseColumnGap * primaryScale
-            var chipWidth = baseChipWidth * primaryScale
+            let scaledDpadKey = baseDpadKey * primaryScale
+            let scaledDpadSpacing = baseDpadSpacing * primaryScale
+            let scaledAbxySize = baseAbxySize * primaryScale
+            let scaledClusterGap = baseClusterGap * primaryScale
+            let scaledColumnGap = baseColumnGap * primaryScale
+            let scaledChipWidth = baseChipWidth * primaryScale
 
             let minDpadKey: CGFloat = isCompactWidth ? 28 : 34
             let minDpadSpacing: CGFloat = isCompactWidth ? 7 : 8
@@ -102,28 +102,28 @@ struct GamepadView: View {
             let minColumnGap: CGFloat = isCompactWidth ? 10 : 14
             let minChipWidth: CGFloat = isCompactWidth ? 56 : 64
 
-            dpadKey = max(minDpadKey, dpadKey)
-            dpadSpacing = max(minDpadSpacing, dpadSpacing)
-            abxySize = max(minAbxySize, abxySize)
-            clusterGap = max(minClusterGap, clusterGap)
-            columnGap = max(minColumnGap, columnGap)
-            chipWidth = max(minChipWidth, chipWidth)
+            let clampedDpadKey = max(minDpadKey, scaledDpadKey)
+            let clampedDpadSpacing = max(minDpadSpacing, scaledDpadSpacing)
+            let clampedAbxySize = max(minAbxySize, scaledAbxySize)
+            let clampedClusterGap = max(minClusterGap, scaledClusterGap)
+            let clampedColumnGap = max(minColumnGap, scaledColumnGap)
+            let clampedChipWidth = max(minChipWidth, scaledChipWidth)
 
             let adjustedMidWidth =
-                dpadKey * 3 +
-                dpadSpacing * 2 +
-                abxySize * 2 +
-                clusterGap +
-                columnGap * 2 +
-                chipWidth
+                clampedDpadKey * 3 +
+                clampedDpadSpacing * 2 +
+                clampedAbxySize * 2 +
+                clampedClusterGap +
+                clampedColumnGap * 2 +
+                clampedChipWidth
             let secondaryScale = min(1, midRowAvailable / adjustedMidWidth)
 
-            dpadKey = max(minDpadKey, dpadKey * secondaryScale)
-            dpadSpacing = max(minDpadSpacing, dpadSpacing * secondaryScale)
-            abxySize = max(minAbxySize, abxySize * secondaryScale)
-            clusterGap = max(minClusterGap, clusterGap * secondaryScale)
-            columnGap = max(minColumnGap, columnGap * secondaryScale)
-            chipWidth = max(minChipWidth, chipWidth * secondaryScale)
+            let dpadKey = max(minDpadKey, clampedDpadKey * secondaryScale)
+            let dpadSpacing = max(minDpadSpacing, clampedDpadSpacing * secondaryScale)
+            let abxySize = max(minAbxySize, clampedAbxySize * secondaryScale)
+            let clusterGap = max(minClusterGap, clampedClusterGap * secondaryScale)
+            let columnGap = max(minColumnGap, clampedColumnGap * secondaryScale)
+            let chipWidth = max(minChipWidth, clampedChipWidth * secondaryScale)
 
             let stickGap = columnGap
             let stickRowAvailable = w - stickRowPadding * 2
