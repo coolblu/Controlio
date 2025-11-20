@@ -144,12 +144,12 @@ struct ManageProfileView: View {
                 Button(action: { showingDeleteConfirmation = true }) {
                     Text(NSLocalizedString("Delete Account", bundle: appSettings.bundle, comment: ""))
                         .font(.custom("SF Pro", size: 16))
-                        .foregroundColor(appSettings.destructiveButton)
+                        .foregroundColor(appSettings.destructive)
                         .frame(maxWidth: .infinity, minHeight: 50)
                         .background(appSettings.cardColor)
                         .overlay(
                             RoundedRectangle(cornerRadius: 12)
-                                .stroke(appSettings.destructiveButton, lineWidth: 2)
+                                .stroke(appSettings.destructive, lineWidth: 2)
                         )
                 }
                 .padding(.top, 16)

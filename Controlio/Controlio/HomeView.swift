@@ -210,7 +210,7 @@ struct HomeView: View {
                         case .trackpad:
                             TrackpadView(mc: mc, onNavigateHome: { path = NavigationPath() })
                         case .gamepad:
-                            GamepadView(mc: mc)
+                            GamepadView(mc: mc, onNavigateHome: { path = NavigationPath() })
                         case .manageProfile:
                             ManageProfileView(isLoggedIn: $isLoggedIn)
                         case .appPreferences:

@@ -9,26 +9,46 @@ import SwiftUI
 import Combine
 
 final class AppSettings: ObservableObject {
+    // App Settings
     @Published var vibrationFeedback: Bool {
-        didSet { saveSettings() }
+        didSet { defaults.set(vibrationFeedback, forKey: "vibrationFeedback") }
     }
     @Published var hapticStrength: String {
-        didSet { saveSettings() }
+        didSet { defaults.set(hapticStrength, forKey: "hapticStrength") }
     }
     @Published var soundEffects: Bool {
-        didSet { saveSettings() }
+        didSet { defaults.set(soundEffects, forKey: "soundEffects") }
     }
     @Published var selectedTheme: String {
-        didSet { saveSettings() }
+        didSet { defaults.set(selectedTheme, forKey: "selectedTheme") }
     }
     @Published var selectedLanguage: String {
-        didSet { saveSettings(); languageDidChange.send() }
+        didSet {
+            defaults.set(selectedLanguage, forKey: "selectedLanguage")
+            languageDidChange.send()
+        }
     }
     @Published var preventSleep: Bool {
         didSet {
-            saveSettings()
+            defaults.set(preventSleep, forKey: "preventSleep")
             UIApplication.shared.isIdleTimerDisabled = preventSleep
         }
+    }
+
+    // Gamepad Settings
+    @Published var invertHorizontal: Bool {
+        didSet { defaults.set(invertHorizontal, forKey: "invertHorizontal") }
+    }
+    @Published var invertVertical: Bool {
+        didSet { defaults.set(invertVertical, forKey: "invertVertical") }
+    }
+
+    // Sliders update only themselves
+    @Published var horizontalSensitivity: Double {
+        didSet { defaults.set(horizontalSensitivity, forKey: "horizontalSensitivity") }
+    }
+    @Published var verticalSensitivity: Double {
+        didSet { defaults.set(verticalSensitivity, forKey: "verticalSensitivity") }
     }
 
     let languageDidChange = PassthroughSubject<Void, Never>()
@@ -36,12 +56,19 @@ final class AppSettings: ObservableObject {
     private let defaults = UserDefaults.standard
 
     init() {
+        // App settings
         vibrationFeedback = defaults.object(forKey: "vibrationFeedback") as? Bool ?? true
         hapticStrength = defaults.string(forKey: "hapticStrength") ?? "Medium"
         soundEffects = defaults.object(forKey: "soundEffects") as? Bool ?? true
         selectedTheme = defaults.string(forKey: "selectedTheme") ?? "Light"
         selectedLanguage = defaults.string(forKey: "selectedLanguage") ?? "English"
         preventSleep = defaults.object(forKey: "preventSleep") as? Bool ?? false
+
+        // Gamepad settings
+        invertHorizontal = defaults.object(forKey: "invertHorizontal") as? Bool ?? false
+        invertVertical = defaults.object(forKey: "invertVertical") as? Bool ?? false
+        horizontalSensitivity = defaults.object(forKey: "horizontalSensitivity") as? Double ?? 1.0
+        verticalSensitivity = defaults.object(forKey: "verticalSensitivity") as? Double ?? 1.0
 
         // Validate language
         let validLanguages = ["English", "French", "Spanish"]
@@ -57,23 +84,20 @@ final class AppSettings: ObservableObject {
         }
     }
 
-    private func saveSettings() {
-        defaults.set(vibrationFeedback, forKey: "vibrationFeedback")
-        defaults.set(hapticStrength, forKey: "hapticStrength")
-        defaults.set(soundEffects, forKey: "soundEffects")
-        defaults.set(selectedTheme, forKey: "selectedTheme")
-        defaults.set(selectedLanguage, forKey: "selectedLanguage")
-        defaults.set(preventSleep, forKey: "preventSleep")
-    }
-
-    private func resetToDefaults() {
+    func resetToDefaults() {
         vibrationFeedback = true
         hapticStrength = "Medium"
         soundEffects = true
         selectedTheme = "Light"
         selectedLanguage = "English"
         preventSleep = false
-        saveSettings()
+    }
+
+    func resetGamepadDefaults() {
+        invertHorizontal = false
+        invertVertical = false
+        horizontalSensitivity = 1.0
+        verticalSensitivity = 1.0
     }
 
     // Computed bundle for localization
@@ -113,10 +137,6 @@ extension AppSettings {
     }
 
     var destructive: Color {
-        selectedTheme == "Dark" ? Color.red.opacity(0.8) : Color.red
-    }
-
-    var destructiveButton: Color {
         Color.red
     }
 

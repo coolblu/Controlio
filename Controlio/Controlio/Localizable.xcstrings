@@ -551,6 +551,7 @@
       }
     },
     "Done" : {
+      "comment" : "Button label to dismiss the settings screen",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -697,6 +698,23 @@
         }
       }
     },
+    "Gamepad Settings" : {
+      "comment" : "Title of the gamepad settings screen",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configuración del Gamepad"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paramètres du Gamepad"
+          }
+        }
+      }
+    },
     "General" : {
       "localizations" : {
         "es" : {
@@ -794,6 +812,23 @@
         }
       }
     },
+    "Horizontal Sensitivity" : {
+      "comment" : "Label for horizontal stick sensitivity slider",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sensibilidad Horizontal"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sensibilité Horizontale"
+          }
+        }
+      }
+    },
     "Interface" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -807,6 +842,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Interface"
+          }
+        }
+      }
+    },
+    "Invert Horizontal" : {
+      "comment" : "Toggle to invert horizontal stick movement",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invertir Horizontal"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inverser Horizontal"
+          }
+        }
+      }
+    },
+    "Invert Vertical" : {
+      "comment" : "Toggle to invert vertical stick movement",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invertir Vertical"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inverser Vertical"
           }
         }
       }
@@ -1252,6 +1321,7 @@
       }
     },
     "Reset" : {
+      "comment" : "Header for the section with the reset button",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -1268,6 +1338,7 @@
       }
     },
     "Reset to Defaults" : {
+      "comment" : "Button label to reset all gamepad settings to default values\nButton to reset all app preferences",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -1478,6 +1549,40 @@
         }
       }
     },
+    "Stick Inversion" : {
+      "comment" : "Header for the section controlling stick axis inversion settings",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inversión del Stick"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inversion du Stick"
+          }
+        }
+      }
+    },
+    "Stick Sensitivity" : {
+      "comment" : "Header for the section controlling stick sensitivity settings",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sensibilidad del Stick"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sensibilité du Stick"
+          }
+        }
+      }
+    },
     "Theme" : {
       "localizations" : {
         "es" : {
@@ -1570,6 +1675,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Utilisez votre iPhone comme pavé tactile"
+          }
+        }
+      }
+    },
+    "Vertical Sensitivity" : {
+      "comment" : "Label for vertical stick sensitivity slider",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sensibilidad Vertical"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sensibilité Verticale"
           }
         }
       }

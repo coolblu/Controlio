@@ -437,6 +437,7 @@ struct DeviceHelpBottomBar: View {
             }
             .buttonStyle(.plain)
             .accessibilityLabel(item.accessibilityLabel)
+            .frame(maxWidth: .infinity)
         }
     }
 }
