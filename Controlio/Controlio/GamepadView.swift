@@ -57,7 +57,7 @@ struct GamepadView: View {
             let dpadKey: CGFloat        = max(40, min(54, min(w, h) * 0.085))
             let clusterGap: CGFloat     = max(18, min(26, min(w, h) * 0.035))
             
-            ZStack {
+            ZStack(alignment: .top) {
                 appSettings.bgColor.ignoresSafeArea()
                 
                 VStack(spacing: 0) {
@@ -118,7 +118,7 @@ struct GamepadView: View {
                         .frame(maxWidth: .infinity, alignment: .trailing)
                     }
                     .padding(.horizontal, 24)
-                    .frame(height: h * 0.46)
+                    .padding(.bottom, 12)
                     
                     HStack(alignment: .bottom) {
                         Thumbstick(radius: stickRadius, value: $leftStick) { x, y in
@@ -134,8 +134,11 @@ struct GamepadView: View {
                         .frame(maxWidth: .infinity, alignment: .trailing)
                     }
                     .padding(.horizontal, 28)
-                    .padding(.bottom, 18)
+                    .padding(.bottom, 12)
+                    
+                    Spacer()
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             }
         }
         .onAppear {
