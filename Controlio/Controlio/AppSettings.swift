@@ -78,22 +78,11 @@ final class AppSettings: ObservableObject {
 
     // Computed bundle for localization
     var bundle: Bundle {
-        // For .xcstrings localization, we need to use Bundle.main with proper locale
-        let languageCode: String
         switch selectedLanguage {
-        case "French": languageCode = "fr"
-        case "Spanish": languageCode = "es"
-        default: languageCode = "en"
+        case "French": return Bundle.main.path(forResource: "fr", ofType: "lproj").flatMap(Bundle.init(path:)) ?? .main
+        case "Spanish": return Bundle.main.path(forResource: "es", ofType: "lproj").flatMap(Bundle.init(path:)) ?? .main
+        default: return .main
         }
-
-        // Try to find the bundle for the selected language
-        if let path = Bundle.main.path(forResource: languageCode, ofType: "lproj"),
-           let bundle = Bundle(path: path) {
-            return bundle
-        }
-
-        // Fallback to main bundle which will use device language
-        return Bundle.main
     }
 }
 
