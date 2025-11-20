@@ -32,14 +32,18 @@ struct DeviceHelpView: View {
             .hidden()
 
             ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
+                VStack(spacing: 24) {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Device Help")
                             .font(.system(size: 34, weight: .bold, design: .rounded))
+                            .frame(maxWidth: .infinity, alignment: .leading)
                         Text("Quick tips to keep your controller paired and working smoothly.")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                     }
+                    .frame(maxWidth: .infinity)
 
                     DeviceHelpSegmentedControl(selection: $selection)
 
@@ -48,7 +52,9 @@ struct DeviceHelpView: View {
                             DeviceHelpCard(section: section)
                         }
                     }
+                    .frame(maxWidth: .infinity)
                 }
+                .frame(maxWidth: .infinity)
             }
         }
         .padding(20)
@@ -62,6 +68,12 @@ struct DeviceHelpView: View {
         }
         .background(DeviceHelpTheme.background.ignoresSafeArea())
         .navigationBarTitleDisplayMode(.inline)
+        .navigationDestination(isPresented: $showDeviceController) {
+            DeviceControllerView(onNavigateHome: onNavigateHome)
+        }
+        .navigationDestination(isPresented: $showAppPreferences) {
+            AppPreferencesView()
+        }
     }
 }
 
@@ -120,15 +132,15 @@ private struct DeviceHelpCallout {
 
     var background: Color {
         switch style {
-        case .success: return Color(red: 0.835, green: 0.957, blue: 0.862)
-        case .info: return Color(red: 0.949, green: 0.922, blue: 0.996)
+        case .success: return Color.green.opacity(0.15)
+        case .info: return Color.purple.opacity(0.15)
         }
     }
 
     var foreground: Color {
         switch style {
-        case .success: return Color(red: 0.113, green: 0.502, blue: 0.263)
-        case .info: return Color(red: 0.314, green: 0.200, blue: 0.600)
+        case .success: return Color.green
+        case .info: return Color.purple
         }
     }
 }
@@ -136,100 +148,83 @@ private struct DeviceHelpCallout {
 private enum DeviceHelpContent {
     static let connectionSections: [DeviceHelpSection] = [
         DeviceHelpSection(
-            title: "USB Connection",
-            subtitle: "Connect your controller directly via USB cable for the most reliable connection.",
-            iconName: "cable.connector.horizontal",
+            title: "Trackpad Usage",
+            subtitle: "Set up both Mac receiver and iPhone app for trackpad control.",
+            iconName: "macbook.and.iphone",
             iconColor: DeviceHelpTheme.orange,
             steps: [
                 DeviceHelpStep(
-                    title: "Connect your controller using a data-capable USB cable",
-                    detail: "Make sure the cable supports data transfer, not just charging."
+                    title: "Run ControlioReceiver first",
+                    detail: "In Xcode choose Product → Scheme → ControlioReceiver, set Destination to My Mac, and press Run."
                 ),
                 DeviceHelpStep(
-                    title: "Wait for your system to recognize the device",
-                    detail: "macOS installs any required drivers automatically."
+                    title: "Grant Accessibility permissions",
+                    detail: "System Settings → Privacy & Security → Accessibility → add the built ControlioReceiver app."
                 ),
                 DeviceHelpStep(
-                    title: "Open Controlio",
-                    detail: "Tap the Wi-Fi icon inside the app to confirm the controller is now paired."
+                    title: "Locate the build quickly",
+                    detail: "Use Products → Show Build Folder in Finder, open Debug, and select ControlioReceiver.app when prompted."
+                ),
+                DeviceHelpStep(
+                    title: "Rerun and detach",
+                    detail: "After granting access, run again and tap Debug → Detach from ControlioReceiver so it keeps listening."
+                ),
+                DeviceHelpStep(
+                    title: "Switch to Controlio",
+                    detail: "Change the active scheme to Controlio to prepare the iOS app."
+                ),
+                DeviceHelpStep(
+                    title: "Enable Developer Mode",
+                    detail: "On iPhone open Settings → Privacy & Security → Developer Mode, enable it, and restart if requested."
+                ),
+                DeviceHelpStep(
+                    title: "Configure signing",
+                    detail: "Select the Controlio target, open Signing & Capabilities, ensure your team is set, and give the bundle ID a unique suffix."
+                ),
+                DeviceHelpStep(
+                    title: "Deploy to device",
+                    detail: "Plug in the iPhone, pick it under Product → Destination, and run the build."
+                ),
+                DeviceHelpStep(
+                    title: "Trust the developer profile",
+                    detail: "First run shows a signing warning—on iPhone visit Settings → General → VPN & Device Management and trust Controlio."
+                ),
+                DeviceHelpStep(
+                    title: "Finalize trackpad access",
+                    detail: "Run Controlio again, make sure Bluetooth is on for both devices, sign in, open the trackpad screen, and allow Local Network."
                 )
             ],
             callout: DeviceHelpCallout(
-                message: "USB connection provides the lowest latency and most stable experience.",
+                message: "Leave ControlioReceiver open in the background so the trackpad reconnects instantly whenever you launch Controlio.",
                 style: .success
-            )
-        ),
-        DeviceHelpSection(
-            title: "Bluetooth Connection",
-            subtitle: "Connect wirelessly via Bluetooth for a cable-free experience.",
-            iconName: "bolt.horizontal.circle",
-            iconColor: DeviceHelpTheme.purple,
-            steps: [
-                DeviceHelpStep(
-                    title: "Put your controller into pairing mode",
-                    detail: "Hold the share + PS buttons (or equivalent) until the light blinks rapidly."
-                ),
-                DeviceHelpStep(
-                    title: "Pair from Control Center",
-                    detail: "Open Settings → Bluetooth and select your controller from the list."
-                ),
-                DeviceHelpStep(
-                    title: "Reconnect inside Controlio",
-                    detail: "Return to Controlio and tap the Bluetooth icon to finish pairing."
-                )
-            ],
-            callout: DeviceHelpCallout(
-                message: "Wireless is great on-the-go, but keep your device charged for the best results.",
-                style: .info
             )
         )
     ]
 
     static let usageSections: [DeviceHelpSection] = [
         DeviceHelpSection(
-            title: "Controller Layout",
-            subtitle: "Familiarize yourself with the twin-stick layout before launching a session.",
+            title: "Gamepad Usage",
+            subtitle: "Configure game controls after trackpad setup.",
             iconName: "gamecontroller.fill",
-            iconColor: DeviceHelpTheme.orange,
-            steps: [
-                DeviceHelpStep(
-                    title: "Left stick for movement",
-                    detail: "Drag anywhere on the left pad to move your pointer or character."
-                ),
-                DeviceHelpStep(
-                    title: "Right stick for camera",
-                    detail: "The right pad handles camera or cursor precision adjustments."
-                ),
-                DeviceHelpStep(
-                    title: "Action buttons stay contextual",
-                    detail: "Controlio updates button labels depending on the active game or mode."
-                )
-            ],
-            callout: DeviceHelpCallout(
-                message: "Customize button mapping from Settings → Controller to match your style.",
-                style: .info
-            )
-        ),
-        DeviceHelpSection(
-            title: "Quick Gestures",
-            subtitle: "Gestures keep common actions within thumb reach.",
-            iconName: "hand.tap.fill",
             iconColor: DeviceHelpTheme.purple,
             steps: [
                 DeviceHelpStep(
-                    title: "Double tap for pause",
-                    detail: "Anywhere on the trackpad will trigger the pause overlay."
+                    title: "Mirror the trackpad prep",
+                    detail: "Keep ControlioReceiver running with Bluetooth enabled on both devices so controller input reaches your Mac."
                 ),
                 DeviceHelpStep(
-                    title: "Two-finger swipe for volume",
-                    detail: "Swipe up or down with two fingers to adjust system volume."
+                    title: "Remap controls as needed",
+                    detail: "If a game does not already map actions to WASD or arrow keys, open its settings and rebind each action to the matching gamepad input."
                 ),
                 DeviceHelpStep(
-                    title: "Long press to recalibrate",
-                    detail: "Hold three fingers for two seconds to reset the gyro baseline."
+                    title: "Example mapping",
+                    detail: "Set the analog stick forward action to send the keyboard input \"W\" (or your preferred key) so forward movement stays responsive."
                 )
             ],
-            callout: nil
+            callout: DeviceHelpCallout(
+                message: "Most games remember your custom keybinds, so you only need to map them once per title.",
+                style: .info
+            )
         )
     ]
 }
@@ -292,42 +287,60 @@ private struct DeviceHelpCard: View {
                 VStack(alignment: .leading, spacing: 6) {
                     Text(section.title)
                         .font(.headline)
+                        .fixedSize(horizontal: false, vertical: true)
                     Text(section.subtitle)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .lineLimit(nil)
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
 
-            VStack(spacing: 16) {
+            VStack(spacing: 22) {
                 ForEach(Array(section.steps.enumerated()), id: \.element.id) { index, step in
-                    HStack(alignment: .top, spacing: 12) {
+                    HStack(alignment: .top, spacing: 14) {
                         Text("\(index + 1)")
-                            .font(.subheadline.weight(.semibold))
+                            .font(.subheadline.weight(.medium))
                             .foregroundStyle(DeviceHelpTheme.stepNumber)
                             .frame(width: 28, height: 28)
                             .background(
                                 Circle()
-                                    .fill(DeviceHelpTheme.stepBackground)
+                                    .fill(Color(uiColor: .systemBackground))
+                            )
+                            .overlay(
+                                Circle()
+                                    .stroke(DeviceHelpTheme.stepBorder, lineWidth: 1)
                             )
 
                         VStack(alignment: .leading, spacing: 4) {
                             Text(step.title)
                                 .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(.primary)
+                                .fixedSize(horizontal: false, vertical: true)
+                                .lineLimit(nil)
                             Text(step.detail)
                                 .font(.footnote)
                                 .foregroundStyle(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
+                                .lineLimit(nil)
                         }
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
             }
 
             if let callout = section.callout {
-                HStack(alignment: .center, spacing: 10) {
+                HStack(alignment: .top, spacing: 10) {
                     Image(systemName: callout.iconName)
                         .font(.system(size: 18, weight: .semibold))
+                        .frame(width: 20, height: 20)
                     Text(callout.message)
                         .font(.subheadline.weight(.semibold))
                         .fixedSize(horizontal: false, vertical: true)
+                        .lineLimit(nil)
+                        .multilineTextAlignment(.leading)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .foregroundStyle(callout.foreground)
                 .padding()
@@ -489,29 +502,34 @@ private struct RightRoundedRectangle: Shape {
 }
 
 enum DeviceHelpTheme {
-    static let background = Color(red: 0.953, green: 0.965, blue: 0.980)
-    static let card = Color.white
-    static let cardBorder = Color.black.opacity(0.06)
+    // Main colors
+    static let background = Color(uiColor: .systemGroupedBackground)
+    static let card = Color(uiColor: .secondarySystemGroupedBackground)
+    static let cardBorder = Color(uiColor: .separator).opacity(0.5)
     static let shadow = Color.black.opacity(0.04)
-    static let orange = Color(red: 0.996, green: 0.529, blue: 0.188)
-    static let purple = Color(red: 0.498, green: 0.278, blue: 0.851)
-    static let segmentBackground = Color.white
-    static let segmentActive = Color(red: 0.984, green: 0.890, blue: 0.784)
-    static let segmentBorder = Color.black.opacity(0.05)
-    static let segmentTextActive = Color(red: 0.424, green: 0.251, blue: 0.047)
+
+    // Brand colors that work in both modes
+    static let orange = Color.orange
+    static let purple = Color.purple
+
+    // control colors
+    static let segmentBackground = Color(uiColor: .tertiarySystemGroupedBackground)
+    static let segmentActive = Color.accentColor.opacity(0.2)
+    static let segmentBorder = Color(uiColor: .separator).opacity(0.3)
+    static let segmentTextActive = Color.accentColor
     static let segmentTextInactive = Color.secondary
-    static let stepBackground = Color.black.opacity(0.04)
-    static let stepNumber = Color.black.opacity(0.7)
-    static let bottomBarBackground = orange
+
+    // Step colors (better visibility in dark mode)
+    static let stepBackground = Color(uiColor: .systemFill)
+    static let stepNumber = Color.primary
+    static let stepBorder = Color(uiColor: .separator)
+
+    // Bottom bar colors - using dynamic colors
+    static let bottomBarBackground = Color(uiColor: .secondarySystemBackground)
     static let bottomBarShadow = Color.black.opacity(0.08)
-    static let bottomIconBackground = Color(red: 0.216, green: 0.214, blue: 0.206)
-    static let bottomIconForeground = Color(red: 0.988, green: 0.965, blue: 0.902)
-    static let bottomIconStroke = Color.white.opacity(0.08)
-    static let bottomIconShadow = Color.black.opacity(0.25)
+    static let bottomIconBackground = Color(uiColor: .tertiarySystemFill)
+    static let bottomIconForeground = Color.primary
+    static let bottomIconStroke = Color(uiColor: .separator).opacity(0.3)
+    static let bottomIconShadow = Color.black.opacity(0.1)
 }
 
-//#Preview {
-//    NavigationStack {
-//        DeviceHelpView()
-//    }
-//}
