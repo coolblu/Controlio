@@ -131,7 +131,7 @@ struct GamepadView: View {
                 clusterGap +
                 columnGap * 2 +
                 chipWidth
-            let midRowFrameWidth = min(midRowAvailable, midRowWidth)
+            let midRowFrameWidthPortrait = min(midRowAvailable, midRowWidth)
 
             let stickGap = columnGap
             let stickRowAvailable = w - stickRowPadding * 2
@@ -141,7 +141,7 @@ struct GamepadView: View {
             let maxStickRadiusByWidth = max(0, (stickRowAvailable - stickGap * 3) / 4)
             let stickRadius = min(clampedStickRadius, maxStickRadiusByWidth)
             let stickRowWidth = stickRadius * 4 + stickGap
-            let stickRowFrameWidth = min(stickRowAvailable, stickRowWidth + stickGap)
+            let stickRowFrameWidthPortrait = min(stickRowAvailable, stickRowWidth + stickGap)
             
             ZStack(alignment: .topLeading) {
                 appSettings.bgColor.ignoresSafeArea()
@@ -174,6 +174,7 @@ struct GamepadView: View {
                             }
                             hapticTap()
                         }
+                        .frame(maxWidth: isLandscape ? .infinity : nil, alignment: isLandscape ? .leading : .center)
 
                         VStack(spacing: isLandscape ? 10 : 8) {
                             GPChip(label: "Select", horizontalPadding: chipHorizontalPadding) { down in sendButton(.select, down) }
@@ -191,8 +192,12 @@ struct GamepadView: View {
                             case .y: sendButton(.y, down)
                             }
                         }
+                        .frame(maxWidth: isLandscape ? .infinity : nil, alignment: isLandscape ? .trailing : .center)
                     }
-                    .frame(width: midRowFrameWidth, alignment: .center)
+                    .frame(
+                        width: isLandscape ? nil : midRowFrameWidthPortrait,
+                        alignment: .center
+                    )
                     .frame(maxWidth: .infinity)
                     .padding(.horizontal, middleRowPadding)
                     .padding(.vertical, 0)
@@ -201,14 +206,19 @@ struct GamepadView: View {
                         Thumbstick(radius: stickRadius, value: $leftStick) { x, y in
                             sendStick(id: 0, x: x, y: y, lastSent: &lastAXSentLeft)
                         }
+                        .frame(maxWidth: isLandscape ? .infinity : nil, alignment: isLandscape ? .leading : .center)
                         
                         Spacer(minLength: stickGap)
                         
                         Thumbstick(radius: stickRadius, value: $rightStick) { x, y in
                             sendStick(id: 1, x: x, y: y, lastSent: &lastAXSentRight)
                         }
+                        .frame(maxWidth: isLandscape ? .infinity : nil, alignment: isLandscape ? .trailing : .center)
                     }
-                    .frame(width: stickRowFrameWidth, alignment: .center)
+                    .frame(
+                        width: isLandscape ? nil : stickRowFrameWidthPortrait,
+                        alignment: .center
+                    )
                     .frame(maxWidth: .infinity)
                     .padding(.horizontal, stickRowPadding)
                     .padding(.top, 0)
@@ -509,9 +519,22 @@ struct DPad: View {
             .overlay(RoundedRectangle(cornerRadius: 10).stroke(stroke, lineWidth: 1))
             .frame(width: keySize, height: keySize)
             .overlay(Text(t).foregroundStyle(text))
-            .onLongPressGesture(minimumDuration: 0, pressing: { isDown in
-                if pressed.wrappedValue != isDown { pressed.wrappedValue = isDown; on(isDown) }
-            }, perform: {})
+            .simultaneousGesture(
+                TapGesture()
+                    .onEnded {
+                        on(true)
+                        on(false)
+                    }
+            )
+            .highPriorityGesture(
+                DragGesture(minimumDistance: 0)
+                    .onChanged { _ in
+                        if !pressed.wrappedValue { pressed.wrappedValue = true; on(true) }
+                    }
+                    .onEnded { _ in
+                        if pressed.wrappedValue { pressed.wrappedValue = false; on(false) }
+                    }
+            )
     }
 }
 
