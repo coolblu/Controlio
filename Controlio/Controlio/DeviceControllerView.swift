@@ -55,7 +55,9 @@ struct DeviceControllerView: View {
                 onHomeTap: { onNavigateHome?() },
                 onSettingsTap: { showAppPreferences = true },
                 onWifiTap: {},
-                onHelpTap: { dismiss() }
+                onHelpTap: { dismiss() },
+                palette: DeviceHelpPalette.palette(for: appSettings),
+                bundle: appSettings.bundle
             )
         }
         .background(appSettings.bgColor.ignoresSafeArea())

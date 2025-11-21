@@ -102,11 +102,22 @@ final class AppSettings: ObservableObject {
 
     // Computed bundle for localization
     var bundle: Bundle {
+        // For runtime language switching without app restart
+        let languageCode: String
         switch selectedLanguage {
-        case "French": return Bundle.main.path(forResource: "fr", ofType: "lproj").flatMap(Bundle.init(path:)) ?? .main
-        case "Spanish": return Bundle.main.path(forResource: "es", ofType: "lproj").flatMap(Bundle.init(path:)) ?? .main
-        default: return .main
+        case "French": languageCode = "fr"
+        case "Spanish": languageCode = "es"
+        default: languageCode = "en"
         }
+
+        // Try to get the bundle for the specific language
+        if let path = Bundle.main.path(forResource: languageCode, ofType: "lproj"),
+           let bundle = Bundle(path: path) {
+            return bundle
+        }
+
+        // Fallback to main bundle if specific language bundle not found
+        return .main
     }
 }
 

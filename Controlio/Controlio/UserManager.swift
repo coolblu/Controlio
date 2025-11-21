@@ -7,6 +7,7 @@
 
 import SwiftUI
 import FirebaseAuth
+import FirebaseCore
 
 final class UserManager: ObservableObject {
     static let shared = UserManager()
@@ -19,6 +20,13 @@ final class UserManager: ObservableObject {
     }
 
     func fetchUser() {
+        guard FirebaseApp.app() != nil else {
+            DispatchQueue.main.async {
+                self.displayName = "User"
+                self.email = ""
+            }
+            return
+        }
         DispatchQueue.main.async {
             if let user = Auth.auth().currentUser {
                 self.email = user.email ?? ""

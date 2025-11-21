@@ -11,13 +11,15 @@ import FirebaseCore
 
 @main
 struct ControlioApp: App {
-    @StateObject private var userManager = UserManager.shared
-    @StateObject private var appSettings = AppSettings()
+    @StateObject private var userManager: UserManager
+    @StateObject private var appSettings: AppSettings
     @State private var isLoggedIn = false
     @State private var showSplash = true
     
     init() {
         FirebaseApp.configure()
+        _userManager = StateObject(wrappedValue: UserManager.shared)
+        _appSettings = StateObject(wrappedValue: AppSettings())
     }
 
     var body: some Scene {
