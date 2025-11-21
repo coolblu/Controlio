@@ -442,7 +442,6 @@ struct DeviceHelpBottomBar: View {
                 .background(
                     Rectangle()
                         .fill(palette.bottomBarBackground)
-                        .shadow(color: palette.bottomBarShadow, radius: 10, x: 0, y: -2)
                 )
                 .background(
                     palette.bottomBarBackground
@@ -460,7 +459,6 @@ struct DeviceHelpBottomBar: View {
                 .background(
                     Rectangle()
                         .fill(palette.bottomBarBackground)
-                        .shadow(color: palette.bottomBarShadow, radius: 8, x: -2, y: 0)
                 )
                 .background(
                     palette.bottomBarBackground
@@ -486,7 +484,6 @@ struct DeviceHelpBottomBar: View {
                                     .stroke(palette.bottomIconStroke, lineWidth: 1)
                             )
                     )
-                    .shadow(color: palette.bottomIconShadow, radius: 6, x: 0, y: 4)
             }
             .buttonStyle(.plain)
             .accessibilityLabel(item.accessibilityLabel)
