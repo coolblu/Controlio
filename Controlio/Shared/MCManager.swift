@@ -32,10 +32,12 @@ final class MCManager: NSObject, ObservableObject {
     
     @Published private(set) var lastConnectedPeer: MCPeerID? = nil
     @Published private(set) var manuallyDisconnected: Bool = false
+    private var requestedPeerName: String? = nil
     
     var connectedDeviceName: String? { connectedPeer?.displayName }
     
     func connect(to peer: MCPeerID, timeout: TimeInterval = 10) {
+        requestedPeerName = peer.displayName
         guard browser != nil else {
             log("[MC] connect(to:) requires an active browser; call userRequestedReconnect() first.")
             return
@@ -69,6 +71,7 @@ final class MCManager: NSObject, ObservableObject {
     func userRequestedDisconnect() {
         suppressAutoRetry = true
         manuallyDisconnected = true
+        requestedPeerName = nil
         stopBrowsing()
         if let cp = connectedPeer { lastConnectedPeer = cp }
         connectedPeer = nil
@@ -97,10 +100,14 @@ final class MCManager: NSObject, ObservableObject {
 
         guard connectedPeer == nil else { return }
 
-        guard let lastName = lastKnownDeviceName,
-              lastName == peer.displayName,
-              knownDeviceNames.contains(lastName) else {
-            return
+        if let target = requestedPeerName {
+            guard target == peer.displayName else { return }
+        } else {
+            guard let lastName = lastKnownDeviceName,
+                  lastName == peer.displayName,
+                  knownDeviceNames.contains(lastName) else {
+                return
+            }
         }
 
         connect(to: peer)
@@ -171,6 +178,10 @@ final class MCManager: NSObject, ObservableObject {
 
         if lastKnownDeviceName == name {
             lastKnownDeviceName = nil
+        }
+
+        if requestedPeerName == name {
+            requestedPeerName = nil
         }
 
         if connectedPeer?.displayName == name {
@@ -246,6 +257,7 @@ extension MCManager: MCSessionDelegate {
                 self.connectedPeer = peerID
                 self.lastConnectedPeer = peerID
                 self.manuallyDisconnected = false
+                self.requestedPeerName = nil
                 self.rememberConnectedPeer(peerID)
             case .notConnected:
                 if let any = session.connectedPeers.first {
