@@ -440,7 +440,7 @@ struct DeviceHelpBottomBar: View {
                 .padding(.top, 18)
                 .padding(.bottom, 12)
                 .background(
-                    TopRoundedRectangle(radius: 34)
+                    Rectangle()
                         .fill(palette.bottomBarBackground)
                         .shadow(color: palette.bottomBarShadow, radius: 10, x: 0, y: -2)
                 )
@@ -458,7 +458,7 @@ struct DeviceHelpBottomBar: View {
                 .padding(.horizontal, 12)
                 .frame(width: 104)
                 .background(
-                    RightRoundedRectangle(radius: 34)
+                    Rectangle()
                         .fill(palette.bottomBarBackground)
                         .shadow(color: palette.bottomBarShadow, radius: 8, x: -2, y: 0)
                 )
