@@ -141,60 +141,6 @@ private enum DeviceHelpContent {
         let t: (String) -> String = { NSLocalizedString($0, bundle: bundle, comment: "") }
         return [
             DeviceHelpSection(
-                title: t("USB Connection"),
-                subtitle: t("Connect your controller directly via USB cable for the most reliable connection."),
-                iconName: "cable.connector.horizontal",
-                iconColor: palette.orange,
-                steps: [
-                    DeviceHelpStep(
-                        title: t("Connect your controller using a data-capable USB cable"),
-                        detail: t("Make sure the cable supports data transfer, not just charging.")
-                    ),
-                    DeviceHelpStep(
-                        title: t("Wait for your system to recognize the device"),
-                        detail: t("macOS installs any required drivers automatically.")
-                    ),
-                    DeviceHelpStep(
-                        title: t("Open Controlio"),
-                        detail: t("Tap the Wi-Fi icon inside the app to confirm the controller is now paired.")
-                    )
-                ],
-                callout: DeviceHelpCallout(
-                    message: t("USB connection provides the lowest latency and most stable experience."),
-                    style: .success
-                )
-            ),
-            DeviceHelpSection(
-                title: t("Bluetooth Connection"),
-                subtitle: t("Connect wirelessly via Bluetooth for a cable-free experience."),
-                iconName: "bolt.horizontal.circle",
-                iconColor: palette.purple,
-                steps: [
-                    DeviceHelpStep(
-                        title: t("Put your controller into pairing mode"),
-                        detail: t("Hold the share + PS buttons (or equivalent) until the light blinks rapidly.")
-                    ),
-                    DeviceHelpStep(
-                        title: t("Pair from Control Center"),
-                        detail: t("Open Settings → Bluetooth and select your controller from the list.")
-                    ),
-                    DeviceHelpStep(
-                        title: t("Reconnect inside Controlio"),
-                        detail: t("Return to Controlio and tap the Bluetooth icon to finish pairing.")
-                    )
-                ],
-                callout: DeviceHelpCallout(
-                    message: t("Wireless is great on-the-go, but keep your device charged for the best results."),
-                    style: .info
-                )
-            )
-        ]
-    }
-
-    private static func usageSections(bundle: Bundle, palette: DeviceHelpPalette) -> [DeviceHelpSection] {
-        let t: (String) -> String = { NSLocalizedString($0, bundle: bundle, comment: "") }
-        return [
-            DeviceHelpSection(
                 title: t("Trackpad Usage"),
                 subtitle: t("Set up both Mac receiver and iPhone app for trackpad control."),
                 iconName: "hand.tap.fill",
@@ -245,7 +191,13 @@ private enum DeviceHelpContent {
                     message: t("Leave ControlioReceiver open in the background so the trackpad reconnects instantly whenever you launch Controlio."),
                     style: .success
                 )
-            ),
+            )
+        ]
+    }
+
+    private static func usageSections(bundle: Bundle, palette: DeviceHelpPalette) -> [DeviceHelpSection] {
+        let t: (String) -> String = { NSLocalizedString($0, bundle: bundle, comment: "") }
+        return [
             DeviceHelpSection(
                 title: t("Gamepad Usage"),
                 subtitle: t("Configure game controls after trackpad setup."),
