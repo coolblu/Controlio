@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct DeviceHelpView: View {
+    @EnvironmentObject var appSettings: AppSettings
     var onNavigateHome: (() -> Void)? = nil
     let mcManager: MCManager
     @State private var selection: DeviceHelpTab = .connection
@@ -34,18 +35,18 @@ struct DeviceHelpView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Device Help")
+                        Text(loc("Device Help"))
                             .font(.system(size: 34, weight: .bold, design: .rounded))
-                        Text("Quick tips to keep your controller paired and working smoothly.")
+                        Text(loc("Quick tips to keep your controller paired and working smoothly."))
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
 
-                    DeviceHelpSegmentedControl(selection: $selection)
+                    DeviceHelpSegmentedControl(selection: $selection, palette: palette, bundle: appSettings.bundle)
 
                     VStack(spacing: 20) {
-                        ForEach(selection.sections) { section in
-                            DeviceHelpCard(section: section)
+                        ForEach(DeviceHelpContent.sections(for: selection, bundle: appSettings.bundle, palette: palette)) { section in
+                            DeviceHelpCard(section: section, palette: palette)
                         }
                     }
                 }
@@ -57,11 +58,21 @@ struct DeviceHelpView: View {
                 onHomeTap: { onNavigateHome?() },
                 onSettingsTap: { showAppPreferences = true },
                 onWifiTap: { showDeviceController = true },
-                onHelpTap: {}
+                onHelpTap: {},
+                palette: palette,
+                bundle: appSettings.bundle
             )
         }
-        .background(DeviceHelpTheme.background.ignoresSafeArea())
+        .background(palette.background.ignoresSafeArea())
         .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private func loc(_ key: String) -> String {
+        NSLocalizedString(key, bundle: appSettings.bundle, comment: "")
+    }
+
+    private var palette: DeviceHelpPalette {
+        DeviceHelpPalette.palette(for: appSettings)
     }
 }
 
@@ -78,11 +89,8 @@ private enum DeviceHelpTab: CaseIterable, Identifiable {
         }
     }
 
-    var sections: [DeviceHelpSection] {
-        switch self {
-        case .connection: return DeviceHelpContent.connectionSections
-        case .usage: return DeviceHelpContent.usageSections
-        }
+    func localizedTitle(bundle: Bundle) -> String {
+        NSLocalizedString(title, bundle: bundle, comment: "")
     }
 }
 
@@ -117,126 +125,160 @@ private struct DeviceHelpCallout {
         case .info: return "lightbulb.fill"
         }
     }
-
-    var background: Color {
-        switch style {
-        case .success: return Color(red: 0.835, green: 0.957, blue: 0.862)
-        case .info: return Color(red: 0.949, green: 0.922, blue: 0.996)
-        }
-    }
-
-    var foreground: Color {
-        switch style {
-        case .success: return Color(red: 0.113, green: 0.502, blue: 0.263)
-        case .info: return Color(red: 0.314, green: 0.200, blue: 0.600)
-        }
-    }
 }
 
 private enum DeviceHelpContent {
-    static let connectionSections: [DeviceHelpSection] = [
-        DeviceHelpSection(
-            title: "USB Connection",
-            subtitle: "Connect your controller directly via USB cable for the most reliable connection.",
-            iconName: "cable.connector.horizontal",
-            iconColor: DeviceHelpTheme.orange,
-            steps: [
-                DeviceHelpStep(
-                    title: "Connect your controller using a data-capable USB cable",
-                    detail: "Make sure the cable supports data transfer, not just charging."
-                ),
-                DeviceHelpStep(
-                    title: "Wait for your system to recognize the device",
-                    detail: "macOS installs any required drivers automatically."
-                ),
-                DeviceHelpStep(
-                    title: "Open Controlio",
-                    detail: "Tap the Wi-Fi icon inside the app to confirm the controller is now paired."
-                )
-            ],
-            callout: DeviceHelpCallout(
-                message: "USB connection provides the lowest latency and most stable experience.",
-                style: .success
-            )
-        ),
-        DeviceHelpSection(
-            title: "Bluetooth Connection",
-            subtitle: "Connect wirelessly via Bluetooth for a cable-free experience.",
-            iconName: "bolt.horizontal.circle",
-            iconColor: DeviceHelpTheme.purple,
-            steps: [
-                DeviceHelpStep(
-                    title: "Put your controller into pairing mode",
-                    detail: "Hold the share + PS buttons (or equivalent) until the light blinks rapidly."
-                ),
-                DeviceHelpStep(
-                    title: "Pair from Control Center",
-                    detail: "Open Settings → Bluetooth and select your controller from the list."
-                ),
-                DeviceHelpStep(
-                    title: "Reconnect inside Controlio",
-                    detail: "Return to Controlio and tap the Bluetooth icon to finish pairing."
-                )
-            ],
-            callout: DeviceHelpCallout(
-                message: "Wireless is great on-the-go, but keep your device charged for the best results.",
-                style: .info
-            )
-        )
-    ]
+    static func sections(for tab: DeviceHelpTab, bundle: Bundle, palette: DeviceHelpPalette) -> [DeviceHelpSection] {
+        switch tab {
+            case .connection:
+                return connectionSections(bundle: bundle, palette: palette)
+            case .usage:
+                return usageSections(bundle: bundle, palette: palette)
+        }
+    }
 
-    static let usageSections: [DeviceHelpSection] = [
-        DeviceHelpSection(
-            title: "Controller Layout",
-            subtitle: "Familiarize yourself with the twin-stick layout before launching a session.",
-            iconName: "gamecontroller.fill",
-            iconColor: DeviceHelpTheme.orange,
-            steps: [
-                DeviceHelpStep(
-                    title: "Left stick for movement",
-                    detail: "Drag anywhere on the left pad to move your pointer or character."
-                ),
-                DeviceHelpStep(
-                    title: "Right stick for camera",
-                    detail: "The right pad handles camera or cursor precision adjustments."
-                ),
-                DeviceHelpStep(
-                    title: "Action buttons stay contextual",
-                    detail: "Controlio updates button labels depending on the active game or mode."
+    private static func connectionSections(bundle: Bundle, palette: DeviceHelpPalette) -> [DeviceHelpSection] {
+        let t: (String) -> String = { NSLocalizedString($0, bundle: bundle, comment: "") }
+        return [
+            DeviceHelpSection(
+                title: t("USB Connection"),
+                subtitle: t("Connect your controller directly via USB cable for the most reliable connection."),
+                iconName: "cable.connector.horizontal",
+                iconColor: palette.orange,
+                steps: [
+                    DeviceHelpStep(
+                        title: t("Connect your controller using a data-capable USB cable"),
+                        detail: t("Make sure the cable supports data transfer, not just charging.")
+                    ),
+                    DeviceHelpStep(
+                        title: t("Wait for your system to recognize the device"),
+                        detail: t("macOS installs any required drivers automatically.")
+                    ),
+                    DeviceHelpStep(
+                        title: t("Open Controlio"),
+                        detail: t("Tap the Wi-Fi icon inside the app to confirm the controller is now paired.")
+                    )
+                ],
+                callout: DeviceHelpCallout(
+                    message: t("USB connection provides the lowest latency and most stable experience."),
+                    style: .success
                 )
-            ],
-            callout: DeviceHelpCallout(
-                message: "Customize button mapping from Settings → Controller to match your style.",
-                style: .info
+            ),
+            DeviceHelpSection(
+                title: t("Bluetooth Connection"),
+                subtitle: t("Connect wirelessly via Bluetooth for a cable-free experience."),
+                iconName: "bolt.horizontal.circle",
+                iconColor: palette.purple,
+                steps: [
+                    DeviceHelpStep(
+                        title: t("Put your controller into pairing mode"),
+                        detail: t("Hold the share + PS buttons (or equivalent) until the light blinks rapidly.")
+                    ),
+                    DeviceHelpStep(
+                        title: t("Pair from Control Center"),
+                        detail: t("Open Settings → Bluetooth and select your controller from the list.")
+                    ),
+                    DeviceHelpStep(
+                        title: t("Reconnect inside Controlio"),
+                        detail: t("Return to Controlio and tap the Bluetooth icon to finish pairing.")
+                    )
+                ],
+                callout: DeviceHelpCallout(
+                    message: t("Wireless is great on-the-go, but keep your device charged for the best results."),
+                    style: .info
+                )
             )
-        ),
-        DeviceHelpSection(
-            title: "Quick Gestures",
-            subtitle: "Gestures keep common actions within thumb reach.",
-            iconName: "hand.tap.fill",
-            iconColor: DeviceHelpTheme.purple,
-            steps: [
-                DeviceHelpStep(
-                    title: "Double tap for pause",
-                    detail: "Anywhere on the trackpad will trigger the pause overlay."
-                ),
-                DeviceHelpStep(
-                    title: "Two-finger swipe for volume",
-                    detail: "Swipe up or down with two fingers to adjust system volume."
-                ),
-                DeviceHelpStep(
-                    title: "Long press to recalibrate",
-                    detail: "Hold three fingers for two seconds to reset the gyro baseline."
+        ]
+    }
+
+    private static func usageSections(bundle: Bundle, palette: DeviceHelpPalette) -> [DeviceHelpSection] {
+        let t: (String) -> String = { NSLocalizedString($0, bundle: bundle, comment: "") }
+        return [
+            DeviceHelpSection(
+                title: t("Trackpad Usage"),
+                subtitle: t("Set up both Mac receiver and iPhone app for trackpad control."),
+                iconName: "hand.tap.fill",
+                iconColor: palette.orange,
+                steps: [
+                    DeviceHelpStep(
+                        title: t("Run ControlioReceiver first"),
+                        detail: t("In Xcode choose Product → Scheme → ControlioReceiver, set Destination to My Mac, and press Run.")
+                    ),
+                    DeviceHelpStep(
+                        title: t("Grant Accessibility permissions"),
+                        detail: t("System Settings → Privacy & Security → Accessibility → add the built ControlioReceiver app.")
+                    ),
+                    DeviceHelpStep(
+                        title: t("Locate the build quickly"),
+                        detail: t("Use Products → Show Build Folder in Finder, open Debug, and select ControlioReceiver.app when prompted.")
+                    ),
+                    DeviceHelpStep(
+                        title: t("Rerun and detach"),
+                        detail: t("After granting access, run again and tap Debug → Detach from ControlioReceiver so it keeps listening.")
+                    ),
+                    DeviceHelpStep(
+                        title: t("Switch to Controlio"),
+                        detail: t("Change the active scheme to Controlio to prepare the iOS app.")
+                    ),
+                    DeviceHelpStep(
+                        title: t("Enable Developer Mode"),
+                        detail: t("On iPhone open Settings → Privacy & Security → Developer Mode, enable it, and restart if requested.")
+                    ),
+                    DeviceHelpStep(
+                        title: t("Configure signing"),
+                        detail: t("Select the Controlio target, open Signing & Capabilities, ensure your team is set, and give the bundle ID a unique suffix.")
+                    ),
+                    DeviceHelpStep(
+                        title: t("Deploy to device"),
+                        detail: t("Plug in the iPhone, pick it under Product → Destination, and run the build.")
+                    ),
+                    DeviceHelpStep(
+                        title: t("Trust the developer profile"),
+                        detail: t("First run shows a signing warning—on iPhone visit Settings → General → VPN & Device Management and trust Controlio.")
+                    ),
+                    DeviceHelpStep(
+                        title: t("Finalize trackpad access"),
+                        detail: t("Run Controlio again, make sure Bluetooth is on for both devices, sign in, open the trackpad screen, and allow Local Network.")
+                    )
+                ],
+                callout: DeviceHelpCallout(
+                    message: t("Leave ControlioReceiver open in the background so the trackpad reconnects instantly whenever you launch Controlio."),
+                    style: .success
                 )
-            ],
-            callout: nil
-        )
-    ]
+            ),
+            DeviceHelpSection(
+                title: t("Gamepad Usage"),
+                subtitle: t("Configure game controls after trackpad setup."),
+                iconName: "gamecontroller.fill",
+                iconColor: palette.purple,
+                steps: [
+                    DeviceHelpStep(
+                        title: t("Mirror the trackpad prep"),
+                        detail: t("Keep ControlioReceiver running with Bluetooth enabled on both devices so controller input reaches your Mac.")
+                    ),
+                    DeviceHelpStep(
+                        title: t("Remap controls as needed"),
+                        detail: t("If a game does not already map actions to WASD or arrow keys, open its settings and rebind each action to the matching gamepad input.")
+                    ),
+                    DeviceHelpStep(
+                        title: t("Example mapping"),
+                        detail: t("Set the analog stick forward action to send the keyboard input \"W\" (or your preferred key) so forward movement stays responsive.")
+                    )
+                ],
+                callout: DeviceHelpCallout(
+                    message: t("Most games remember your custom keybinds, so you only need to map them once per title."),
+                    style: .info
+                )
+            )
+        ]
+    }
 }
 
 private struct DeviceHelpSegmentedControl: View {
     @Binding var selection: DeviceHelpTab
     @Namespace private var namespace
+    let palette: DeviceHelpPalette
+    let bundle: Bundle
 
     var body: some View {
         HStack(spacing: 8) {
@@ -244,16 +286,16 @@ private struct DeviceHelpSegmentedControl: View {
                 Button {
                     selection = tab
                 } label: {
-                    Text(tab.title)
+                    Text(tab.localizedTitle(bundle: bundle))
                         .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(selection == tab ? DeviceHelpTheme.segmentTextActive : DeviceHelpTheme.segmentTextInactive)
+                        .foregroundStyle(selection == tab ? palette.segmentTextActive : palette.segmentTextInactive)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 10)
                         .background(
                             Group {
                                 if selection == tab {
                                     RoundedRectangle(cornerRadius: 18, style: .continuous)
-                                        .fill(DeviceHelpTheme.segmentActive)
+                                        .fill(palette.segmentActive)
                                         .matchedGeometryEffect(id: "selection", in: namespace)
                                 }
                             }
@@ -265,17 +307,18 @@ private struct DeviceHelpSegmentedControl: View {
         .padding(6)
         .background(
             RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .fill(DeviceHelpTheme.segmentBackground)
+                .fill(palette.segmentBackground)
         )
         .overlay(
             RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .stroke(DeviceHelpTheme.segmentBorder, lineWidth: 1)
+                .stroke(palette.segmentBorder, lineWidth: 1)
         )
     }
 }
 
 private struct DeviceHelpCard: View {
     let section: DeviceHelpSection
+    let palette: DeviceHelpPalette
 
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
@@ -298,25 +341,30 @@ private struct DeviceHelpCard: View {
                 }
             }
 
-            VStack(spacing: 16) {
+            VStack(spacing: 14) {
                 ForEach(Array(section.steps.enumerated()), id: \.element.id) { index, step in
-                    HStack(alignment: .top, spacing: 12) {
+                    HStack(alignment: .top, spacing: 14) {
                         Text("\(index + 1)")
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(DeviceHelpTheme.stepNumber)
-                            .frame(width: 28, height: 28)
+                            .font(.system(size: 12, weight: .bold))
+                            .foregroundStyle(palette.stepNumber)
+                            .frame(width: 24, height: 24)
                             .background(
                                 Circle()
-                                    .fill(DeviceHelpTheme.stepBackground)
+                                    .fill(palette.stepBackground)
                             )
+                            .padding(.top, 2)
 
-                        VStack(alignment: .leading, spacing: 4) {
+                        VStack(alignment: .leading, spacing: 6) {
                             Text(step.title)
-                                .font(.subheadline.weight(.semibold))
+                                .font(.system(size: 14, weight: .semibold))
+                                .fixedSize(horizontal: false, vertical: true)
                             Text(step.detail)
-                                .font(.footnote)
+                                .font(.system(size: 13))
                                 .foregroundStyle(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
+                                .lineSpacing(2)
                         }
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
             }
@@ -329,24 +377,24 @@ private struct DeviceHelpCard: View {
                         .font(.subheadline.weight(.semibold))
                         .fixedSize(horizontal: false, vertical: true)
                 }
-                .foregroundStyle(callout.foreground)
+                .foregroundStyle(callout.style == .success ? palette.calloutSuccessForeground : palette.calloutInfoForeground)
                 .padding()
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(
                     RoundedRectangle(cornerRadius: 16, style: .continuous)
-                        .fill(callout.background)
+                        .fill(callout.style == .success ? palette.calloutSuccessBackground : palette.calloutInfoBackground)
                 )
             }
         }
         .padding(20)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(DeviceHelpTheme.card)
+        .background(palette.card)
         .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .stroke(DeviceHelpTheme.cardBorder, lineWidth: 1)
+                .stroke(palette.cardBorder, lineWidth: 1)
         )
-        .shadow(color: DeviceHelpTheme.shadow, radius: 10, x: 0, y: 5)
+        .shadow(color: palette.shadow, radius: 10, x: 0, y: 5)
     }
 }
 
@@ -364,16 +412,21 @@ struct DeviceHelpBottomBar: View {
         onHomeTap: @escaping () -> Void = {},
         onSettingsTap: @escaping () -> Void = {},
         onWifiTap: @escaping () -> Void = {},
-        onHelpTap: @escaping () -> Void = {}
+        onHelpTap: @escaping () -> Void = {},
+        palette: DeviceHelpPalette,
+        bundle: Bundle
     ) {
         self.orientation = orientation
         self.items = [
-            .init(systemName: "house.fill", accessibilityLabel: "Home", action: onHomeTap),
-            .init(systemName: "gearshape.fill", accessibilityLabel: "Settings", action: onSettingsTap),
-            .init(systemName: "wifi", accessibilityLabel: "Wireless connection", action: onWifiTap),
-            .init(systemName: "questionmark.circle", accessibilityLabel: "Help", action: onHelpTap)
+            .init(systemName: "house.fill", accessibilityLabel: NSLocalizedString("Home", bundle: bundle, comment: ""), action: onHomeTap),
+            .init(systemName: "gearshape.fill", accessibilityLabel: NSLocalizedString("Settings", bundle: bundle, comment: ""), action: onSettingsTap),
+            .init(systemName: "wifi", accessibilityLabel: NSLocalizedString("Wireless connection", bundle: bundle, comment: ""), action: onWifiTap),
+            .init(systemName: "questionmark.circle", accessibilityLabel: NSLocalizedString("Help", bundle: bundle, comment: ""), action: onHelpTap)
         ]
+        self.palette = palette
     }
+
+    private let palette: DeviceHelpPalette
 
     var body: some View {
         Group {
@@ -387,12 +440,11 @@ struct DeviceHelpBottomBar: View {
                 .padding(.top, 18)
                 .padding(.bottom, 12)
                 .background(
-                    TopRoundedRectangle(radius: 34)
-                        .fill(DeviceHelpTheme.bottomBarBackground)
-                        .shadow(color: DeviceHelpTheme.bottomBarShadow, radius: 10, x: 0, y: -2)
+                    Rectangle()
+                        .fill(palette.bottomBarBackground)
                 )
                 .background(
-                    DeviceHelpTheme.bottomBarBackground
+                    palette.bottomBarBackground
                         .ignoresSafeArea(edges: .bottom)
                 )
 
@@ -405,12 +457,11 @@ struct DeviceHelpBottomBar: View {
                 .padding(.horizontal, 12)
                 .frame(width: 104)
                 .background(
-                    RightRoundedRectangle(radius: 34)
-                        .fill(DeviceHelpTheme.bottomBarBackground)
-                        .shadow(color: DeviceHelpTheme.bottomBarShadow, radius: 8, x: -2, y: 0)
+                    Rectangle()
+                        .fill(palette.bottomBarBackground)
                 )
                 .background(
-                    DeviceHelpTheme.bottomBarBackground
+                    palette.bottomBarBackground
                         .ignoresSafeArea(edges: .trailing)
                 )
             }
@@ -423,17 +474,16 @@ struct DeviceHelpBottomBar: View {
             Button(action: item.action) {
                 Image(systemName: item.systemName)
                     .font(.system(size: 22, weight: .semibold))
-                    .foregroundStyle(DeviceHelpTheme.bottomIconForeground)
+                    .foregroundStyle(palette.bottomIconForeground)
                     .frame(width: 56, height: 56)
                     .background(
                         RoundedRectangle(cornerRadius: 18, style: .continuous)
-                            .fill(DeviceHelpTheme.bottomIconBackground)
+                            .fill(palette.bottomIconBackground)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 18, style: .continuous)
-                                    .stroke(DeviceHelpTheme.bottomIconStroke, lineWidth: 1)
+                                    .stroke(palette.bottomIconStroke, lineWidth: 1)
                             )
                     )
-                    .shadow(color: DeviceHelpTheme.bottomIconShadow, radius: 6, x: 0, y: 4)
             }
             .buttonStyle(.plain)
             .accessibilityLabel(item.accessibilityLabel)
@@ -489,26 +539,62 @@ private struct RightRoundedRectangle: Shape {
     }
 }
 
-enum DeviceHelpTheme {
-    static let background = Color(red: 0.953, green: 0.965, blue: 0.980)
-    static let card = Color.white
-    static let cardBorder = Color.black.opacity(0.06)
-    static let shadow = Color.black.opacity(0.04)
-    static let orange = Color(red: 0.996, green: 0.529, blue: 0.188)
-    static let purple = Color(red: 0.498, green: 0.278, blue: 0.851)
-    static let segmentBackground = Color.white
-    static let segmentActive = Color(red: 0.984, green: 0.890, blue: 0.784)
-    static let segmentBorder = Color.black.opacity(0.05)
-    static let segmentTextActive = Color(red: 0.424, green: 0.251, blue: 0.047)
-    static let segmentTextInactive = Color.secondary
-    static let stepBackground = Color.black.opacity(0.04)
-    static let stepNumber = Color.black.opacity(0.7)
-    static let bottomBarBackground = orange
-    static let bottomBarShadow = Color.black.opacity(0.08)
-    static let bottomIconBackground = Color(red: 0.216, green: 0.214, blue: 0.206)
-    static let bottomIconForeground = Color(red: 0.988, green: 0.965, blue: 0.902)
-    static let bottomIconStroke = Color.white.opacity(0.08)
-    static let bottomIconShadow = Color.black.opacity(0.25)
+struct DeviceHelpPalette {
+    let background: Color
+    let card: Color
+    let cardBorder: Color
+    let shadow: Color
+    let orange: Color
+    let purple: Color
+    let segmentBackground: Color
+    let segmentActive: Color
+    let segmentBorder: Color
+    let segmentTextActive: Color
+    let segmentTextInactive: Color
+    let stepBackground: Color
+    let stepNumber: Color
+    let bottomBarBackground: Color
+    let bottomBarShadow: Color
+    let bottomIconBackground: Color
+    let bottomIconForeground: Color
+    let bottomIconStroke: Color
+    let bottomIconShadow: Color
+    let calloutSuccessBackground: Color
+    let calloutSuccessForeground: Color
+    let calloutInfoBackground: Color
+    let calloutInfoForeground: Color
+
+    static func palette(for settings: AppSettings) -> DeviceHelpPalette {
+        let isDark = settings.selectedTheme == "Dark"
+        let accent = Color.orange
+        let purple = Color(red: 0.498, green: 0.278, blue: 0.851)
+
+        return DeviceHelpPalette(
+            background: settings.bgColor,
+            card: settings.cardColor,
+            cardBorder: isDark ? Color.white.opacity(0.08) : Color.black.opacity(0.06),
+            shadow: isDark ? Color.black.opacity(0.55) : Color.black.opacity(0.05),
+            orange: accent,
+            purple: purple,
+            segmentBackground: isDark ? Color.white.opacity(0.06) : Color.white,
+            segmentActive: isDark ? accent.opacity(0.18) : Color(red: 0.984, green: 0.890, blue: 0.784),
+            segmentBorder: isDark ? Color.white.opacity(0.08) : Color.black.opacity(0.05),
+            segmentTextActive: isDark ? accent : Color(red: 0.424, green: 0.251, blue: 0.047),
+            segmentTextInactive: Color.secondary,
+            stepBackground: isDark ? Color.white.opacity(0.08) : Color.black.opacity(0.04),
+            stepNumber: isDark ? Color.white.opacity(0.9) : Color.black.opacity(0.7),
+            bottomBarBackground: accent,
+            bottomBarShadow: isDark ? Color.black.opacity(0.55) : Color.black.opacity(0.08),
+            bottomIconBackground: isDark ? Color(red: 0.16, green: 0.16, blue: 0.18) : Color(red: 0.216, green: 0.214, blue: 0.206),
+            bottomIconForeground: isDark ? Color.white : Color(red: 0.988, green: 0.965, blue: 0.902),
+            bottomIconStroke: Color.white.opacity(0.08),
+            bottomIconShadow: isDark ? Color.black.opacity(0.4) : Color.black.opacity(0.25),
+            calloutSuccessBackground: isDark ? Color.green.opacity(0.16) : Color(red: 0.835, green: 0.957, blue: 0.862),
+            calloutSuccessForeground: isDark ? Color.green.opacity(0.85) : Color(red: 0.113, green: 0.502, blue: 0.263),
+            calloutInfoBackground: isDark ? purple.opacity(0.16) : Color(red: 0.949, green: 0.922, blue: 0.996),
+            calloutInfoForeground: isDark ? Color.white.opacity(0.9) : Color(red: 0.314, green: 0.200, blue: 0.600)
+        )
+    }
 }
 
 //#Preview {

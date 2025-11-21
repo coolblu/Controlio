@@ -206,7 +206,9 @@ struct GamepadSettingsView: View {
                     },
                     onSettingsTap: { showAppPreferences = true },
                     onWifiTap: { showDeviceController = true },
-                    onHelpTap: { showDeviceHelp = true }
+                    onHelpTap: { showDeviceHelp = true },
+                    palette: DeviceHelpPalette.palette(for: appSettings),
+                    bundle: appSettings.bundle
                 )
             }
             .onAppear {
