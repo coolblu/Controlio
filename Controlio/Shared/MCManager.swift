@@ -142,12 +142,26 @@ final class MCManager: NSObject, ObservableObject {
         connect(to: peer)
     }
     
+    private func handleConnectionRefusal(for peer: MCPeerID) {
+        guard !suppressAutoRetry else { return }
+        guard refusedRecoveryPeers.insert(peer.displayName).inserted else { return }
+
+        log("[NW] connection refused by \(peer.displayName); re-resolving service")
+        requestedPeerName = peer.displayName
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
+            guard let self = self else { return }
+            let target = self.discoveredPeers.first { $0.displayName == peer.displayName } ?? peer
+            self.connect(to: target)
+        }
+    }
+    
     // Network state
     static let serviceType = "_controlio-trk._tcp"
     private let queue = DispatchQueue(label: "controlio.network", qos: .userInitiated)
     private var listener: NWListener?
     private var browser: NWBrowser?
     private var connection: NWConnection?
+    private var refusedRecoveryPeers = Set<String>()
 
     private let knownDevicesDefaultsKey = "mc.knownDevices"
     private let lastDeviceDefaultsKey  = "mc.lastDeviceName"
@@ -339,6 +353,7 @@ final class MCManager: NSObject, ObservableObject {
     private func handleConnectionState(_ state: NWConnection.State, peer: MCPeerID) {
         switch state {
         case .ready:
+            refusedRecoveryPeers.remove(peer.displayName)
             DispatchQueue.main.async {
                 self.connectedPeer = peer
                 self.lastConnectedPeer = peer
@@ -350,8 +365,12 @@ final class MCManager: NSObject, ObservableObject {
             }
         case .failed(let error):
             log("[NW] connection failed: \(error.localizedDescription)")
+            if case .posix(let posixError) = error, posixError == .ECONNREFUSED {
+                handleConnectionRefusal(for: peer)
+            }
             fallthrough
         case .cancelled:
+            connection = nil
             DispatchQueue.main.async {
                 self.connectedPeer = nil
                 self.sessionState = .notConnected
