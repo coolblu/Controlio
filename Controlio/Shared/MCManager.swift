@@ -143,7 +143,7 @@ final class MCManager: NSObject, ObservableObject {
     }
     
     // Network state
-    static let serviceType = "_controlio._tcp"
+    static let serviceType = "_controlio-trk._tcp"
     private let queue = DispatchQueue(label: "controlio.network", qos: .userInitiated)
     private var listener: NWListener?
     private var browser: NWBrowser?

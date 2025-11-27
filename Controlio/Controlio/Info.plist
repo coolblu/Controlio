@@ -29,5 +29,7 @@
 	<array>
 		<string>_controlio-trk._tcp</string>
 	</array>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Controlio uses your local network to discover and connect to your Mac receiver.</string>
 </dict>
 </plist>
