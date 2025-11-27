@@ -2,8 +2,7 @@
 //  MCManager.swift
 //  Controlio
 //
-//  Networking transport built on Apple's Network framework (Bonjour + TCP)
-//  to replace the previous MultipeerConnectivity implementation.
+//  Created by Avis Luong on 10/16/25.
 //
 
 import Foundation
