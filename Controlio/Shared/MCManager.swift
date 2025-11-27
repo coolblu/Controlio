@@ -146,13 +146,9 @@ final class MCManager: NSObject, ObservableObject {
         guard !suppressAutoRetry else { return }
         guard refusedRecoveryPeers.insert(peer.displayName).inserted else { return }
 
-        log("[NW] connection refused by \(peer.displayName); re-resolving service")
+        log("[NW] connection refused by \(peer.displayName); refreshing browse for a clean resolve")
         requestedPeerName = peer.displayName
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
-            guard let self = self else { return }
-            let target = self.discoveredPeers.first { $0.displayName == peer.displayName } ?? peer
-            self.connect(to: target)
-        }
+        restartBrowsingForFreshResolve(peerName: peer.displayName)
     }
     
     // Network state
@@ -162,6 +158,22 @@ final class MCManager: NSObject, ObservableObject {
     private var browser: NWBrowser?
     private var connection: NWConnection?
     private var refusedRecoveryPeers = Set<String>()
+
+    private func restartBrowsingForFreshResolve(peerName: String?) {
+        browser?.cancel()
+        browser = nil
+        hasStartedBrowsing = false
+
+        if let name = peerName {
+            DispatchQueue.main.async { [weak self] in
+                self?.discoveredPeers.removeAll { $0.displayName == name }
+            }
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [weak self] in
+            self?.startBrowsingIfNeeded()
+        }
+    }
 
     private let knownDevicesDefaultsKey = "mc.knownDevices"
     private let lastDeviceDefaultsKey  = "mc.lastDeviceName"
@@ -365,12 +377,12 @@ final class MCManager: NSObject, ObservableObject {
             }
         case .failed(let error):
             log("[NW] connection failed: \(error.localizedDescription)")
+            connection = nil
             if case .posix(let posixError) = error, posixError == .ECONNREFUSED {
                 handleConnectionRefusal(for: peer)
             }
             fallthrough
         case .cancelled:
-            connection = nil
             DispatchQueue.main.async {
                 self.connectedPeer = nil
                 self.sessionState = .notConnected
