@@ -2,60 +2,86 @@
 //  MCManager.swift
 //  Controlio
 //
-//  Created by Avis Luong on 10/16/25.
+//  Networking transport built on Apple's Network framework (Bonjour + TCP)
+//  to replace the previous MultipeerConnectivity implementation.
 //
 
 import Foundation
-import MultipeerConnectivity
+import Network
 #if os(iOS)
 import UIKit
 #endif
+
+/// Minimal session states mirroring the original MultipeerConnectivity values.
+enum MCSessionState: Int {
+    case notConnected = 0
+    case connecting = 1
+    case connected = 2
+}
+
+/// Lightweight peer representation for Bonjour discovery.
+struct MCPeerID: Identifiable, Hashable {
+    let id: String
+    let displayName: String
+    let endpoint: NWEndpoint?
+
+    init(displayName: String, endpoint: NWEndpoint? = nil) {
+        self.displayName = displayName
+        self.endpoint = endpoint
+        if let endpoint = endpoint {
+            self.id = "\(displayName)-\(endpoint.debugDescription)"
+        } else {
+            self.id = displayName
+        }
+    }
+}
+
 /*
  wrapper for iOS to macOS
  receiver calls startAdvertising()
  controller calls startBrowsing()
  */
-
 final class MCManager: NSObject, ObservableObject {
-    
+
     // called when chunk of bytes arrives
     var onEvents: (([Event]) -> Void)?
-    
+
     // connection state changes
     var onStateChange: ((MCSessionState) -> Void)?
-    
+
     var onDebug: ((String) -> Void)?
-    
+
     @Published private(set) var sessionState: MCSessionState = .notConnected
     @Published private(set) var connectedPeer: MCPeerID? = nil
     @Published private(set) var discoveredPeers: [MCPeerID] = []
-    
+
     @Published private(set) var lastConnectedPeer: MCPeerID? = nil
     @Published private(set) var manuallyDisconnected: Bool = false
     private var requestedPeerName: String? = nil
-    
+
     var connectedDeviceName: String? { connectedPeer?.displayName }
-    
+
     func connect(to peer: MCPeerID, timeout: TimeInterval = 10) {
+        _ = timeout // preserved for API compatibility
         requestedPeerName = peer.displayName
-        guard browser != nil else {
-            log("[MC] connect(to:) requires an active browser; call userRequestedReconnect() first.")
+        guard let endpoint = peer.endpoint else {
+            log("[NW] connect(to:) missing endpoint for \(peer.displayName)")
             return
         }
-        browser?.invitePeer(peer, to: session, withContext: nil, timeout: timeout)
+        startConnection(to: endpoint, peer: peer)
     }
-    
+
     func forgetDiscoveredPeers() {
         discoveredPeers.removeAll()
     }
-    
+
     func availableReceivers() -> [MCPeerID] { discoveredPeers }
 
     var currentState: MCSessionState { sessionState }
-    
+
     private(set) var suppressAutoRetry = false
     private var hasStartedBrowsing = false
-    
+
     func startBrowsingIfNeeded() {
         guard !suppressAutoRetry, !hasStartedBrowsing else { return }
         hasStartedBrowsing = true
@@ -63,7 +89,7 @@ final class MCManager: NSObject, ObservableObject {
     }
     
     func stopBrowsing() {
-        browser?.stopBrowsingForPeers()
+        browser?.cancel()
         browser = nil
         hasStartedBrowsing = false
     }
@@ -75,7 +101,7 @@ final class MCManager: NSObject, ObservableObject {
         stopBrowsing()
         if let cp = connectedPeer { lastConnectedPeer = cp }
         connectedPeer = nil
-        session.disconnect()
+        connection?.cancel()
         sessionState = .notConnected
         onStateChange?(.notConnected)
     }
@@ -86,7 +112,10 @@ final class MCManager: NSObject, ObservableObject {
     }
     
     func disconnect(keepRetrying: Bool = true) {
-        session.disconnect()
+        connection?.cancel()
+        connection = nil
+        sessionState = .notConnected
+        onStateChange?(.notConnected)
         if keepRetrying { startBrowsingIfNeeded() }
     }
     
@@ -113,23 +142,13 @@ final class MCManager: NSObject, ObservableObject {
         connect(to: peer)
     }
     
-    // MC state
-    private let serviceType = "controlio-trk"
-    private let peerID: MCPeerID = {
-        #if os(iOS)
-        return MCPeerID(displayName: UIDevice.current.name)
-        #elseif os(macOS)
-        // fall back to hostName if needed
-        let name = Host.current().localizedName ?? ProcessInfo.processInfo.hostName
-        return MCPeerID(displayName: name)
-        #else
-        return MCPeerID(displayName: "Controlio")
-        #endif
-    }()
-    private var session: MCSession!
-    private var advertiser: MCNearbyServiceAdvertiser?
-    private var browser: MCNearbyServiceBrowser?
-        
+    // Network state
+    static let serviceType = "_controlio._tcp"
+    private let queue = DispatchQueue(label: "controlio.network", qos: .userInitiated)
+    private var listener: NWListener?
+    private var browser: NWBrowser?
+    private var connection: NWConnection?
+
     private let knownDevicesDefaultsKey = "mc.knownDevices"
     private let lastDeviceDefaultsKey  = "mc.lastDeviceName"
     
@@ -189,32 +208,89 @@ final class MCManager: NSObject, ObservableObject {
         }
     }
 
+    private let localPeer: MCPeerID = {
+        #if os(iOS)
+        return MCPeerID(displayName: UIDevice.current.name)
+        #elseif os(macOS)
+        let name = Host.current().localizedName ?? ProcessInfo.processInfo.hostName
+        return MCPeerID(displayName: name)
+        #else
+        return MCPeerID(displayName: "Controlio")
+        #endif
+    }()
+    
     override init() {
         super.init()
-        session = MCSession(peer: peerID, securityIdentity: nil, encryptionPreference: .required)
-        session.delegate = self
     }
     
-    // make receiver visisble and auto-accept conns
+    // make receiver visible and auto-accept connections
     func startAdvertising() {
-        advertiser = MCNearbyServiceAdvertiser(peer: peerID, discoveryInfo: nil, serviceType: serviceType)
-        advertiser?.delegate = self
-        advertiser?.startAdvertisingPeer()
+        stop()
+        do {
+            let params = NWParameters.tcp
+            params.includePeerToPeer = true
+            let listener = try NWListener(using: params)
+            listener.service = NWListener.Service(name: localPeer.displayName, type: Self.serviceType)
+            listener.stateUpdateHandler = { [weak self] state in
+                self?.log("[NW] listener state: \(state)")
+            }
+            listener.newConnectionHandler = { [weak self] newConnection in
+                self?.handleIncoming(connection: newConnection)
+            }
+            listener.start(queue: queue)
+            self.listener = listener
+            log("[NW] Advertising as \(localPeer.displayName)")
+        } catch {
+            log("[NW] Failed to start listener: \(error.localizedDescription)")
+        }
+    }
+    
+    private func handleIncoming(connection newConnection: NWConnection) {
+        let peer = MCPeerID(displayName: peerName(from: newConnection.endpoint), endpoint: newConnection.endpoint)
+        connection?.cancel()
+        connection = newConnection
+        DispatchQueue.main.async {
+            self.sessionState = .connecting
+            self.onStateChange?(.connecting)
+        }
+        newConnection.stateUpdateHandler = { [weak self] state in
+            self?.handleConnectionState(state, peer: peer)
+        }
+        startReceive(on: newConnection, peer: peer)
+        newConnection.start(queue: queue)
     }
     
     // search for receiver and auto-invite
     func startBrowsing() {
-        browser = MCNearbyServiceBrowser(peer: peerID, serviceType: serviceType)
-        browser?.delegate = self
-        browser?.startBrowsingForPeers()
+        browser?.cancel()
+        let descriptor = NWBrowser.Descriptor.bonjour(type: Self.serviceType, domain: nil)
+        let params = NWParameters.tcp
+        params.includePeerToPeer = true
+        let browser = NWBrowser(for: descriptor, using: params)
+        browser.stateUpdateHandler = { [weak self] state in
+            self?.log("[NW] browser state: \(state)")
+        }
+        browser.browseResultsChangedHandler = { [weak self] results, _ in
+            guard let self = self else { return }
+            let peers = results.compactMap { self.makePeer(from: $0) }
+            DispatchQueue.main.async {
+                self.discoveredPeers = peers
+            }
+            peers.forEach { self.autoReconnectIfNeeded(for: $0) }
+        }
+        browser.start(queue: queue)
+        self.browser = browser
     }
     
     func stop() {
-        advertiser?.stopAdvertisingPeer()
-        browser?.stopBrowsingForPeers()
-        advertiser = nil
+        listener?.cancel()
+        browser?.cancel()
+        connection?.cancel()
+        listener = nil
         browser = nil
-        session.disconnect()
+        connection = nil
+        sessionState = .notConnected
+        hasStartedBrowsing = false
     }
     
     // send single event object as json
@@ -229,89 +305,108 @@ final class MCManager: NSObject, ObservableObject {
     
     // send bytes
     func sendRaw(_ data: Data, reliable: Bool = true) {
-        let peers = session.connectedPeers
-        guard !peers.isEmpty else {
-            log("[send] no peers")
+        guard let conn = connection else {
+            log("[send] no connection")
             return
         }
-        do {
-            try session.send(data, toPeers: peers, with: reliable ? .reliable : .unreliable)
-        } catch {
-            log("[send] error: \(error.localizedDescription)")
-        }
+        conn.send(content: data, completion: .contentProcessed { [weak self] error in
+            if let error = error {
+                self?.log("[send] error: \(error.localizedDescription)")
+            }
+        })
     }
     
     // connection status
-    var isConnected: Bool { !session.connectedPeers.isEmpty }
-}
+    var isConnected: Bool { sessionState == .connected }
 
-// delegate for connection state and incoming data
-extension MCManager: MCSessionDelegate {
-    func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
-        log("[MC] \(peerID.displayName) state: \(state.rawValue)")
+    private func startConnection(to endpoint: NWEndpoint, peer: MCPeerID) {
+        connection?.cancel()
+        let params = NWParameters.tcp
+        params.includePeerToPeer = true
+        let conn = NWConnection(to: endpoint, using: params)
+        connection = conn
         DispatchQueue.main.async {
-            self.onStateChange?(state)
-            self.sessionState = state
-            switch state {
-            case .connected:
-                self.connectedPeer = peerID
-                self.lastConnectedPeer = peerID
+            self.sessionState = .connecting
+            self.onStateChange?(.connecting)
+        }
+        conn.stateUpdateHandler = { [weak self] state in
+            self?.handleConnectionState(state, peer: peer)
+        }
+        startReceive(on: conn, peer: peer)
+        conn.start(queue: queue)
+    }
+
+    private func handleConnectionState(_ state: NWConnection.State, peer: MCPeerID) {
+        switch state {
+        case .ready:
+            DispatchQueue.main.async {
+                self.connectedPeer = peer
+                self.lastConnectedPeer = peer
                 self.manuallyDisconnected = false
                 self.requestedPeerName = nil
-                self.rememberConnectedPeer(peerID)
-            case .notConnected:
-                if let any = session.connectedPeers.first {
-                    self.connectedPeer = any
-                } else {
-                    self.connectedPeer = nil
-                }
-                // only auto-retry if not a manual disconnect
-                if !self.suppressAutoRetry { self.startBrowsingIfNeeded() }
-            case .connecting:
-                break
-            @unknown default:
-                break
+                self.sessionState = .connected
+                self.onStateChange?(.connected)
+                self.rememberConnectedPeer(peer)
             }
+        case .failed(let error):
+            log("[NW] connection failed: \(error.localizedDescription)")
+            fallthrough
+        case .cancelled:
+            DispatchQueue.main.async {
+                self.connectedPeer = nil
+                self.sessionState = .notConnected
+                self.onStateChange?(.notConnected)
+                if !self.suppressAutoRetry { self.startBrowsingIfNeeded() }
+            }
+        case .waiting(let error):
+            log("[NW] connection waiting: \(error.localizedDescription)")
+        case .preparing, .setup:
+            break
+        @unknown default:
+            break
         }
     }
 
-    func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
-        let events = decodeLines(data)
-        if !events.isEmpty { onEvents?(events) }
-//        log("[MC] didReceive \(events.count) event(s) from \(peerID.displayName)")
-    }
-    
-    func session(_ session: MCSession, didReceive certificate: [Any]?, fromPeer peerID: MCPeerID, certificateHandler: @escaping (Bool) -> Void) {
-        log("[MC] certificate from \(peerID.displayName) - accepting")
-        certificateHandler(true)
-    }
-    // empty stubs
-    func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {}
-    func session(_ session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, with progress: Progress) {}
-    func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL?, withError error: Error?) {}
-}
+    private func startReceive(on connection: NWConnection, peer: MCPeerID) {
+        _ = peer
+        connection.receive(minimumIncompleteLength: 1, maximumLength: 64 * 1024) { [weak self] data, _, isComplete, error in
+            guard let self = self else { return }
 
-// delegate for advertiser/browser
-extension MCManager: MCNearbyServiceAdvertiserDelegate, MCNearbyServiceBrowserDelegate {
-    func advertiser(_ advertiser: MCNearbyServiceAdvertiser,
-                    didReceiveInvitationFromPeer peerID: MCPeerID,
-                    withContext context: Data?,
-                    invitationHandler: @escaping (Bool, MCSession?) -> Void) {
-        log("[macOS] Invitation from: \(peerID.displayName)")
-        invitationHandler(true, session)
-    }
+            if let data = data, !data.isEmpty {
+                let events = decodeLines(data)
+                if !events.isEmpty { self.onEvents?(events) }
+            }
 
-    func browser(_ browser: MCNearbyServiceBrowser,
-                 foundPeer peerID: MCPeerID,
-                 withDiscoveryInfo info: [String : String]?) {
-        print("[iOS] foundPeer:", peerID.displayName)
-        if !discoveredPeers.contains(where: { $0 == peerID }) {
-            DispatchQueue.main.async { self.discoveredPeers.append(peerID) }
+            if isComplete || error != nil {
+                self.log("[NW] receive finished (error: \(error?.localizedDescription ?? "none"))")
+                connection.cancel()
+                DispatchQueue.main.async {
+                    self.connectedPeer = nil
+                    self.sessionState = .notConnected
+                    self.onStateChange?(.notConnected)
+                    if !self.suppressAutoRetry { self.startBrowsingIfNeeded() }
+                }
+                return
+            }
+
+            self.startReceive(on: connection, peer: peer)
         }
-        autoReconnectIfNeeded(for: peerID)
     }
 
-    func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
-        DispatchQueue.main.async { self.discoveredPeers.removeAll { $0 == peerID } }
+    private func makePeer(from result: NWBrowser.Result) -> MCPeerID? {
+        let endpoint = result.endpoint
+        let name = peerName(from: endpoint)
+        return MCPeerID(displayName: name, endpoint: endpoint)
+    }
+
+    private func peerName(from endpoint: NWEndpoint) -> String {
+        switch endpoint {
+        case let .service(name: name, type: _, domain: _, interface: _):
+            return name
+        case let .hostPort(host, _):
+            return host.debugDescription
+        default:
+            return endpoint.debugDescription
+        }
     }
 }

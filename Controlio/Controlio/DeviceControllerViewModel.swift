@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import MultipeerConnectivity
 import Combine
 
 struct DeviceInfo: Identifiable {

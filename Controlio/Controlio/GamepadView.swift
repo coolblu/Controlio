@@ -7,7 +7,6 @@
 
 import SwiftUI
 import CoreHaptics
-import MultipeerConnectivity
 
 struct GamepadView: View {
     @ObservedObject var mc: MCManager

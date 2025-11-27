@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import MultipeerConnectivity
 
 struct TrackpadView: View {
     @ObservedObject var mc: MCManager
