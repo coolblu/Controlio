@@ -22,7 +22,7 @@ final class EventTxPump {
         self.mc = mc
         guard timer == nil else { return }
         let t = DispatchSource.makeTimerSource(queue: q)
-        t.schedule(deadline: .now() + .milliseconds(3), repeating: .milliseconds(3))
+        t.schedule(deadline: .now() + .milliseconds(4), repeating: .milliseconds(4))
         t.setEventHandler { [weak self] in self?.flush() }
         t.resume()
         timer = t
@@ -59,11 +59,11 @@ final class EventTxPump {
         var unreliableOut = Data()
 
         if moveDX != 0 || moveDY != 0 {
-            unreliableOut.append(encodeLine(.pm(dx: moveDX, dy: moveDY)))
+            reliableOut.append(encodeLine(.pm(dx: moveDX, dy: moveDY)))
             moveDX = 0; moveDY = 0
         }
         if scrollDX != 0 || scrollDY != 0 {
-            unreliableOut.append(encodeLine(.sc(dx: scrollDX, dy: scrollDY)))
+            reliableOut.append(encodeLine(.sc(dx: scrollDX, dy: scrollDY)))
             scrollDX = 0; scrollDY = 0
         }
         if !buffer.isEmpty {
@@ -76,7 +76,7 @@ final class EventTxPump {
             }
             latestAxes.removeAll(keepingCapacity: true)
         }
-        if !unreliableOut.isEmpty { mc.sendRaw(unreliableOut, reliable: false) }
         if !reliableOut.isEmpty { mc.sendRaw(reliableOut, reliable: true) }
+        if !unreliableOut.isEmpty { mc.sendRaw(unreliableOut, reliable: false) }
     }
 }
