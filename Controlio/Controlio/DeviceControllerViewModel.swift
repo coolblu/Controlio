@@ -197,16 +197,25 @@ class DeviceControllerViewModel: ObservableObject {
 
     private func refreshDevices() {
         let connectedPeer = mcManager.connectedPeer
-        let discoveredPeers = mcManager.discoveredPeers
-        let knownNames = mcManager.knownDeviceNames
+        let connectedName = connectedPeer?.displayName
         let connectingName = connectingToPeer?.displayName
+
+        var devicesByName: [String: DeviceInfo] = [:]
+
+        func upsert(_ info: DeviceInfo) {
+            if let existing = devicesByName[info.name] {
+                if devicePriority(info) > devicePriority(existing) {
+                    devicesByName[info.name] = info
+                }
+            } else {
+                devicesByName[info.name] = info
+            }
+        }
         
-        var connected: [DeviceInfo] = []
-        var available: [DeviceInfo] = []
-        
-        for peer in discoveredPeers {
-            let isConnected = (peer == connectedPeer)
-            let isConnecting = (connectingToPeer == peer)
+        for peer in mcManager.discoveredPeers {
+            let name = peer.displayName
+            let isConnected = (peer == connectedPeer) || (name == connectedName)
+            let isConnecting = (connectingToPeer == peer) || (name == connectingName)
 
             let info = createDeviceInfo(
                 from: peer,
@@ -215,14 +224,22 @@ class DeviceControllerViewModel: ObservableObject {
                 isConnecting: isConnecting
             )
 
-            if isConnected {
-                connected.append(info)
-            } else {
-                available.append(info)
-            }
+            upsert(info)
         }
-        for name in knownNames {
-            guard !discoveredPeers.contains(where: { $0.displayName == name }) else { continue }
+
+        if let connectedPeer, devicesByName[connectedPeer.displayName] == nil {
+            let info = createDeviceInfo(
+                from: connectedPeer,
+                isConnected: true,
+                isReachable: true,
+                isConnecting: false
+            )
+
+            upsert(info)
+        }
+
+        for name in mcManager.knownDeviceNames {
+            guard devicesByName[name] == nil else { continue }
 
             let kind = detectDeviceKind(from: name)
             let stubPeer = MCPeerID(displayName: name)
@@ -239,11 +256,23 @@ class DeviceControllerViewModel: ObservableObject {
                 isConnecting: isTarget
             )
 
-            available.append(info)
+            upsert(info)
         }
 
-        connectedDevices = connected
-        availableDevices = available
+        let devices = Array(devicesByName.values)
+        connectedDevices = devices
+            .filter { $0.isConnected }
+            .sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+        availableDevices = devices
+            .filter { !$0.isConnected }
+            .sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+    }
+
+    private func devicePriority(_ info: DeviceInfo) -> Int {
+        if info.isConnected { return 3 }
+        if info.isConnecting { return 2 }
+        if info.isReachable { return 1 }
+        return 0
     }
 
     private func createDeviceInfo(from peerID: MCPeerID, isConnected: Bool, isReachable: Bool, isConnecting: Bool) -> DeviceInfo {
