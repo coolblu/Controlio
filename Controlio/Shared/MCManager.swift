@@ -305,13 +305,17 @@ extension MCManager: MCNearbyServiceAdvertiserDelegate, MCNearbyServiceBrowserDe
                  foundPeer peerID: MCPeerID,
                  withDiscoveryInfo info: [String : String]?) {
         print("[iOS] foundPeer:", peerID.displayName)
-        if !discoveredPeers.contains(where: { $0 == peerID }) {
-            DispatchQueue.main.async { self.discoveredPeers.append(peerID) }
+        DispatchQueue.main.async {
+            if let index = self.discoveredPeers.firstIndex(where: { $0.displayName == peerID.displayName }) {
+                self.discoveredPeers[index] = peerID
+            } else {
+                self.discoveredPeers.append(peerID)
+            }
         }
         autoReconnectIfNeeded(for: peerID)
     }
 
     func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
-        DispatchQueue.main.async { self.discoveredPeers.removeAll { $0 == peerID } }
+        DispatchQueue.main.async { self.discoveredPeers.removeAll { $0.displayName == peerID.displayName } }
     }
 }
