@@ -71,8 +71,8 @@ struct RaceWheelView: View {
             motion.stop()
             OrientationManager.unlock()
         }
-        .onReceive(motion.$roll) { roll in
-            updateSteering(roll: roll)
+        .onReceive(motion.$pitch) { pitch in
+            updateSteering(pitch: pitch)
         }
         .navigationBarItems(
             trailing:
@@ -142,8 +142,8 @@ struct RaceWheelView: View {
         .padding(.horizontal, 16)
     }
     
-    private func updateSteering(roll: Double) {
-        var normalized = roll / (Double.pi / 4) * steeringSensitivity
+    private func updateSteering(pitch: Double) {
+        var normalized = pitch / (Double.pi / 4) * steeringSensitivity
         
         if abs(normalized) < steeringDeadzone {
             normalized = 0
