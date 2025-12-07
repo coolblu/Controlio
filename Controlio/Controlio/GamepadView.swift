@@ -36,6 +36,17 @@ struct GamepadView: View {
     @State private var lastAXSentRight = Date.distantPast
     private let axInterval: TimeInterval = 1.0 / 60.0
     private let deadzone: CGFloat = 0.08
+
+    // Stick direction states for key binding
+    @State private var leftStickUp = false
+    @State private var leftStickDown = false
+    @State private var leftStickLeft = false
+    @State private var leftStickRight = false
+    @State private var rightStickUp = false
+    @State private var rightStickDown = false
+    @State private var rightStickLeft = false
+    @State private var rightStickRight = false
+    private let stickThreshold: CGFloat = 0.3
     
     private let stickTick = Timer.publish(
         every: 1.0 / 60.0,
@@ -162,17 +173,12 @@ struct GamepadView: View {
 
                     HStack(alignment: .center, spacing: columnGap) {
                         DPad(keySize: dpadKey, spacing: dpadSpacing) { dir, down in
-                            switch (dir, down) {
-                            case (.up, true):    mc.send(.gpDown(.dpadUp))
-                            case (.up, false):   mc.send(.gpUp(.dpadUp))
-                            case (.down, true):  mc.send(.gpDown(.dpadDown))
-                            case (.down, false): mc.send(.gpUp(.dpadDown))
-                            case (.left, true):  mc.send(.gpDown(.dpadLeft))
-                            case (.left, false): mc.send(.gpUp(.dpadLeft))
-                            case (.right, true): mc.send(.gpDown(.dpadRight))
-                            case (.right, false):mc.send(.gpUp(.dpadRight))
+                            switch dir {
+                            case .up:    sendButton(.dpadUp, down)
+                            case .down:  sendButton(.dpadDown, down)
+                            case .left:  sendButton(.dpadLeft, down)
+                            case .right: sendButton(.dpadRight, down)
                             }
-                            hapticTap()
                         }
                         .frame(maxWidth: isLandscape ? .infinity : nil, alignment: isLandscape ? .leading : .center)
 
@@ -274,7 +280,31 @@ struct GamepadView: View {
         sendStick(id: 1, x: rightStick.x, y: rightStick.y, lastSent: &lastAXSentRight)
     }
     private func sendButton(_ b: GPButton, _ down: Bool) {
-        mc.send(down ? .gpDown(b) : .gpUp(b))
+        // Map GPButton to button name for key binding lookup (very important)
+        let buttonName: String
+        switch b {
+        case .a: buttonName = "A"
+        case .b: buttonName = "B"
+        case .x: buttonName = "X"
+        case .y: buttonName = "Y"
+        case .l1: buttonName = "L1"
+        case .r1: buttonName = "R1"
+        case .start: buttonName = "Start"
+        case .select: buttonName = "Select"
+        case .dpadUp: buttonName = "DPad Up"
+        case .dpadDown: buttonName = "DPad Down"
+        case .dpadLeft: buttonName = "DPad Left"
+        case .dpadRight: buttonName = "DPad Right"
+        default: buttonName = ""
+        }
+
+        // Look up key binding and send keyboard event
+        if let keyCode = appSettings.keyCodeForButton(buttonName) {
+            mc.send(down ? .keyDown(keyCode) : .keyUp(keyCode))
+        } else {
+            // Fallback to raw gamepad event if no binding
+            mc.send(down ? .gpDown(b) : .gpUp(b))
+        }
         hapticTap()
     }
     
@@ -290,18 +320,35 @@ struct GamepadView: View {
         let finalX = adjustedX * CGFloat(appSettings.horizontalSensitivity)
         let finalY = adjustedY * CGFloat(appSettings.verticalSensitivity)
 
-        let sx = Int(max(-1, min(1, finalX)) * 1000)
-        let sy = Int(max(-1, min(1, finalY)) * 1000)
+        // Determine which directions are active
+        let isUp = finalY < -stickThreshold
+        let isDown = finalY > stickThreshold
+        let isLeft = finalX < -stickThreshold
+        let isRight = finalX > stickThreshold
 
-        let now = Date()
-        let forceNeutral = (sx == 0 && sy == 0)
-
-        if !forceNeutral && now.timeIntervalSince(lastSent) < axInterval {
-            return
+        // Send keyboard events based on key bindings
+        if id == 0 {
+            // Left stick
+            sendStickDirection("Left Stick Up", isPressed: isUp, wasPressed: &leftStickUp)
+            sendStickDirection("Left Stick Down", isPressed: isDown, wasPressed: &leftStickDown)
+            sendStickDirection("Left Stick Left", isPressed: isLeft, wasPressed: &leftStickLeft)
+            sendStickDirection("Left Stick Right", isPressed: isRight, wasPressed: &leftStickRight)
+        } else {
+            // Right stick
+            sendStickDirection("Right Stick Up", isPressed: isUp, wasPressed: &rightStickUp)
+            sendStickDirection("Right Stick Down", isPressed: isDown, wasPressed: &rightStickDown)
+            sendStickDirection("Right Stick Left", isPressed: isLeft, wasPressed: &rightStickLeft)
+            sendStickDirection("Right Stick Right", isPressed: isRight, wasPressed: &rightStickRight)
         }
-        lastSent = now
+    }
 
-        mc.send(.ax(id: id, x: sx, y: sy), reliable: false)
+    private func sendStickDirection(_ buttonName: String, isPressed: Bool, wasPressed: inout Bool) {
+        if isPressed != wasPressed {
+            wasPressed = isPressed
+            if let keyCode = appSettings.keyCodeForButton(buttonName) {
+                mc.send(isPressed ? .keyDown(keyCode) : .keyUp(keyCode))
+            }
+        }
     }
     
     private func clampDeadzone(_ v: CGFloat, dz: CGFloat) -> CGFloat {

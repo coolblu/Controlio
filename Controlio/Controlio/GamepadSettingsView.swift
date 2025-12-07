@@ -128,6 +128,33 @@ struct GamepadSettingsView: View {
                     .listRowBackground(appSettings.cardColor)
                 }
 
+                // Key Bindings Section
+                Section(
+                    header: Text(
+                        NSLocalizedString(
+                            "Key Bindings",
+                            bundle: appSettings.bundle,
+                            comment: "Header for the section controlling key binding settings"
+                        )
+                    )
+                    .foregroundColor(appSettings.primaryText)
+                ) {
+                    ForEach(AppSettings.gamepadButtons, id: \.self) { button in
+                        KeyBindingRow(
+                            buttonName: button,
+                            selectedKey: Binding(
+                                get: { appSettings.keyBindings[button] ?? AppSettings.defaultKeyBindings[button] ?? "" },
+                                set: { newValue in
+                                    var updated = appSettings.keyBindings
+                                    updated[button] = newValue
+                                    appSettings.keyBindings = updated
+                                }
+                            )
+                        )
+                        .listRowBackground(appSettings.cardColor)
+                    }
+                }
+
                 // Reset Section
                 Section(
                     header: Text(
@@ -216,6 +243,27 @@ struct GamepadSettingsView: View {
                 localHorizontalSensitivity = appSettings.horizontalSensitivity
                 localVerticalSensitivity = appSettings.verticalSensitivity
             }
+        }
+    }
+}
+
+struct KeyBindingRow: View {
+    let buttonName: String
+    @Binding var selectedKey: String
+    @EnvironmentObject var appSettings: AppSettings
+
+    var body: some View {
+        HStack {
+            Text(buttonName)
+                .foregroundColor(appSettings.primaryText)
+            Spacer()
+            Picker("", selection: $selectedKey) {
+                ForEach(AppSettings.availableKeys, id: \.self) { key in
+                    Text(key).tag(key)
+                }
+            }
+            .pickerStyle(.menu)
+            .tint(appSettings.secondaryText)
         }
     }
 }

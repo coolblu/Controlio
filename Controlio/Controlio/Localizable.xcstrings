@@ -1388,6 +1388,9 @@
         }
       }
     },
+    "Key Bindings" : {
+      "comment" : "Header for the section controlling key binding settings"
+    },
     "Language" : {
       "localizations" : {
         "es" : {

@@ -54,7 +54,14 @@ final class EventPump {
                     return
                 }
 
-                // Gamepad buttons
+                // Keyboard key codes (offset by 1000 from iOS app according to website)
+                if code >= 1000 {
+                    let keyCode = CGKeyCode(code - 1000)
+                    KeyboardEmitter.shared.pressKey(keyCode, isDown: isDown)
+                    return
+                }
+
+                // Gamepad buttons (legacy, fallback)
                 if let gp = GPButton(rawValue: code) {
                     switch gp {
                     case .dpadLeft:  KeyboardEmitter.shared.arrow(.left,  isDown: isDown)

@@ -25,4 +25,9 @@ extension Event {
     static var leftUp:   Event  { .bt(c: 0, s: 0) }
     static var rightDown: Event { .bt(c: 1, s: 1) }
     static var rightUp:   Event { .bt(c: 1, s: 0) }
+
+    // Keyboard key events (uses offset 1000 to distinguish from gamepad buttons according to protocol)
+    static let keyboardCodeOffset = 1000
+    static func keyDown(_ keyCode: Int) -> Event { .bt(c: keyboardCodeOffset + keyCode, s: 1) }
+    static func keyUp(_ keyCode: Int) -> Event { .bt(c: keyboardCodeOffset + keyCode, s: 0) }
 }

@@ -51,6 +51,11 @@ final class AppSettings: ObservableObject {
         didSet { defaults.set(verticalSensitivity, forKey: "verticalSensitivity") }
     }
 
+    // Key Bindings (maps gamepad button names to keyboard keys)
+    @Published var keyBindings: [String: String] {
+        didSet { defaults.set(keyBindings, forKey: "gamepadKeyBindings") }
+    }
+
     let languageDidChange = PassthroughSubject<Void, Never>()
 
     private let defaults = UserDefaults.standard
@@ -69,6 +74,7 @@ final class AppSettings: ObservableObject {
         invertVertical = defaults.object(forKey: "invertVertical") as? Bool ?? false
         horizontalSensitivity = defaults.object(forKey: "horizontalSensitivity") as? Double ?? 1.0
         verticalSensitivity = defaults.object(forKey: "verticalSensitivity") as? Double ?? 1.0
+        keyBindings = defaults.object(forKey: "gamepadKeyBindings") as? [String: String] ?? Self.defaultKeyBindings
 
         // Validate language
         let validLanguages = ["English", "French", "Spanish"]
@@ -98,6 +104,70 @@ final class AppSettings: ObservableObject {
         invertVertical = false
         horizontalSensitivity = 1.0
         verticalSensitivity = 1.0
+        keyBindings = Self.defaultKeyBindings
+    }
+
+    static let defaultKeyBindings: [String: String] = [
+        "A": "Space",
+        "B": "E",
+        "X": "R",
+        "Y": "Q",
+        "L1": "1",
+        "R1": "2",
+        "Start": "Return",
+        "Select": "Tab",
+        "DPad Up": "W",
+        "DPad Down": "S",
+        "DPad Left": "A",
+        "DPad Right": "D",
+        "Left Stick Up": "W",
+        "Left Stick Down": "S",
+        "Left Stick Left": "A",
+        "Left Stick Right": "D",
+        "Right Stick Up": "Up",
+        "Right Stick Down": "Down",
+        "Right Stick Left": "Left",
+        "Right Stick Right": "Right"
+    ]
+
+    static let availableKeys: [String] = [
+        "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
+        "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
+        "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+        "Space", "Return", "Tab", "Escape", "Shift", "Control", "Option", "Command",
+        "Up", "Down", "Left", "Right",
+        "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12"
+    ]
+
+    static let gamepadButtons: [String] = [
+        "A", "B", "X", "Y", "L1", "R1", "Start", "Select",
+        "DPad Up", "DPad Down", "DPad Left", "DPad Right",
+        "Left Stick Up", "Left Stick Down", "Left Stick Left", "Left Stick Right",
+        "Right Stick Up", "Right Stick Down", "Right Stick Left", "Right Stick Right"
+    ]
+
+    // CGKeyCode values for keyboard keys (macOS virtual key codes)
+    static let keyCodeMap: [String: Int] = [
+        "A": 0, "B": 11, "C": 8, "D": 2, "E": 14, "F": 3, "G": 5, "H": 4,
+        "I": 34, "J": 38, "K": 40, "L": 37, "M": 46, "N": 45, "O": 31, "P": 35,
+        "Q": 12, "R": 15, "S": 1, "T": 17, "U": 32, "V": 9, "W": 13, "X": 7,
+        "Y": 16, "Z": 6,
+        "0": 29, "1": 18, "2": 19, "3": 20, "4": 21, "5": 23, "6": 22, "7": 26,
+        "8": 28, "9": 25,
+        "Space": 49, "Return": 36, "Tab": 48, "Escape": 53,
+        "Shift": 56, "Control": 59, "Option": 58, "Command": 55,
+        "Up": 126, "Down": 125, "Left": 123, "Right": 124,
+        "F1": 122, "F2": 120, "F3": 99, "F4": 118, "F5": 96, "F6": 97,
+        "F7": 98, "F8": 100, "F9": 101, "F10": 109, "F11": 103, "F12": 111
+    ]
+
+    // Returns the CGKeyCode for a gamepad button 
+    // based on current key bindings
+    func keyCodeForButton(_ buttonName: String) -> Int? {
+        guard let keyName = keyBindings[buttonName] ?? Self.defaultKeyBindings[buttonName] else {
+            return nil
+        }
+        return Self.keyCodeMap[keyName]
     }
 
     // Computed bundle for localization
