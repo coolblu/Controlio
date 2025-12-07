@@ -12,6 +12,7 @@ import Combine
 private enum Route: Hashable {
     case trackpad
     case gamepad
+    case raceWheel
     case manageProfile
     case appPreferences
     case help
@@ -121,7 +122,7 @@ struct HomeView: View {
                                     systemImage: "steeringwheel",
                                     title: NSLocalizedString("Racing", bundle: appSettings.bundle, comment: ""),
                                     subtitle: NSLocalizedString("Steer by tilting", bundle: appSettings.bundle, comment: ""),
-                                    action: { /* start racing */ }
+                                    action: { path.append(Route.raceWheel) }
                                 )
                                 .environmentObject(appSettings)
                             }
@@ -211,6 +212,8 @@ struct HomeView: View {
                             TrackpadView(mc: mc, onNavigateHome: { path = NavigationPath() })
                         case .gamepad:
                             GamepadView(mc: mc, onNavigateHome: { path = NavigationPath() })
+                        case .raceWheel:
+                            RaceWheelView(mc: mc, onNavigateHome: { path = NavigationPath() })
                         case .manageProfile:
                             ManageProfileView(isLoggedIn: $isLoggedIn)
                         case .appPreferences:

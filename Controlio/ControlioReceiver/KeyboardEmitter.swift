@@ -197,6 +197,21 @@ final class KeyboardEmitter {
             arrow(.down, isDown: false)
         }
     }
+
+    /// Handle race wheel steering input
+    func steering(x: CGFloat, threshold: CGFloat = 0.08) {
+        let leftOn  = x < -threshold
+        let rightOn = x >  threshold
+        
+        arrow(.left,  isDown: leftOn)
+        arrow(.right, isDown: rightOn)
+        
+        // Ensure both are released when centered
+        if !leftOn && !rightOn {
+            arrow(.left,  isDown: false)
+            arrow(.right, isDown: false)
+        }
+    }
 }
 
 enum GamepadKeyMap {
@@ -209,6 +224,7 @@ enum GamepadKeyMap {
         // Shoulders
         .l1: 12, // Q
         .r1: 14, // E
+        .r2: 13, // W (gas pedal - accelerate/forward)
         // Start/Select
         .select: 51, // Delete
         .start: 53 // Escape

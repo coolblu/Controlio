@@ -18,11 +18,14 @@ final class EventPump {
     
     private var lastAX0Time: CFAbsoluteTime = 0
     private var lastAX1Time: CFAbsoluteTime = 0
+    private var lastAX2Time: CFAbsoluteTime = 0
     private var ax0Active = false
     private var ax1Active = false
+    private var ax2Active = false
     
     private let axTimeout: CFAbsoluteTime = 0.35
     private let axThreshold: CGFloat = 0.15
+    private let steeringThreshold: CGFloat = 0.08
 
     private var timer: DispatchSourceTimer?
 
@@ -79,6 +82,10 @@ final class EventPump {
                     self.lastAX1Time = CFAbsoluteTimeGetCurrent()
                     self.ax1Active = (abs(nx) > self.axThreshold) || (abs(ny) > self.axThreshold)
                     KeyboardEmitter.shared.smoothRightStickAsArrows(x: nx, y: ny, threshold: self.axThreshold)
+                } else if id == 2 {
+                    self.lastAX2Time = CFAbsoluteTimeGetCurrent()
+                    self.ax2Active = abs(nx) > self.steeringThreshold
+                    KeyboardEmitter.shared.steering(x: nx, threshold: self.steeringThreshold)
                 }
                 
             case .gs:
@@ -109,6 +116,10 @@ final class EventPump {
         if ax1Active && (now - lastAX1Time) > axTimeout {
             ax1Active = false
             KeyboardEmitter.shared.smoothRightStickAsArrows(x: 0, y: 0, threshold: axThreshold)
+        }
+        if ax2Active && (now - lastAX2Time) > axTimeout {
+            ax2Active = false
+            KeyboardEmitter.shared.steering(x: 0, threshold: steeringThreshold)
         }
     }
 }
