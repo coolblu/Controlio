@@ -27,6 +27,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     let x  = (e.p.k ?? 0)
                     let y  = (e.p.v ?? 0)
                     print("ax:", "id:", id, "x:", x, "y:", y)
+                case .rw:
+                    let steer = e.p.c ?? 0
+                    print("rw:", "steer:", steer, "dz:", e.p.dz ?? 0, "ht:", e.p.ht ?? 0, "tr:", e.p.tr ?? 0)
                 }
             }
         }
