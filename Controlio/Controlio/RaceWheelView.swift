@@ -30,7 +30,7 @@ struct RaceWheelView: View {
     
     private let steeringSensitivity: Double = 2.0
     private let steeringDeadzone: Double = 0.05
-    private let invertSteering: Bool = false
+    private let invertSteering: Bool = true
     
     // Pedal states
     @State private var gasPressed = false
@@ -53,11 +53,6 @@ struct RaceWheelView: View {
         GeometryReader { geo in
             ZStack {
                 appSettings.bgColor.ignoresSafeArea()
-                
-                RacingStripesBackground()
-                    .opacity(0.03)
-                    .ignoresSafeArea()
-                
                 landscapeLayout(geo: geo)
             }
         }
@@ -368,25 +363,6 @@ struct PedalButton: View {
                     onChange(pressing)
                 }
             }, perform: {})
-    }
-}
-
-struct RacingStripesBackground: View {
-    var body: some View {
-        GeometryReader { geo in
-            let stripeWidth: CGFloat = 40
-            let count = Int(geo.size.width / stripeWidth) + 2
-            
-            HStack(spacing: stripeWidth) {
-                ForEach(0..<count, id: \.self) { i in
-                    Rectangle()
-                        .fill(Color.white)
-                        .frame(width: stripeWidth / 2)
-                }
-            }
-            .rotationEffect(.degrees(15))
-            .offset(x: -50, y: -50)
-        }
     }
 }
 
