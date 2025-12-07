@@ -55,8 +55,8 @@ final class EventPump {
                 }
 
                 // Keyboard key codes (offset by 1000 from iOS app according to website)
-                if code >= Event.keyboardCodeOffset {
-                    let keyCode = CGKeyCode(code - Event.keyboardCodeOffset)
+                if code >= 1000 {
+                    let keyCode = CGKeyCode(code - 1000)
                     KeyboardEmitter.shared.pressKey(keyCode, isDown: isDown)
                     return
                 }

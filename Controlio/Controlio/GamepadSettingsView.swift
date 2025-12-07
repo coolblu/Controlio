@@ -252,9 +252,20 @@ struct KeyBindingRow: View {
     @Binding var selectedKey: String
     @EnvironmentObject var appSettings: AppSettings
 
+    /// Returns the localized display name for the button
+    private var localizedButtonName: String {
+        // Buttons that are not needed to be localized (standard controller labels)
+        let nonLocalizedButtons = ["A", "B", "X", "Y", "L1", "R1"]
+        if nonLocalizedButtons.contains(buttonName) {
+            return buttonName
+        }
+        // Localize all other button names
+        return NSLocalizedString(buttonName, bundle: appSettings.bundle, comment: "Gamepad button label")
+    }
+
     var body: some View {
         HStack {
-            Text(buttonName)
+            Text(localizedButtonName)
                 .foregroundColor(appSettings.primaryText)
             Spacer()
             Picker("", selection: $selectedKey) {
