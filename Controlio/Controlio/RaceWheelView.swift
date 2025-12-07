@@ -28,9 +28,9 @@ struct RaceWheelView: View {
     @State private var lastSteeringSent = Date.distantPast
     private let steeringInterval: TimeInterval = 1.0 / 60.0
     
-    private let steeringSensitivity: Double = 2.0
-    private let steeringDeadzone: Double = 0.05
-    private let invertSteering: Bool = true
+    private let steeringSensitivity: Double = 1.0
+    private let steeringDeadzone: Double = 0.08
+    private let invertSteering: Bool = false
     
     // Pedal states
     @State private var gasPressed = false
@@ -138,7 +138,7 @@ struct RaceWheelView: View {
     }
     
     private func updateSteering(pitch: Double) {
-        var normalized = pitch / (Double.pi / 7) * steeringSensitivity
+        var normalized = pitch / (Double.pi / 5) * steeringSensitivity
         
         if abs(normalized) < steeringDeadzone {
             normalized = 0

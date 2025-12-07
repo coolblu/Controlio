@@ -198,15 +198,13 @@ final class KeyboardEmitter {
         }
     }
 
-    /// Handle race wheel steering input
-    func steering(x: CGFloat, threshold: CGFloat = 0.08) {
+    func steering(x: CGFloat, threshold: CGFloat = 0.25) {
         let leftOn  = x < -threshold
         let rightOn = x >  threshold
         
         arrow(.left,  isDown: leftOn)
         arrow(.right, isDown: rightOn)
         
-        // Ensure both are released when centered
         if !leftOn && !rightOn {
             arrow(.left,  isDown: false)
             arrow(.right, isDown: false)
