@@ -8,6 +8,7 @@ import SwiftUI
 import CoreMotion
 import CoreHaptics
 import MultipeerConnectivity
+import UIKit
 
 struct RaceWheelView: View {
     @ObservedObject var mc: MCManager
@@ -50,10 +51,6 @@ struct RaceWheelView: View {
     
     var body: some View {
         GeometryReader { geo in
-            let w = geo.size.width
-            let h = geo.size.height
-            let isLandscape = w > h
-            
             ZStack {
                 appSettings.bgColor.ignoresSafeArea()
                 
@@ -61,20 +58,18 @@ struct RaceWheelView: View {
                     .opacity(0.03)
                     .ignoresSafeArea()
                 
-                if isLandscape {
-                    landscapeLayout(geo: geo)
-                } else {
-                    portraitLayout(geo: geo)
-                }
+                landscapeLayout(geo: geo)
             }
         }
         .onAppear {
             prepareHaptics()
             motion.start()
             mc.startBrowsingIfNeeded()
+            OrientationManager.lockLandscape()
         }
         .onDisappear {
             motion.stop()
+            OrientationManager.unlock()
         }
         .onReceive(motion.$roll) { roll in
             updateSteering(roll: roll)
@@ -92,10 +87,10 @@ struct RaceWheelView: View {
         
     @ViewBuilder
     private func landscapeLayout(geo: GeometryProxy) -> some View {
-        let w = geo.size.width
-        let h = geo.size.height
-        let pedalHeight = min(h * 0.35, 120)
-        let wheelSize = min(w * 0.4, h * 0.7, 280)
+        let w = max(geo.size.width, geo.size.height)
+        let h = min(geo.size.width, geo.size.height)
+        let pedalHeight = min(h * 0.5, 180)
+        let wheelSize = min(w * 0.35, h * 0.75, 260)
         
         HStack(spacing: 0) {
             VStack {
@@ -147,60 +142,6 @@ struct RaceWheelView: View {
         .padding(.horizontal, 16)
     }
     
-    @ViewBuilder
-    private func portraitLayout(geo: GeometryProxy) -> some View {
-        let w = geo.size.width
-        let h = geo.size.height
-        let wheelSize = min(w * 0.7, 260)
-        let pedalWidth = (w - 60) / 2
-        let pedalHeight: CGFloat = 100
-        
-        VStack(spacing: 20) {
-            Spacer()
-            
-            SteeringWheelView(
-                angle: steeringAngle,
-                size: wheelSize
-            )
-            .environmentObject(appSettings)
-            
-            SteeringIndicator(value: steeringAngle)
-                .frame(width: wheelSize, height: 8)
-            
-            Text("Tilt device to steer")
-                .font(.subheadline)
-                .foregroundColor(appSettings.secondaryText)
-            
-            Spacer()
-            
-            HStack(spacing: 20) {
-                PedalButton(
-                    label: "BRAKE",
-                    color: .red,
-                    isPressed: $brakePressed,
-                    width: pedalWidth,
-                    height: pedalHeight
-                ) { down in
-                    sendPedal(.brake, down: down)
-                }
-                .environmentObject(appSettings)
-                
-                PedalButton(
-                    label: "GAS",
-                    color: .green,
-                    isPressed: $gasPressed,
-                    width: pedalWidth,
-                    height: pedalHeight
-                ) { down in
-                    sendPedal(.gas, down: down)
-                }
-                .environmentObject(appSettings)
-            }
-            .padding(.horizontal, 20)
-            .padding(.bottom, 30)
-        }
-    }
-        
     private func updateSteering(roll: Double) {
         var normalized = roll / (Double.pi / 4) * steeringSensitivity
         
@@ -446,5 +387,19 @@ struct RacingStripesBackground: View {
             .rotationEffect(.degrees(15))
             .offset(x: -50, y: -50)
         }
+    }
+}
+
+final class OrientationManager {
+    static func lockLandscape() {
+        AppDelegate.orientationLock = .landscape
+        UIDevice.current.setValue(UIInterfaceOrientation.landscapeRight.rawValue, forKey: "orientation")
+        UIViewController.attemptRotationToDeviceOrientation()
+    }
+    
+    static func unlock() {
+        AppDelegate.orientationLock = .all
+        UIDevice.current.setValue(UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
+        UIViewController.attemptRotationToDeviceOrientation()
     }
 }
