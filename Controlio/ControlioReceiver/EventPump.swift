@@ -18,17 +18,20 @@ final class EventPump {
     
     private var lastAX0Time: CFAbsoluteTime = 0
     private var lastAX1Time: CFAbsoluteTime = 0
-    private var lastAX2Time: CFAbsoluteTime = 0
     private var ax0Active = false
     private var ax1Active = false
-    private var ax2Active = false
     
     private let axTimeout: CFAbsoluteTime = 0.35
     private let axThreshold: CGFloat = 0.15
     
     private var currentSteering: CGFloat = 0
     private var steeringAccumulator: CGFloat = 0
-    private let steeringDeadzone: CGFloat = 0.40
+    
+    private var rwDeadzone: CGFloat = 0.40
+    private var rwHoldThreshold: CGFloat = 0.90
+    private var rwTapRate: CGFloat = 0.05
+    private var rwActive = false
+    private var lastRWTime: CFAbsoluteTime = 0
 
     private var timer: DispatchSourceTimer?
 
@@ -85,11 +88,18 @@ final class EventPump {
                     self.lastAX1Time = CFAbsoluteTimeGetCurrent()
                     self.ax1Active = (abs(nx) > self.axThreshold) || (abs(ny) > self.axThreshold)
                     KeyboardEmitter.shared.smoothRightStickAsArrows(x: nx, y: ny, threshold: self.axThreshold)
-                } else if id == 2 {
-                    self.lastAX2Time = CFAbsoluteTimeGetCurrent()
-                    self.currentSteering = nx
-                    self.ax2Active = abs(nx) > self.steeringDeadzone
                 }
+                
+            case .rw:
+                let steer = CGFloat(e.p.c ?? 0) / 1000.0
+                self.currentSteering = steer
+                self.lastRWTime = CFAbsoluteTimeGetCurrent()
+                
+                if let dz = e.p.dz { self.rwDeadzone = CGFloat(dz) / 100.0 }
+                if let ht = e.p.ht { self.rwHoldThreshold = CGFloat(ht) / 100.0 }
+                if let tr = e.p.tr { self.rwTapRate = CGFloat(tr) / 100.0 }
+                
+                self.rwActive = abs(steer) > self.rwDeadzone
                 
             case .gs:
                 break
@@ -120,36 +130,35 @@ final class EventPump {
             ax1Active = false
             KeyboardEmitter.shared.smoothRightStickAsArrows(x: 0, y: 0, threshold: axThreshold)
         }
-        if ax2Active && (now - lastAX2Time) > axTimeout {
-            ax2Active = false
+        if rwActive && (now - lastRWTime) > axTimeout {
+            rwActive = false
             currentSteering = 0
             steeringAccumulator = 0
             KeyboardEmitter.shared.steeringRelease()
         }
         
-        processSteering()
+        processRaceWheelSteering()
     }
     
-    private func processSteering() {
+    private func processRaceWheelSteering() {
         let intensity = abs(currentSteering)
         
-        if intensity < steeringDeadzone {
+        if intensity < rwDeadzone {
             KeyboardEmitter.shared.steeringRelease()
             steeringAccumulator = 0
             return
         }
         
-        let normalizedIntensity = (intensity - steeringDeadzone) / (1.0 - steeringDeadzone)
-        
+        let normalizedIntensity = (intensity - rwDeadzone) / (1.0 - rwDeadzone)
         let goingLeft = currentSteering < 0
         
-        if normalizedIntensity > 0.90 {
+        if normalizedIntensity > rwHoldThreshold {
             KeyboardEmitter.shared.steeringHold(left: goingLeft)
             steeringAccumulator = 0
             return
         }
         
-        steeringAccumulator += normalizedIntensity * 0.05
+        steeringAccumulator += normalizedIntensity * rwTapRate
         
         if steeringAccumulator >= 1.0 {
             KeyboardEmitter.shared.steeringTap(left: goingLeft)

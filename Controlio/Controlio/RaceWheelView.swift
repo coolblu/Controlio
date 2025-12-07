@@ -28,10 +28,6 @@ struct RaceWheelView: View {
     @State private var lastSteeringSent = Date.distantPast
     private let steeringInterval: TimeInterval = 1.0 / 60.0
     
-    private let steeringSensitivity: Double = 1.0
-    private let steeringDeadzone: Double = 0.08
-    private let invertSteering: Bool = false
-    
     // Pedal states
     @State private var gasPressed = false
     @State private var brakePressed = false
@@ -138,18 +134,22 @@ struct RaceWheelView: View {
     }
     
     private func updateSteering(pitch: Double) {
-        var normalized = pitch / (Double.pi / 5) * steeringSensitivity
+        let sensitivity = appSettings.steeringSensitivity
+        let deadzone = appSettings.steeringDeadzone
+        let invert = appSettings.invertSteering
         
-        if abs(normalized) < steeringDeadzone {
+        var normalized = pitch / (Double.pi / 5) * sensitivity
+        
+        if abs(normalized) < deadzone {
             normalized = 0
         } else {
             let sign = normalized >= 0 ? 1.0 : -1.0
-            normalized = sign * (abs(normalized) - steeringDeadzone) / (1.0 - steeringDeadzone)
+            normalized = sign * (abs(normalized) - deadzone) / (1.0 - deadzone)
         }
         
         normalized = max(-1, min(1, normalized))
         
-        if invertSteering {
+        if invert {
             normalized = -normalized
         }
         
@@ -160,7 +160,11 @@ struct RaceWheelView: View {
         lastSteeringSent = now
         
         let steerValue = Int(normalized * 1000)
-        mc.send(.ax(id: 2, x: steerValue, y: 0), reliable: false)
+        let receiverDeadzone = Int(appSettings.raceWheelReceiverDeadzone * 100)
+        let holdThreshold = Int(appSettings.raceWheelHoldThreshold * 100)
+        let tapRate = Int(appSettings.raceWheelTapRate * 100)
+        
+        mc.send(.rw(steer: steerValue, deadzone: receiverDeadzone, holdThreshold: holdThreshold, tapRate: tapRate), reliable: false)
     }
     
     enum Pedal { case gas, brake }
