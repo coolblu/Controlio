@@ -13,15 +13,13 @@ struct DeviceInfo: Identifiable {
     enum Kind {
         case laptop
         case desktop
-        case phone
-        case unknown
+        case mac
 
         var iconName: String {
             switch self {
             case .laptop: return "laptopcomputer"
             case .desktop: return "desktopcomputer"
-            case .phone: return "iphone"
-            case .unknown: return "questionmark.circle"
+            case .mac: return "desktopcomputer"
             }
         }
     }
@@ -38,8 +36,7 @@ struct DeviceInfo: Identifiable {
         switch kind {
         case .laptop: return "Laptop"
         case .desktop: return "Desktop"
-        case .phone: return "Phone"
-        case .unknown: return "Device"
+        case .mac: return "Mac"
         }
     }
 
@@ -205,6 +202,10 @@ class DeviceControllerViewModel: ObservableObject {
         var available: [DeviceInfo] = []
         
         for peer in discoveredPeers {
+            let name = peer.displayName
+            
+            guard isValidDeviceName(name) else { continue }
+            
             let isConnected = (peer == connectedPeer)
             let isConnecting = (connectingToPeer == peer)
 
@@ -222,6 +223,8 @@ class DeviceControllerViewModel: ObservableObject {
             }
         }
         for name in knownNames {
+            guard isValidDeviceName(name) else { continue }
+            
             guard !discoveredPeers.contains(where: { $0.displayName == name }) else { continue }
 
             let kind = detectDeviceKind(from: name)
@@ -266,13 +269,16 @@ class DeviceControllerViewModel: ObservableObject {
 
         if lowercased.contains("macbook") || lowercased.contains("laptop") {
             return .laptop
-        } else if lowercased.contains("imac") || lowercased.contains("mac") || lowercased.contains("desktop") {
+        } else if lowercased.contains("imac") || lowercased.contains("desktop") {
             return .desktop
-        } else if lowercased.contains("iphone") || lowercased.contains("ipad") {
-            return .phone
         }
-
-        return .unknown
+        
+        return .mac
+    }
+    
+    private func isValidDeviceName(_ name: String) -> Bool {
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        return !trimmed.isEmpty
     }
 
     func scanForDevices() {

@@ -158,6 +158,8 @@ final class MCManager: NSObject, ObservableObject {
     
     private func rememberConnectedPeer(_ peer: MCPeerID) {
         let name = peer.displayName
+        
+        guard isValidDeviceName(name) else { return }
 
         // Add to knownDevices if not already present
         var known = knownDeviceNames
@@ -168,6 +170,11 @@ final class MCManager: NSObject, ObservableObject {
 
         // Update last-used device
         lastKnownDeviceName = name
+    }
+    
+    private func isValidDeviceName(_ name: String) -> Bool {
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        return !trimmed.isEmpty
     }
     
     func forgetDevice(named name: String) {
@@ -193,6 +200,21 @@ final class MCManager: NSObject, ObservableObject {
         super.init()
         session = MCSession(peer: peerID, securityIdentity: nil, encryptionPreference: .required)
         session.delegate = self
+        
+        cleanupInvalidDeviceNames()
+    }
+    
+    private func cleanupInvalidDeviceNames() {
+        let originalDevices = knownDeviceNames
+        let filteredDevices = originalDevices.filter { isValidDeviceName($0) }
+        
+        if filteredDevices.count != originalDevices.count {
+            knownDeviceNames = filteredDevices
+            
+            if let lastName = lastKnownDeviceName, !isValidDeviceName(lastName) {
+                lastKnownDeviceName = nil
+            }
+        }
     }
     
     // make receiver visisble and auto-accept conns
