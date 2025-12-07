@@ -25,7 +25,7 @@ final class EventPump {
     
     private let axTimeout: CFAbsoluteTime = 0.35
     private let axThreshold: CGFloat = 0.15
-    private let steeringThreshold: CGFloat = 0.08
+    private let steeringThreshold: CGFloat = 0.4
 
     private var timer: DispatchSourceTimer?
 
