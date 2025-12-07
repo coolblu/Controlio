@@ -28,7 +28,7 @@ final class EventPump {
     
     private var currentSteering: CGFloat = 0
     private var steeringAccumulator: CGFloat = 0
-    private let steeringDeadzone: CGFloat = 0.15
+    private let steeringDeadzone: CGFloat = 0.30
 
     private var timer: DispatchSourceTimer?
 
@@ -143,13 +143,13 @@ final class EventPump {
         
         let goingLeft = currentSteering < 0
         
-        if normalizedIntensity > 0.7 {
+        if normalizedIntensity > 0.85 {
             KeyboardEmitter.shared.steeringHold(left: goingLeft)
             steeringAccumulator = 0
             return
         }
         
-        steeringAccumulator += normalizedIntensity * 0.15
+        steeringAccumulator += normalizedIntensity * 0.08
         
         if steeringAccumulator >= 1.0 {
             KeyboardEmitter.shared.steeringTap(left: goingLeft)
