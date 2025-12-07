@@ -15,7 +15,7 @@ import Foundation
  gs = gesture
  ax = analog pos
  */
-enum EVT: String, Codable { case pm, bt, sc, gs, ax }
+enum EVT: String, Codable { case pm, bt, sc, gs, ax, rw }
 
 // payloads for each type
 struct EPointer: Codable { let dx: Int; let dy: Int }
@@ -35,6 +35,9 @@ struct Event: Codable {
         let s: Int?
         let k: Int?
         let v: Int?
+        let dz: Int?
+        let ht: Int?
+        let tr: Int?
     }
 }
 
