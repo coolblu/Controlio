@@ -198,16 +198,28 @@ final class KeyboardEmitter {
         }
     }
 
-    func steering(x: CGFloat, threshold: CGFloat = 0.25) {
-        let leftOn  = x < -threshold
-        let rightOn = x >  threshold
-        
-        arrow(.left,  isDown: leftOn)
-        arrow(.right, isDown: rightOn)
-        
-        if !leftOn && !rightOn {
-            arrow(.left,  isDown: false)
+    func steeringRelease() {
+        arrow(.left, isDown: false)
+        arrow(.right, isDown: false)
+    }
+    
+    func steeringHold(left: Bool) {
+        if left {
+            arrow(.left, isDown: true)
             arrow(.right, isDown: false)
+        } else {
+            arrow(.left, isDown: false)
+            arrow(.right, isDown: true)
+        }
+    }
+    
+    func steeringTap(left: Bool) {
+        if left {
+            arrow(.left, isDown: true)
+            arrow(.right, isDown: false)
+        } else {
+            arrow(.left, isDown: false)
+            arrow(.right, isDown: true)
         }
     }
 }

@@ -25,7 +25,10 @@ final class EventPump {
     
     private let axTimeout: CFAbsoluteTime = 0.35
     private let axThreshold: CGFloat = 0.15
-    private let steeringThreshold: CGFloat = 0.4
+    
+    private var currentSteering: CGFloat = 0
+    private var steeringAccumulator: CGFloat = 0
+    private let steeringDeadzone: CGFloat = 0.15
 
     private var timer: DispatchSourceTimer?
 
@@ -84,8 +87,8 @@ final class EventPump {
                     KeyboardEmitter.shared.smoothRightStickAsArrows(x: nx, y: ny, threshold: self.axThreshold)
                 } else if id == 2 {
                     self.lastAX2Time = CFAbsoluteTimeGetCurrent()
-                    self.ax2Active = abs(nx) > self.steeringThreshold
-                    KeyboardEmitter.shared.steering(x: nx, threshold: self.steeringThreshold)
+                    self.currentSteering = nx
+                    self.ax2Active = abs(nx) > self.steeringDeadzone
                 }
                 
             case .gs:
@@ -119,7 +122,40 @@ final class EventPump {
         }
         if ax2Active && (now - lastAX2Time) > axTimeout {
             ax2Active = false
-            KeyboardEmitter.shared.steering(x: 0, threshold: steeringThreshold)
+            currentSteering = 0
+            steeringAccumulator = 0
+            KeyboardEmitter.shared.steeringRelease()
+        }
+        
+        processSteering()
+    }
+    
+    private func processSteering() {
+        let intensity = abs(currentSteering)
+        
+        if intensity < steeringDeadzone {
+            KeyboardEmitter.shared.steeringRelease()
+            steeringAccumulator = 0
+            return
+        }
+        
+        let normalizedIntensity = (intensity - steeringDeadzone) / (1.0 - steeringDeadzone)
+        
+        let goingLeft = currentSteering < 0
+        
+        if normalizedIntensity > 0.7 {
+            KeyboardEmitter.shared.steeringHold(left: goingLeft)
+            steeringAccumulator = 0
+            return
+        }
+        
+        steeringAccumulator += normalizedIntensity * 0.15
+        
+        if steeringAccumulator >= 1.0 {
+            KeyboardEmitter.shared.steeringTap(left: goingLeft)
+            steeringAccumulator = 0
+        } else {
+            KeyboardEmitter.shared.steeringRelease()
         }
     }
 }
