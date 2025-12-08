@@ -81,7 +81,7 @@ struct RaceWheelSettingsView: View {
                         value: $localSteeringDeadzone,
                         range: 0.0...0.20,
                         step: 0.01,
-                        suffix: ""
+                        suffix: "x"
                     ) {
                         appSettings.steeringDeadzone = localSteeringDeadzone
                     }
