@@ -7,6 +7,13 @@
 
 import Foundation
 
+enum GestureKind: Int {
+    case threeFingerSwipeLeft = 1
+    case threeFingerSwipeRight = 2
+    case rightEdgeSwipe = 3
+    case fiveFingerPinch = 4
+}
+
 extension Event {
     static func pm(dx: Int, dy: Int) -> Event {
         Event(t: .pm, p: .init(dx: dx, dy: dy, c: nil, s: nil, k: nil, v: nil, dz: nil, ht: nil, tr: nil))
@@ -25,6 +32,10 @@ extension Event {
     
     static func rw(steer: Int, deadzone: Int, holdThreshold: Int, tapRate: Int) -> Event {
         Event(t: .rw, p: .init(dx: nil, dy: nil, c: steer, s: nil, k: nil, v: nil, dz: deadzone, ht: holdThreshold, tr: tapRate))
+    }
+    
+    static func gs(kind: GestureKind, value: Int = 0) -> Event {
+        Event(t: .gs, p: .init(dx: nil, dy: nil, c: nil, s: nil, k: kind.rawValue, v: value, dz: nil, ht: nil, tr: nil))
     }
     
     // convenience

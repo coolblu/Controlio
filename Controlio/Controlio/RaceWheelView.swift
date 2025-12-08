@@ -52,6 +52,7 @@ struct RaceWheelView: View {
                 landscapeLayout(geo: geo)
             }
         }
+        .disableSwipeBack()
         .onAppear {
             prepareHaptics()
             motion.start()
