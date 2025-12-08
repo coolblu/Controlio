@@ -139,6 +139,7 @@ struct TrackpadView: View {
                     )
                 }
         .environmentObject(appSettings)
+        .disableSwipeBack()
         .onAppear {
             // start browsing + wire status updates
             mc.startBrowsingIfNeeded()

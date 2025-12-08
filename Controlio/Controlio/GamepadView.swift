@@ -265,6 +265,7 @@ struct GamepadView: View {
                 mcManager: mc
             )
         }
+        .disableSwipeBack()
     }
     
     private func pollSticks() {
