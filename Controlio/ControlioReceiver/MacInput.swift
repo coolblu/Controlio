@@ -7,6 +7,7 @@
 
 import Cocoa
 import ApplicationServices
+import Carbon.HIToolbox
 
 final class MacInput {
     static let shared = MacInput()
@@ -97,5 +98,67 @@ final class MacInput {
                           wheel2: Int32(dx),    // horizontal
                           wheel3: 0)
         evt?.post(tap: .cghidEventTap)
+    }
+        
+    func keyCombo(key: Int, modifiers: CGEventFlags) {
+        let keyDown = CGEvent(keyboardEventSource: nil, virtualKey: CGKeyCode(key), keyDown: true)
+        let keyUp = CGEvent(keyboardEventSource: nil, virtualKey: CGKeyCode(key), keyDown: false)
+        
+        keyDown?.flags = modifiers
+        keyUp?.flags = modifiers
+        
+        keyDown?.post(tap: .cghidEventTap)
+        keyUp?.post(tap: .cghidEventTap)
+    }
+    
+    func keyPress(key: Int) {
+        let keyDown = CGEvent(keyboardEventSource: nil, virtualKey: CGKeyCode(key), keyDown: true)
+        let keyUp = CGEvent(keyboardEventSource: nil, virtualKey: CGKeyCode(key), keyDown: false)
+        
+        keyDown?.post(tap: .cghidEventTap)
+        keyUp?.post(tap: .cghidEventTap)
+    }
+    
+    func openNotificationCenter() {
+        let script = """
+        tell application "System Events"
+            tell process "ControlCenter"
+                click menu bar item "Clock" of menu bar 1
+            end tell
+        end tell
+        """
+        
+        var error: NSDictionary?
+        if let appleScript = NSAppleScript(source: script) {
+            appleScript.executeAndReturnError(&error)
+            if error != nil {
+                clickTopRightCorner()
+            }
+        }
+    }
+    
+    private func clickTopRightCorner() {
+        let bounds = CGDisplayBounds(CGMainDisplayID())
+        let clickPoint = CGPoint(x: bounds.maxX - 50, y: 12)
+        
+        let currentPos = currentMouse()
+        
+        let moveEvt = CGEvent(mouseEventSource: nil, mouseType: .mouseMoved,
+                              mouseCursorPosition: clickPoint, mouseButton: .left)
+        moveEvt?.post(tap: .cghidEventTap)
+        
+        usleep(50000)
+        
+        let downEvt = CGEvent(mouseEventSource: nil, mouseType: .leftMouseDown,
+                              mouseCursorPosition: clickPoint, mouseButton: .left)
+        let upEvt = CGEvent(mouseEventSource: nil, mouseType: .leftMouseUp,
+                            mouseCursorPosition: clickPoint, mouseButton: .left)
+        downEvt?.post(tap: .cghidEventTap)
+        upEvt?.post(tap: .cghidEventTap)
+        
+        usleep(50000)
+        let returnEvt = CGEvent(mouseEventSource: nil, mouseType: .mouseMoved,
+                                mouseCursorPosition: currentPos, mouseButton: .left)
+        returnEvt?.post(tap: .cghidEventTap)
     }
 }

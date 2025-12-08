@@ -102,7 +102,8 @@ final class EventPump {
                 self.rwActive = abs(steer) > self.rwDeadzone
                 
             case .gs:
-                break
+                guard let kind = e.p.k else { return }
+                self.handleGesture(kind: kind)
             }
         }
     }
@@ -165,6 +166,26 @@ final class EventPump {
             steeringAccumulator = 0
         } else {
             KeyboardEmitter.shared.steeringRelease()
+        }
+    }
+    
+    
+    private func handleGesture(kind: Int) {
+        switch kind {
+        case 1:
+            MacInput.shared.keyCombo(key: kVK_Tab, modifiers: [.maskControl, .maskShift])
+            
+        case 2:
+            MacInput.shared.keyCombo(key: kVK_Tab, modifiers: [.maskControl])
+            
+        case 3:
+            MacInput.shared.openNotificationCenter()
+            
+        case 4:
+            MacInput.shared.keyCombo(key: kVK_ANSI_Q, modifiers: [.maskCommand])
+            
+        default:
+            break
         }
     }
 }
