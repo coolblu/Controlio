@@ -174,6 +174,24 @@
         }
       }
     },
+    "Arrows" : {
+      "comment" : "Menu section header for arrow keys",
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flechas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flèches"
+          }
+        }
+      }
+    },
     "Battery" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -187,6 +205,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Batterie"
+          }
+        }
+      }
+    },
+    "Button Keybinds" : {
+      "comment" : "Header for the section controlling button to key mappings",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Asignaciones de Botones"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Raccourcis des Boutons"
           }
         }
       }
@@ -1104,7 +1139,21 @@
       }
     },
     "Gamepad Settings" : {
-      "comment" : "Title of the gamepad settings screen"
+      "comment" : "Title of the gamepad settings screen",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajustes del Mando"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paramètres de la Manette"
+          }
+        }
+      }
     },
     "Gamepad Usage" : {
       "comment" : "Section title for gamepad usage help",
@@ -1309,7 +1358,21 @@
       }
     },
     "Horizontal Sensitivity" : {
-      "comment" : "Label for horizontal stick sensitivity slider"
+      "comment" : "Label for horizontal stick sensitivity slider",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sensibilidad Horizontal"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sensibilité Horizontale"
+          }
+        }
+      }
     },
     "If a game does not already map actions to WASD or arrow keys, open its settings and rebind each action to the matching gamepad input." : {
       "comment" : "Step detail for remapping controls",
@@ -1365,10 +1428,38 @@
       }
     },
     "Invert Horizontal" : {
-      "comment" : "Toggle to invert horizontal stick movement"
+      "comment" : "Toggle to invert horizontal stick movement",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invertir Horizontal"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inverser Horizontal"
+          }
+        }
+      }
     },
     "Invert Vertical" : {
-      "comment" : "Toggle to invert vertical stick movement"
+      "comment" : "Toggle to invert vertical stick movement",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invertir Vertical"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inverser Vertical"
+          }
+        }
+      }
     },
     "Keep ControlioReceiver running with Bluetooth enabled on both devices so controller input reaches your Mac." : {
       "comment" : "Step detail for mirroring trackpad prep",
@@ -1384,6 +1475,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gardez ControlioReceiver en cours d'exécution avec Bluetooth activé sur les deux appareils pour que l'entrée du contrôleur atteigne votre Mac."
+          }
+        }
+      }
+    },
+    "Left Stick Down" : {
+      "comment" : "Label for left stick down keybind",
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Joystick Izquierdo Abajo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stick Gauche Bas"
+          }
+        }
+      }
+    },
+    "Left Stick Left" : {
+      "comment" : "Label for left stick left keybind",
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Joystick Izquierdo Izquierda"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stick Gauche Gauche"
+          }
+        }
+      }
+    },
+    "Left Stick Right" : {
+      "comment" : "Label for left stick right keybind",
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Joystick Izquierdo Derecha"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stick Gauche Droite"
+          }
+        }
+      }
+    },
+    "Left Stick Up" : {
+      "comment" : "Label for left stick up keybind",
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Joystick Izquierdo Arriba"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stick Gauche Haut"
           }
         }
       }
@@ -1452,6 +1615,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Stick gauche pour le mouvement"
+          }
+        }
+      }
+    },
+    "Letters" : {
+      "comment" : "Menu section header for letter keys",
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Letras"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lettres"
           }
         }
       }
@@ -1755,6 +1936,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Notifications"
+          }
+        }
+      }
+    },
+    "Numbers" : {
+      "comment" : "Menu section header for number keys",
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Números"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chiffres"
           }
         }
       }
@@ -2071,6 +2270,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Course"
+          }
+        }
+      }
+    },
+    "Right Stick Down" : {
+      "comment" : "Label for right stick down keybind",
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Joystick Derecho Abajo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stick Droit Bas"
+          }
+        }
+      }
+    },
+    "Right Stick Left" : {
+      "comment" : "Label for right stick left keybind",
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Joystick Derecho Izquierda"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stick Droit Gauche"
+          }
+        }
+      }
+    },
+    "Right Stick Right" : {
+      "comment" : "Label for right stick right keybind",
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Joystick Derecho Derecha"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stick Droit Droite"
+          }
+        }
+      }
+    },
+    "Right Stick Up" : {
+      "comment" : "Label for right stick up keybind",
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Joystick Derecho Arriba"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stick Droit Haut"
           }
         }
       }
@@ -2515,6 +2786,24 @@
         }
       }
     },
+    "Special" : {
+      "comment" : "Menu section header for special keys",
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Especial"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spécial"
+          }
+        }
+      }
+    },
     "Steer by tilting" : {
       "localizations" : {
         "es" : {
@@ -2532,10 +2821,55 @@
       }
     },
     "Stick Inversion" : {
-      "comment" : "Header for the section controlling stick axis inversion settings"
+      "comment" : "Header for the section controlling stick axis inversion settings",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inversión del Joystick"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inversion du Stick"
+          }
+        }
+      }
+    },
+    "Stick Keybinds" : {
+      "comment" : "Header for the section controlling analog stick key mappings",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Asignaciones del Joystick"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Raccourcis du Stick"
+          }
+        }
+      }
     },
     "Stick Sensitivity" : {
-      "comment" : "Header for the section controlling stick sensitivity settings"
+      "comment" : "Header for the section controlling stick sensitivity settings",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sensibilidad del Joystick"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sensibilité du Stick"
+          }
+        }
+      }
     },
     "Swipe up or down with two fingers to adjust system volume." : {
       "extractionState" : "stale",
@@ -2826,7 +3160,21 @@
       }
     },
     "Vertical Sensitivity" : {
-      "comment" : "Label for vertical stick sensitivity slider"
+      "comment" : "Label for vertical stick sensitivity slider",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sensibilidad Vertical"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sensibilité Verticale"
+          }
+        }
+      }
     },
     "Vibration Feedback" : {
       "localizations" : {

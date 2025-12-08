@@ -155,14 +155,14 @@ struct GamepadSettingsView: View {
                     )
                     .foregroundColor(appSettings.primaryText)
                 ) {
-                    StickKeybindRow(label: "Left Stick Up", settingsKey: "leftStickUp")
-                    StickKeybindRow(label: "Left Stick Down", settingsKey: "leftStickDown")
-                    StickKeybindRow(label: "Left Stick Left", settingsKey: "leftStickLeft")
-                    StickKeybindRow(label: "Left Stick Right", settingsKey: "leftStickRight")
-                    StickKeybindRow(label: "Right Stick Up", settingsKey: "rightStickUp")
-                    StickKeybindRow(label: "Right Stick Down", settingsKey: "rightStickDown")
-                    StickKeybindRow(label: "Right Stick Left", settingsKey: "rightStickLeft")
-                    StickKeybindRow(label: "Right Stick Right", settingsKey: "rightStickRight")
+                    StickKeybindRow(labelKey: "Left Stick Up", settingsKey: "leftStickUp")
+                    StickKeybindRow(labelKey: "Left Stick Down", settingsKey: "leftStickDown")
+                    StickKeybindRow(labelKey: "Left Stick Left", settingsKey: "leftStickLeft")
+                    StickKeybindRow(labelKey: "Left Stick Right", settingsKey: "leftStickRight")
+                    StickKeybindRow(labelKey: "Right Stick Up", settingsKey: "rightStickUp")
+                    StickKeybindRow(labelKey: "Right Stick Down", settingsKey: "rightStickDown")
+                    StickKeybindRow(labelKey: "Right Stick Left", settingsKey: "rightStickLeft")
+                    StickKeybindRow(labelKey: "Right Stick Right", settingsKey: "rightStickRight")
                 }
                 .listRowBackground(appSettings.cardColor)
 
@@ -279,13 +279,13 @@ private struct KeybindRow: View {
 }
 
 private struct StickKeybindRow: View {
-    let label: String
+    let labelKey: String
     let settingsKey: String
     @EnvironmentObject var appSettings: AppSettings
 
     var body: some View {
         HStack {
-            Text(label)
+            Text(NSLocalizedString(labelKey, bundle: appSettings.bundle, comment: "Stick keybind label"))
                 .foregroundColor(appSettings.primaryText)
             Spacer()
             KeyPicker(
@@ -305,22 +305,22 @@ private struct KeyPicker: View {
 
     var body: some View {
         Menu {
-            Section("Letters") {
+            Section(NSLocalizedString("Letters", bundle: appSettings.bundle, comment: "Menu section header for letter keys")) {
                 ForEach(KeyCode.letters) { key in
                     Button(key.displayName) { selectedKey = key.rawValue }
                 }
             }
-            Section("Numbers") {
+            Section(NSLocalizedString("Numbers", bundle: appSettings.bundle, comment: "Menu section header for number keys")) {
                 ForEach(KeyCode.numbers) { key in
                     Button(key.displayName) { selectedKey = key.rawValue }
                 }
             }
-            Section("Special") {
+            Section(NSLocalizedString("Special", bundle: appSettings.bundle, comment: "Menu section header for special keys")) {
                 ForEach(KeyCode.special) { key in
                     Button(key.displayName) { selectedKey = key.rawValue }
                 }
             }
-            Section("Arrows") {
+            Section(NSLocalizedString("Arrows", bundle: appSettings.bundle, comment: "Menu section header for arrow keys")) {
                 ForEach(KeyCode.arrows) { key in
                     Button(key.displayName) { selectedKey = key.rawValue }
                 }
