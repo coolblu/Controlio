@@ -396,6 +396,22 @@
         }
       }
     },
+    "Connect like a trackpad" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conectar como un trackpad"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se connecter comme un pavé tactile"
+          }
+        }
+      }
+    },
     "Connect wirelessly via Bluetooth for a cable-free experience." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -645,6 +661,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Créer Un Compte"
+          }
+        }
+      }
+    },
+    "Customize controls" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Personalizar controles"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Personnaliser les commandes"
           }
         }
       }
@@ -1003,6 +1035,22 @@
         }
       }
     },
+    "Ensure ControlioReceiver is running on your Mac with Bluetooth enabled on both devices." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Asegúrate de que ControlioReceiver esté ejecutándose en tu Mac con Bluetooth activado en ambos dispositivos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Assurez-vous que ControlioReceiver fonctionne sur votre Mac avec le Bluetooth activé sur les deux appareils."
+          }
+        }
+      }
+    },
     "Enter new password" : {
       "localizations" : {
         "es" : {
@@ -1136,6 +1184,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Français"
+          }
+        }
+      }
+    },
+    "From the controller selection screen, choose the Racing Wheel option." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desde la pantalla de selección de controlador, elige la opción Volante de Carreras."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Depuis l'écran de sélection du contrôleur, choisissez l'option Volant de Course."
           }
         }
       }
@@ -1389,6 +1453,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Seuil De Maintien"
+          }
+        }
+      }
+    },
+    "Hold your iPhone in landscape orientation for the most comfortable and responsive steering experience." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sostén tu iPhone en orientación horizontal para una experiencia de dirección más cómoda y receptiva."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tenez votre iPhone en orientation paysage pour une expérience de conduite plus confortable et réactive."
           }
         }
       }
@@ -2113,6 +2193,22 @@
         }
       }
     },
+    "Open Racing Wheel settings to adjust steering sensitivity and remap pedal keys." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre la configuración del Volante de Carreras para ajustar la sensibilidad de la dirección y reasignar las teclas de los pedales."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrez les paramètres du Volant de Course pour ajuster la sensibilité de la direction et reconfigurer les touches des pédales."
+          }
+        }
+      }
+    },
     "Open Settings → Bluetooth and select your controller from the list." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -2378,6 +2474,22 @@
         }
       }
     },
+    "Racing Wheel Usage" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uso del Volante de Carreras"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utilisation du Volant de Course"
+          }
+        }
+      }
+    },
     "Receiver Deadzone" : {
       "comment" : "Label for race wheel receiver deadzone slider",
       "localizations" : {
@@ -2494,6 +2606,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Réinitialiser les valeurs par défaut"
+          }
+        }
+      }
+    },
+    "Rotate your iPhone like a steering wheel. The tilt angle controls your steering input." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gira tu iPhone como un volante. El ángulo de inclinación controla la entrada de dirección."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Faites pivoter votre iPhone comme un volant. L'angle d'inclinaison contrôle votre direction."
           }
         }
       }
@@ -2754,6 +2882,22 @@
         }
       }
     },
+    "Select Racing Wheel" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seleccionar Volante de Carreras"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sélectionner le Volant de Course"
+          }
+        }
+      }
+    },
     "Select the Controlio target, open Signing & Capabilities, ensure your team is set, and give the bundle ID a unique suffix." : {
       "comment" : "Step detail for configuring signing",
       "extractionState" : "stale",
@@ -2820,6 +2964,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Configurez le récepteur Mac et l'application iPhone pour le contrôle du pavé tactile."
+          }
+        }
+      }
+    },
+    "Set up your iPhone as a racing wheel controller." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configura tu iPhone como un controlador de volante de carreras."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configurez votre iPhone comme contrôleur de volant de course."
           }
         }
       }
@@ -3130,6 +3290,22 @@
         }
       }
     },
+    "Tap the on-screen GAS and BRAKE buttons to accelerate and slow down." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toca los botones GAS y FRENO en pantalla para acelerar y frenar."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appuyez sur les boutons GAZ et FREIN à l'écran pour accélérer et ralentir."
+          }
+        }
+      }
+    },
     "Tap the Wi-Fi icon inside the app to confirm the controller is now paired." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -3176,6 +3352,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Thème"
+          }
+        }
+      }
+    },
+    "Tilt to steer" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inclinar para girar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Incliner pour diriger"
           }
         }
       }
@@ -3327,6 +3519,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Utiliser le mouvement pour contrôler"
+          }
+        }
+      }
+    },
+    "Use pedal buttons" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usar botones de pedales"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utiliser les boutons de pédales"
           }
         }
       }

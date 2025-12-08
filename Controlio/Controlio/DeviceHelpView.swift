@@ -245,6 +245,38 @@ private enum DeviceHelpContent {
                     message: t("Most games remember your custom keybinds, so you only need to map them once per title."),
                     style: .info
                 )
+            ),
+            DeviceHelpSection(
+                title: t("Racing Wheel Usage"),
+                subtitle: t("Set up your iPhone as a racing wheel controller."),
+                iconName: "steeringwheel",
+                iconColor: palette.orange,
+                steps: [
+                    DeviceHelpStep(
+                        title: t("Connect like a trackpad"),
+                        detail: t("Ensure ControlioReceiver is running on your Mac with Bluetooth enabled on both devices.")
+                    ),
+                    DeviceHelpStep(
+                        title: t("Select Racing Wheel"),
+                        detail: t("From the controller selection screen, choose the Racing Wheel option.")
+                    ),
+                    DeviceHelpStep(
+                        title: t("Tilt to steer"),
+                        detail: t("Rotate your iPhone like a steering wheel. The tilt angle controls your steering input.")
+                    ),
+                    DeviceHelpStep(
+                        title: t("Use pedal buttons"),
+                        detail: t("Tap the on-screen GAS and BRAKE buttons to accelerate and slow down.")
+                    ),
+                    DeviceHelpStep(
+                        title: t("Customize controls"),
+                        detail: t("Open Racing Wheel settings to adjust steering sensitivity and remap pedal keys.")
+                    )
+                ],
+                callout: DeviceHelpCallout(
+                    message: t("Hold your iPhone in landscape orientation for the most comfortable and responsive steering experience."),
+                    style: .info
+                )
             )
         ]
     }
