@@ -9,6 +9,7 @@ import CoreMotion
 import CoreHaptics
 import MultipeerConnectivity
 import UIKit
+import AudioToolbox
 
 struct RaceWheelView: View {
     @ObservedObject var mc: MCManager
@@ -196,7 +197,15 @@ struct RaceWheelView: View {
     enum Pedal { case gas, brake }
     
     private func sendPedal(_ pedal: Pedal, down: Bool) {
-        hapticTap()
+        if down {
+            if appSettings.vibrationFeedback {
+                hapticTap(strength: appSettings.hapticStrength)
+            }
+            if appSettings.soundEffects {
+                AudioServicesPlaySystemSound(1104)
+            }
+        }
+
         switch pedal {
         case .gas:
             mc.send(down ? .gpDown(.r2) : .gpUp(.r2))
@@ -235,13 +244,28 @@ struct RaceWheelView: View {
         }
     }
     
-    private func hapticTap() {
+    private func hapticTap(strength: String = "Medium") {
         guard let engine else { return }
+
+        let intensity: Float
+        let sharpness: Float
+        switch strength.lowercased() {
+        case "light":
+            intensity = 0.3
+            sharpness = 0.3
+        case "heavy":
+            intensity = 1.0
+            sharpness = 0.9
+        default: // medium
+            intensity = 0.8
+            sharpness = 0.7
+        }
+
         let sharp = CHHapticEvent(
             eventType: .hapticTransient,
             parameters: [
-                CHHapticEventParameter(parameterID: .hapticSharpness, value: 0.7),
-                CHHapticEventParameter(parameterID: .hapticIntensity, value: 0.9)
+                CHHapticEventParameter(parameterID: .hapticSharpness, value: sharpness),
+                CHHapticEventParameter(parameterID: .hapticIntensity, value: intensity)
             ],
             relativeTime: 0
         )

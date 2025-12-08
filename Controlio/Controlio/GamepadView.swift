@@ -8,6 +8,7 @@
 import SwiftUI
 import CoreHaptics
 import MultipeerConnectivity
+import AudioToolbox
 
 struct GamepadView: View {
     @ObservedObject var mc: MCManager
@@ -272,7 +273,15 @@ struct GamepadView: View {
     private func sendButton(_ b: GPButton, _ down: Bool) {
         let keyHint = appSettings.keybind(for: b.settingsKey)
         mc.send(down ? .gpDown(b, ht: keyHint) : .gpUp(b, ht: keyHint))
-        hapticTap()
+        
+        if down {
+            if appSettings.vibrationFeedback {
+                hapticTap(strength: appSettings.hapticStrength)
+            }
+            if appSettings.soundEffects {
+                AudioServicesPlaySystemSound(1104)
+            }
+        }
     }
     
     private func sendStick(id: Int, x: CGFloat, y: CGFloat, lastSent: inout Date) {
@@ -350,13 +359,29 @@ struct GamepadView: View {
         }
     }
     
-    private func hapticTap() {
+    private func hapticTap(strength: String = "Medium") {
         guard let engine else { return }
+        
+        // Map string to intensity
+        let intensity: Float
+        let sharpness: Float
+        switch strength.lowercased() {
+        case "light":
+            intensity = 0.3
+            sharpness = 0.3
+        case "heavy":
+            intensity = 1.0
+            sharpness = 0.9
+        default: // medium
+            intensity = 0.8
+            sharpness = 0.6
+        }
+
         let sharp = CHHapticEvent(
             eventType: .hapticTransient,
             parameters: [
-                CHHapticEventParameter(parameterID: .hapticSharpness, value: 0.6),
-                CHHapticEventParameter(parameterID: .hapticIntensity, value: 0.8)
+                CHHapticEventParameter(parameterID: .hapticSharpness, value: sharpness),
+                CHHapticEventParameter(parameterID: .hapticIntensity, value: intensity)
             ],
             relativeTime: 0
         )
