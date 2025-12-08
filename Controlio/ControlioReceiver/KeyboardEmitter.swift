@@ -25,6 +25,9 @@ final class KeyboardEmitter {
     private var repeatTimers: [CGKeyCode: DispatchSourceTimer] = [:]
     private var repeatTokens: [CGKeyCode: UInt64] = [:]
     
+    private var buttonHeldKeys: Set<CGKeyCode> = []
+    private var stickHeldKeys: Set<CGKeyCode> = []
+    
     private let timerQueue = DispatchQueue(label: "controlio.keyrepeat.timers", qos: .userInteractive)
     
     private func postKey(_ keyCode: CGKeyCode, down: Bool, isRepeat: Bool) {
@@ -122,33 +125,48 @@ final class KeyboardEmitter {
     }
 
     func pressKey(_ keyCode: CGKeyCode, isDown: Bool, repeatable: Bool = true) {
-        sendKey(keyCode, down: isDown, repeatable: repeatable)
+        sendKeyFromButton(keyCode, down: isDown, repeatable: repeatable)
     }
 
-    func smoothLeftStick(x: CGFloat, y: CGFloat, threshold: CGFloat = 0.15) {
-        let left: CGKeyCode  = 0
-        let right: CGKeyCode = 2
-        let up: CGKeyCode    = 13
-        let down: CGKeyCode  = 1
+    private func sendKeyFromButton(_ keyCode: CGKeyCode, down: Bool, repeatable: Bool) {
+        os_unfair_lock_lock(&lock)
+        if down {
+            buttonHeldKeys.insert(keyCode)
+        } else {
+            buttonHeldKeys.remove(keyCode)
+        }
+        let shouldBeDown = buttonHeldKeys.contains(keyCode) || stickHeldKeys.contains(keyCode)
+        os_unfair_lock_unlock(&lock)
+        
+        sendKey(keyCode, down: shouldBeDown, repeatable: repeatable)
+    }
 
+    private func sendKeyFromStick(_ keyCode: CGKeyCode, down: Bool) {
+        os_unfair_lock_lock(&lock)
+        if down {
+            stickHeldKeys.insert(keyCode)
+        } else {
+            stickHeldKeys.remove(keyCode)
+        }
+        let shouldBeDown = buttonHeldKeys.contains(keyCode) || stickHeldKeys.contains(keyCode)
+        os_unfair_lock_unlock(&lock)
+        
+        sendKey(keyCode, down: shouldBeDown, repeatable: false)
+    }
+
+    func smoothLeftStick(x: CGFloat, y: CGFloat, threshold: CGFloat = 0.15,
+                         leftKey: CGKeyCode = 0, rightKey: CGKeyCode = 2,
+                         upKey: CGKeyCode = 13, downKey: CGKeyCode = 1) {
         // Horizontal
         let leftOn  = x < -threshold
         let rightOn = x >  threshold
-        sendKey(left,  down: leftOn,  repeatable: false)
-        sendKey(right, down: rightOn, repeatable: false)
-        if !leftOn && !rightOn {
-            sendKey(left,  down: false, repeatable: false)
-            sendKey(right, down: false, repeatable: false)
-        }
+        sendKeyFromStick(leftKey,  down: leftOn)
+        sendKeyFromStick(rightKey, down: rightOn)
 
         let downOn = y >  threshold
         let upOn   = y < -threshold
-        sendKey(down, down: downOn, repeatable: false)
-        sendKey(up,   down: upOn,   repeatable: false)
-        if !upOn && !downOn {
-            sendKey(up,   down: false, repeatable: false)
-            sendKey(down, down: false, repeatable: false)
-        }
+        sendKeyFromStick(downKey, down: downOn)
+        sendKeyFromStick(upKey,   down: upOn)
     }
 
     func dpad(x: Int, y: Int) {
@@ -182,24 +200,19 @@ final class KeyboardEmitter {
         sendKey(arrowKeyCode(dir), down: isDown, repeatable: false)
     }
 
-    func smoothRightStickAsArrows(x: CGFloat, y: CGFloat, threshold: CGFloat = 0.15) {
+    func smoothRightStickAsArrows(x: CGFloat, y: CGFloat, threshold: CGFloat = 0.15,
+                                   leftKey: CGKeyCode = 123, rightKey: CGKeyCode = 124,
+                                   upKey: CGKeyCode = 126, downKey: CGKeyCode = 125) {
+        // Horizontal
         let leftOn  = x < -threshold
         let rightOn = x >  threshold
-        arrow(.left,  isDown: leftOn)
-        arrow(.right, isDown: rightOn)
-        if !leftOn && !rightOn {
-            arrow(.left,  isDown: false)
-            arrow(.right, isDown: false)
-        }
+        sendKeyFromStick(leftKey,  down: leftOn)
+        sendKeyFromStick(rightKey, down: rightOn)
 
         let downOn = y >  threshold
         let upOn   = y < -threshold
-        arrow(.down, isDown: downOn)
-        arrow(.up,   isDown: upOn)
-        if !upOn && !downOn {
-            arrow(.up,   isDown: false)
-            arrow(.down, isDown: false)
-        }
+        sendKeyFromStick(downKey, down: downOn)
+        sendKeyFromStick(upKey,   down: upOn)
     }
 
     func steeringRelease() {

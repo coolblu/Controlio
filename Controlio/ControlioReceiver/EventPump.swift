@@ -21,6 +21,9 @@ final class EventPump {
     private var ax0Active = false
     private var ax1Active = false
     
+    private var ax0Keys: (up: CGKeyCode, down: CGKeyCode, left: CGKeyCode, right: CGKeyCode) = (13, 1, 0, 2)
+    private var ax1Keys: (up: CGKeyCode, down: CGKeyCode, left: CGKeyCode, right: CGKeyCode) = (126, 125, 123, 124)
+    
     private let axTimeout: CFAbsoluteTime = 0.35
     private let axThreshold: CGFloat = 0.15
     
@@ -84,14 +87,31 @@ final class EventPump {
                 let nx = CGFloat(e.p.k ?? 0) / 1000.0
                 let ny = CGFloat(e.p.v ?? 0) / 1000.0
                 
+                let upKey = e.p.dx.map { CGKeyCode($0) }
+                let downKey = e.p.dy.map { CGKeyCode($0) }
+                let leftKey = e.p.s.map { CGKeyCode($0) }
+                let rightKey = e.p.ht.map { CGKeyCode($0) }
+                
                 if id == 0 {
                     self.lastAX0Time = CFAbsoluteTimeGetCurrent()
                     self.ax0Active = (abs(nx) > self.axThreshold) || (abs(ny) > self.axThreshold)
-                    KeyboardEmitter.shared.smoothLeftStick(x: nx, y: ny, threshold: self.axThreshold)
+                    let keys = (up: upKey ?? 13, down: downKey ?? 1, left: leftKey ?? 0, right: rightKey ?? 2)
+                    self.ax0Keys = keys
+                    KeyboardEmitter.shared.smoothLeftStick(
+                        x: nx, y: ny, threshold: self.axThreshold,
+                        leftKey: keys.left, rightKey: keys.right,
+                        upKey: keys.up, downKey: keys.down
+                    )
                 } else if id == 1 {
                     self.lastAX1Time = CFAbsoluteTimeGetCurrent()
                     self.ax1Active = (abs(nx) > self.axThreshold) || (abs(ny) > self.axThreshold)
-                    KeyboardEmitter.shared.smoothRightStickAsArrows(x: nx, y: ny, threshold: self.axThreshold)
+                    let keys = (up: upKey ?? 126, down: downKey ?? 125, left: leftKey ?? 123, right: rightKey ?? 124)
+                    self.ax1Keys = keys
+                    KeyboardEmitter.shared.smoothRightStickAsArrows(
+                        x: nx, y: ny, threshold: self.axThreshold,
+                        leftKey: keys.left, rightKey: keys.right,
+                        upKey: keys.up, downKey: keys.down
+                    )
                 }
                 
             case .rw:
@@ -128,11 +148,19 @@ final class EventPump {
 
         if ax0Active && (now - lastAX0Time) > axTimeout {
             ax0Active = false
-            KeyboardEmitter.shared.smoothLeftStick(x: 0, y: 0, threshold: axThreshold)
+            KeyboardEmitter.shared.smoothLeftStick(
+                x: 0, y: 0, threshold: axThreshold,
+                leftKey: ax0Keys.left, rightKey: ax0Keys.right,
+                upKey: ax0Keys.up, downKey: ax0Keys.down
+            )
         }
         if ax1Active && (now - lastAX1Time) > axTimeout {
             ax1Active = false
-            KeyboardEmitter.shared.smoothRightStickAsArrows(x: 0, y: 0, threshold: axThreshold)
+            KeyboardEmitter.shared.smoothRightStickAsArrows(
+                x: 0, y: 0, threshold: axThreshold,
+                leftKey: ax1Keys.left, rightKey: ax1Keys.right,
+                upKey: ax1Keys.up, downKey: ax1Keys.down
+            )
         }
         if rwActive && (now - lastRWTime) > axTimeout {
             rwActive = false

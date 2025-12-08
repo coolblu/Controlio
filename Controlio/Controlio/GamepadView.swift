@@ -297,7 +297,16 @@ struct GamepadView: View {
         }
         lastSent = now
 
-        mc.send(.ax(id: id, x: sx, y: sy), reliable: false)
+        // Get stick keybinds
+        let prefix = id == 0 ? "leftStick" : "rightStick"
+        let upKey = appSettings.keybind(for: "\(prefix)Up")
+        let downKey = appSettings.keybind(for: "\(prefix)Down")
+        let leftKey = appSettings.keybind(for: "\(prefix)Left")
+        let rightKey = appSettings.keybind(for: "\(prefix)Right")
+
+        mc.send(.ax(id: id, x: sx, y: sy,
+                    upKey: upKey, downKey: downKey,
+                    leftKey: leftKey, rightKey: rightKey), reliable: false)
     }
     
     private func clampDeadzone(_ v: CGFloat, dz: CGFloat) -> CGFloat {
