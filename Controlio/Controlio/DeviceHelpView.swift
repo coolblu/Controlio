@@ -217,6 +217,10 @@ private enum DeviceHelpContent {
                         detail: t("Pinch in with five fingers to send Cmd+Q (close app).")
                     )
                 ],
+                callout: DeviceHelpCallout(
+                    message: t("After using a gesture, a normal tap should remain a left click. If clicks feel off, tap the Mac trackpad once to reset."),
+                    style: .info
+                )
             ),
             DeviceHelpSection(
                 title: t("Gamepad Usage"),
