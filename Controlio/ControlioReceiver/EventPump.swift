@@ -8,6 +8,7 @@
 // EventPump.swift (macOS)
 import Foundation
 import CoreGraphics
+import Carbon.HIToolbox
 
 final class EventPump {
     static let shared = EventPump()
