@@ -101,14 +101,24 @@ final class MacInput {
     }
         
     func keyCombo(key: Int, modifiers: CGEventFlags) {
-        let keyDown = CGEvent(keyboardEventSource: nil, virtualKey: CGKeyCode(key), keyDown: true)
-        let keyUp = CGEvent(keyboardEventSource: nil, virtualKey: CGKeyCode(key), keyDown: false)
+        let modifierKeyCodes = self.modifierKeyCodes(for: modifiers)
         
-        keyDown?.flags = modifiers
-        keyUp?.flags = modifiers
+        for code in modifierKeyCodes {
+            CGEvent(keyboardEventSource: nil, virtualKey: code, keyDown: true)?
+                .post(tap: .cghidEventTap)
+        }
         
-        keyDown?.post(tap: .cghidEventTap)
-        keyUp?.post(tap: .cghidEventTap)
+        CGEvent(keyboardEventSource: nil, virtualKey: CGKeyCode(key), keyDown: true)?
+            .withFlags(modifiers)
+            .post(tap: .cghidEventTap)
+        CGEvent(keyboardEventSource: nil, virtualKey: CGKeyCode(key), keyDown: false)?
+            .withFlags(modifiers)
+            .post(tap: .cghidEventTap)
+        
+        for code in modifierKeyCodes.reversed() {
+            CGEvent(keyboardEventSource: nil, virtualKey: code, keyDown: false)?
+                .post(tap: .cghidEventTap)
+        }
     }
     
     func keyPress(key: Int) {
@@ -160,5 +170,34 @@ final class MacInput {
         let returnEvt = CGEvent(mouseEventSource: nil, mouseType: .mouseMoved,
                                 mouseCursorPosition: currentPos, mouseButton: .left)
         returnEvt?.post(tap: .cghidEventTap)
+    }
+    
+    func releaseAllModifiers() {
+        let modifiers: [CGKeyCode] = [
+            CGKeyCode(kVK_Command),
+            CGKeyCode(kVK_Control),
+            CGKeyCode(kVK_Option),
+            CGKeyCode(kVK_Shift)
+        ]
+        for code in modifiers {
+            CGEvent(keyboardEventSource: nil, virtualKey: code, keyDown: false)?
+                .post(tap: .cghidEventTap)
+        }
+    }
+    
+    private func modifierKeyCodes(for flags: CGEventFlags) -> [CGKeyCode] {
+        var codes: [CGKeyCode] = []
+        if flags.contains(.maskCommand) { codes.append(CGKeyCode(kVK_Command)) }
+        if flags.contains(.maskControl) { codes.append(CGKeyCode(kVK_Control)) }
+        if flags.contains(.maskAlternate) { codes.append(CGKeyCode(kVK_Option)) }
+        if flags.contains(.maskShift) { codes.append(CGKeyCode(kVK_Shift)) }
+        return codes
+    }
+}
+
+private extension CGEvent {
+    func withFlags(_ flags: CGEventFlags) -> CGEvent {
+        self.flags = flags
+        return self
     }
 }
