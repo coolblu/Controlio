@@ -34,6 +34,7 @@ final class EventPump {
     private var rwHoldThreshold: CGFloat = 0.90
     private var rwTapRate: CGFloat = 0.05
     private var rwActive = false
+    private var rwEverUsed = false
     private var lastRWTime: CFAbsoluteTime = 0
 
     private var timer: DispatchSourceTimer?
@@ -118,6 +119,7 @@ final class EventPump {
                 let steer = CGFloat(e.p.c ?? 0) / 1000.0
                 self.currentSteering = steer
                 self.lastRWTime = CFAbsoluteTimeGetCurrent()
+                self.rwEverUsed = true
                 
                 if let dz = e.p.dz { self.rwDeadzone = CGFloat(dz) / 100.0 }
                 if let ht = e.p.ht { self.rwHoldThreshold = CGFloat(ht) / 100.0 }
@@ -169,7 +171,9 @@ final class EventPump {
             KeyboardEmitter.shared.steeringRelease()
         }
         
-        processRaceWheelSteering()
+        if rwEverUsed {
+            processRaceWheelSteering()
+        }
     }
     
     private func processRaceWheelSteering() {
