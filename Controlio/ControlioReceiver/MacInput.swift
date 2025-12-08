@@ -35,7 +35,8 @@ final class MacInput {
             let y  = (e.p.v ?? 0)
             print("ax:", "id:", id, "x:", x, "y:", y)
         case .gs:
-            // reserved; ignore for now
+            break
+        case .rw:
             break
         }
     }

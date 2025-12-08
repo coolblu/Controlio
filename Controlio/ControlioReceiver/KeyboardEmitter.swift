@@ -197,6 +197,31 @@ final class KeyboardEmitter {
             arrow(.down, isDown: false)
         }
     }
+
+    func steeringRelease() {
+        arrow(.left, isDown: false)
+        arrow(.right, isDown: false)
+    }
+    
+    func steeringHold(left: Bool) {
+        if left {
+            arrow(.left, isDown: true)
+            arrow(.right, isDown: false)
+        } else {
+            arrow(.left, isDown: false)
+            arrow(.right, isDown: true)
+        }
+    }
+    
+    func steeringTap(left: Bool) {
+        if left {
+            arrow(.left, isDown: true)
+            arrow(.right, isDown: false)
+        } else {
+            arrow(.left, isDown: false)
+            arrow(.right, isDown: true)
+        }
+    }
 }
 
 enum GamepadKeyMap {
@@ -209,6 +234,7 @@ enum GamepadKeyMap {
         // Shoulders
         .l1: 12, // Q
         .r1: 14, // E
+        .r2: 13, // W (gas pedal - accelerate/forward)
         // Start/Select
         .select: 51, // Delete
         .start: 53 // Escape

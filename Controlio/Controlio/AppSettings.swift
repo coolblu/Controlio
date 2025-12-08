@@ -51,6 +51,26 @@ final class AppSettings: ObservableObject {
         didSet { defaults.set(verticalSensitivity, forKey: "verticalSensitivity") }
     }
 
+    @Published var steeringSensitivity: Double {
+        didSet { defaults.set(steeringSensitivity, forKey: "steeringSensitivity") }
+    }
+    @Published var steeringDeadzone: Double {
+        didSet { defaults.set(steeringDeadzone, forKey: "steeringDeadzone") }
+    }
+    @Published var invertSteering: Bool {
+        didSet { defaults.set(invertSteering, forKey: "invertSteering") }
+    }
+
+    @Published var raceWheelReceiverDeadzone: Double {
+        didSet { defaults.set(raceWheelReceiverDeadzone, forKey: "raceWheelReceiverDeadzone") }
+    }
+    @Published var raceWheelHoldThreshold: Double {
+        didSet { defaults.set(raceWheelHoldThreshold, forKey: "raceWheelHoldThreshold") }
+    }
+    @Published var raceWheelTapRate: Double {
+        didSet { defaults.set(raceWheelTapRate, forKey: "raceWheelTapRate") }
+    }
+
     let languageDidChange = PassthroughSubject<Void, Never>()
 
     private let defaults = UserDefaults.standard
@@ -69,6 +89,14 @@ final class AppSettings: ObservableObject {
         invertVertical = defaults.object(forKey: "invertVertical") as? Bool ?? false
         horizontalSensitivity = defaults.object(forKey: "horizontalSensitivity") as? Double ?? 1.0
         verticalSensitivity = defaults.object(forKey: "verticalSensitivity") as? Double ?? 1.0
+
+        // Race Wheel settings
+        steeringSensitivity = defaults.object(forKey: "steeringSensitivity") as? Double ?? 1.0
+        steeringDeadzone = defaults.object(forKey: "steeringDeadzone") as? Double ?? 0.08
+        invertSteering = defaults.object(forKey: "invertSteering") as? Bool ?? false
+        raceWheelReceiverDeadzone = defaults.object(forKey: "raceWheelReceiverDeadzone") as? Double ?? 0.40
+        raceWheelHoldThreshold = defaults.object(forKey: "raceWheelHoldThreshold") as? Double ?? 0.90
+        raceWheelTapRate = defaults.object(forKey: "raceWheelTapRate") as? Double ?? 0.05
 
         // Validate language
         let validLanguages = ["English", "French", "Spanish"]
@@ -98,6 +126,15 @@ final class AppSettings: ObservableObject {
         invertVertical = false
         horizontalSensitivity = 1.0
         verticalSensitivity = 1.0
+    }
+
+    func resetRaceWheelDefaults() {
+        steeringSensitivity = 1.0
+        steeringDeadzone = 0.08
+        invertSteering = false
+        raceWheelReceiverDeadzone = 0.40
+        raceWheelHoldThreshold = 0.90
+        raceWheelTapRate = 0.05
     }
 
     // Computed bundle for localization
