@@ -114,7 +114,7 @@ struct RaceWheelView: View {
             VStack {
                 Spacer()
                 PedalButton(
-                    label: "BRAKE",
+                    label: NSLocalizedString("BRAKE", bundle: appSettings.bundle, comment: ""),
                     color: .red,
                     isPressed: $brakePressed,
                     height: pedalHeight
@@ -145,7 +145,7 @@ struct RaceWheelView: View {
             VStack {
                 Spacer()
                 PedalButton(
-                    label: "GAS",
+                    label: NSLocalizedString("GAS", bundle: appSettings.bundle, comment: ""),
                     color: .green,
                     isPressed: $gasPressed,
                     height: pedalHeight
