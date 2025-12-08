@@ -160,7 +160,6 @@ class DeviceControllerViewModel: ObservableObject {
     }
 
     private func setupBindings() {
-        // Monitor discovered peers
         mcManager.$discoveredPeers
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
@@ -168,7 +167,6 @@ class DeviceControllerViewModel: ObservableObject {
             }
             .store(in: &cancellables)
 
-        // Monitor connection state
         mcManager.$sessionState
             .receive(on: DispatchQueue.main)
             .sink { [weak self] state in
@@ -176,7 +174,6 @@ class DeviceControllerViewModel: ObservableObject {
             }
             .store(in: &cancellables)
 
-        // Monitor connected peer
         mcManager.$connectedPeer
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
@@ -314,7 +311,6 @@ class DeviceControllerViewModel: ObservableObject {
         // Start browsing
         mcManager.startBrowsingIfNeeded()
 
-        // Stop scanning after 5 seconds
         scanTimer?.invalidate()
         scanTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false) { [weak self] _ in
             Task { @MainActor in
@@ -353,12 +349,6 @@ class DeviceControllerViewModel: ObservableObject {
     }
 
     func startBrowsing() {
-        // Start browsing for devices
         mcManager.startBrowsingIfNeeded()
-    }
-
-    func stopBrowsing() {
-        // Stop browsing to save battery
-        mcManager.stopBrowsing()
     }
 }

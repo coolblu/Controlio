@@ -110,7 +110,6 @@ struct TrackpadSettingsView: View {
                     }
                 }
             }
-            // 👇 These are now clearly *inside* the NavigationStack content
             .navigationDestination(isPresented: $showDeviceController) {
                 DeviceControllerView(onNavigateHome: onNavigateHome, mcManager: mcManager)
             }

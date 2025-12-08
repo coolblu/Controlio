@@ -2,6 +2,7 @@
 //  DisableSwipeBack.swift
 //  Controlio
 //
+//  Created by Avis Luong on 12/7/25.
 //
 
 import SwiftUI
@@ -26,7 +27,6 @@ private class DisableSwipeBackController: UIViewController {
     }
 }
 
-/// View modifier for easier application
 extension View {
     func disableSwipeBack() -> some View {
         self.background(
