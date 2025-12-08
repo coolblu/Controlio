@@ -14,8 +14,8 @@ extension Event {
     static func sc(dx: Int, dy: Int) -> Event {
         Event(t: .sc, p: .init(dx: dx, dy: dy, c: nil, s: nil, k: nil, v: nil, dz: nil, ht: nil, tr: nil))
     }
-    static func bt(c: Int, s: Int) -> Event {
-        Event(t: .bt, p: .init(dx: nil, dy: nil, c: c, s: s, k: nil, v: nil, dz: nil, ht: nil, tr: nil))
+    static func bt(c: Int, s: Int, ht: Int? = nil) -> Event {
+        Event(t: .bt, p: .init(dx: nil, dy: nil, c: c, s: s, k: nil, v: nil, dz: nil, ht: ht, tr: nil))
     }
     static func ax(id: Int, x: Int, y: Int) -> Event {
         Event(t: .ax, p: .init(dx: nil, dy: nil, c: id, s: nil, k: x, v: y, dz: nil, ht: nil, tr: nil))

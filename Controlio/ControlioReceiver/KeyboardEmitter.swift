@@ -121,6 +121,10 @@ final class KeyboardEmitter {
         sendKey(keyCode, down: isDown, repeatable: repeatable)
     }
 
+    func pressKey(_ keyCode: CGKeyCode, isDown: Bool, repeatable: Bool = true) {
+        sendKey(keyCode, down: isDown, repeatable: repeatable)
+    }
+
     func smoothLeftStick(x: CGFloat, y: CGFloat, threshold: CGFloat = 0.15) {
         let left: CGKeyCode  = 0
         let right: CGKeyCode = 2

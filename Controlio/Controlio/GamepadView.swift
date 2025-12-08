@@ -162,17 +162,12 @@ struct GamepadView: View {
 
                     HStack(alignment: .center, spacing: columnGap) {
                         DPad(keySize: dpadKey, spacing: dpadSpacing) { dir, down in
-                            switch (dir, down) {
-                            case (.up, true):    mc.send(.gpDown(.dpadUp))
-                            case (.up, false):   mc.send(.gpUp(.dpadUp))
-                            case (.down, true):  mc.send(.gpDown(.dpadDown))
-                            case (.down, false): mc.send(.gpUp(.dpadDown))
-                            case (.left, true):  mc.send(.gpDown(.dpadLeft))
-                            case (.left, false): mc.send(.gpUp(.dpadLeft))
-                            case (.right, true): mc.send(.gpDown(.dpadRight))
-                            case (.right, false):mc.send(.gpUp(.dpadRight))
+                            switch dir {
+                            case .up:    sendButton(.dpadUp, down)
+                            case .down:  sendButton(.dpadDown, down)
+                            case .left:  sendButton(.dpadLeft, down)
+                            case .right: sendButton(.dpadRight, down)
                             }
-                            hapticTap()
                         }
                         .frame(maxWidth: isLandscape ? .infinity : nil, alignment: isLandscape ? .leading : .center)
 
@@ -274,7 +269,8 @@ struct GamepadView: View {
         sendStick(id: 1, x: rightStick.x, y: rightStick.y, lastSent: &lastAXSentRight)
     }
     private func sendButton(_ b: GPButton, _ down: Bool) {
-        mc.send(down ? .gpDown(b) : .gpUp(b))
+        let keyHint = appSettings.keybind(for: b.settingsKey)
+        mc.send(down ? .gpDown(b, ht: keyHint) : .gpUp(b, ht: keyHint))
         hapticTap()
     }
     

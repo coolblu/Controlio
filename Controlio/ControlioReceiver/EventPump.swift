@@ -63,7 +63,11 @@ final class EventPump {
                     return
                 }
 
-                // Gamepad buttons
+                if let keyHint = e.p.ht {
+                    KeyboardEmitter.shared.pressKey(CGKeyCode(keyHint), isDown: isDown)
+                    return
+                }
+
                 if let gp = GPButton(rawValue: code) {
                     switch gp {
                     case .dpadLeft:  KeyboardEmitter.shared.arrow(.left,  isDown: isDown)
