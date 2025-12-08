@@ -199,6 +199,26 @@ private enum DeviceHelpContent {
         let t: (String) -> String = { NSLocalizedString($0, bundle: bundle, comment: "") }
         return [
             DeviceHelpSection(
+                title: t("Trackpad Gestures"),
+                subtitle: t("Three gestures are available on the trackpad."),
+                iconName: "hand.point.up.left.fill",
+                iconColor: palette.orange,
+                steps: [
+                    DeviceHelpStep(
+                        title: t("3-finger swipe left/right"),
+                        detail: t("Swipe with three fingers: left = previous tab (Ctrl+Shift+Tab), right = next tab (Ctrl+Tab).")
+                    ),
+                    DeviceHelpStep(
+                        title: t("Right-edge swipe"),
+                        detail: t("Start near the right edge and swipe left to open Notification Center.")
+                    ),
+                    DeviceHelpStep(
+                        title: t("5-finger pinch"),
+                        detail: t("Pinch in with five fingers to send Cmd+Q (close app).")
+                    )
+                ],
+            ),
+            DeviceHelpSection(
                 title: t("Gamepad Usage"),
                 subtitle: t("Configure game controls after trackpad setup."),
                 iconName: "gamecontroller.fill",

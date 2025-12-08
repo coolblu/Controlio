@@ -84,6 +84,11 @@ Trackpad Usage:
 - Make sure to enable Bluetooth on both devices
 - Login and access the trackpad screen and allow Local Network
 
+### Trackpad Gestures
+- 3-finger swipe left/right: previous/next tab (Ctrl+Shift+Tab / Ctrl+Tab)
+- Right-edge swipe: open Notification Center
+- 5-finger pinch: Cmd+Q (close app)
+
 Gamepad Usage:
 - All setup instructions same as trackpad
 - When using, if needed, remap game keybinds with gamepad inputs
