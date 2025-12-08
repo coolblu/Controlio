@@ -141,8 +141,8 @@ private enum DeviceHelpContent {
         let t: (String) -> String = { NSLocalizedString($0, bundle: bundle, comment: "") }
         return [
             DeviceHelpSection(
-                title: t("Trackpad Usage"),
-                subtitle: t("Set up both Mac receiver and iPhone app for trackpad control."),
+                title: t("Controller Usage"),
+                subtitle: t("Set up both Mac receiver and iPhone app for control."),
                 iconName: "hand.tap.fill",
                 iconColor: palette.orange,
                 steps: [
@@ -184,11 +184,11 @@ private enum DeviceHelpContent {
                     ),
                     DeviceHelpStep(
                         title: t("Finalize trackpad access"),
-                        detail: t("Run Controlio again, make sure Bluetooth is on for both devices, sign in, open the trackpad screen, and allow Local Network.")
+                        detail: t("Run Controlio again, make sure Bluetooth is on for both devices, sign in, open the controller screen, and allow Local Network.")
                     )
                 ],
                 callout: DeviceHelpCallout(
-                    message: t("Leave ControlioReceiver open in the background so the trackpad reconnects instantly whenever you launch Controlio."),
+                    message: t("Leave ControlioReceiver open in the background so the controller reconnects instantly whenever you launch Controlio."),
                     style: .success
                 )
             )
