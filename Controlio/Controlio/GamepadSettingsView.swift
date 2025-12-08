@@ -128,6 +128,44 @@ struct GamepadSettingsView: View {
                     .listRowBackground(appSettings.cardColor)
                 }
 
+                // Keybinds Section
+                Section(
+                    header: Text(
+                        NSLocalizedString(
+                            "Button Keybinds",
+                            bundle: appSettings.bundle,
+                            comment: "Header for the section controlling button to key mappings"
+                        )
+                    )
+                    .foregroundColor(appSettings.primaryText)
+                ) {
+                    ForEach(GPButton.configurableButtons, id: \.rawValue) { button in
+                        KeybindRow(button: button)
+                    }
+                }
+                .listRowBackground(appSettings.cardColor)
+
+                Section(
+                    header: Text(
+                        NSLocalizedString(
+                            "Stick Keybinds",
+                            bundle: appSettings.bundle,
+                            comment: "Header for the section controlling analog stick key mappings"
+                        )
+                    )
+                    .foregroundColor(appSettings.primaryText)
+                ) {
+                    StickKeybindRow(labelKey: "Left Stick Up", settingsKey: "leftStickUp")
+                    StickKeybindRow(labelKey: "Left Stick Down", settingsKey: "leftStickDown")
+                    StickKeybindRow(labelKey: "Left Stick Left", settingsKey: "leftStickLeft")
+                    StickKeybindRow(labelKey: "Left Stick Right", settingsKey: "leftStickRight")
+                    StickKeybindRow(labelKey: "Right Stick Up", settingsKey: "rightStickUp")
+                    StickKeybindRow(labelKey: "Right Stick Down", settingsKey: "rightStickDown")
+                    StickKeybindRow(labelKey: "Right Stick Left", settingsKey: "rightStickLeft")
+                    StickKeybindRow(labelKey: "Right Stick Right", settingsKey: "rightStickRight")
+                }
+                .listRowBackground(appSettings.cardColor)
+
                 // Reset Section
                 Section(
                     header: Text(
@@ -215,6 +253,85 @@ struct GamepadSettingsView: View {
                 // Initialize local sliders from appSettings
                 localHorizontalSensitivity = appSettings.horizontalSensitivity
                 localVerticalSensitivity = appSettings.verticalSensitivity
+            }
+        }
+    }
+}
+
+private struct KeybindRow: View {
+    let button: GPButton
+    @EnvironmentObject var appSettings: AppSettings
+
+    var body: some View {
+        HStack {
+            Text(button.displayName)
+                .foregroundColor(appSettings.primaryText)
+            Spacer()
+            KeyPicker(
+                selectedKey: Binding(
+                    get: { appSettings.keybind(for: button.settingsKey) },
+                    set: { appSettings.setKeybind($0, for: button.settingsKey) }
+                )
+            )
+        }
+        .listRowBackground(appSettings.cardColor)
+    }
+}
+
+private struct StickKeybindRow: View {
+    let labelKey: String
+    let settingsKey: String
+    @EnvironmentObject var appSettings: AppSettings
+
+    var body: some View {
+        HStack {
+            Text(NSLocalizedString(labelKey, bundle: appSettings.bundle, comment: "Stick keybind label"))
+                .foregroundColor(appSettings.primaryText)
+            Spacer()
+            KeyPicker(
+                selectedKey: Binding(
+                    get: { appSettings.keybind(for: settingsKey) },
+                    set: { appSettings.setKeybind($0, for: settingsKey) }
+                )
+            )
+        }
+        .listRowBackground(appSettings.cardColor)
+    }
+}
+
+private struct KeyPicker: View {
+    @Binding var selectedKey: Int
+    @EnvironmentObject var appSettings: AppSettings
+
+    var body: some View {
+        Menu {
+            Section(NSLocalizedString("Letters", bundle: appSettings.bundle, comment: "Menu section header for letter keys")) {
+                ForEach(KeyCode.letters) { key in
+                    Button(key.displayName) { selectedKey = key.rawValue }
+                }
+            }
+            Section(NSLocalizedString("Numbers", bundle: appSettings.bundle, comment: "Menu section header for number keys")) {
+                ForEach(KeyCode.numbers) { key in
+                    Button(key.displayName) { selectedKey = key.rawValue }
+                }
+            }
+            Section(NSLocalizedString("Special", bundle: appSettings.bundle, comment: "Menu section header for special keys")) {
+                ForEach(KeyCode.special) { key in
+                    Button(key.displayName) { selectedKey = key.rawValue }
+                }
+            }
+            Section(NSLocalizedString("Arrows", bundle: appSettings.bundle, comment: "Menu section header for arrow keys")) {
+                ForEach(KeyCode.arrows) { key in
+                    Button(key.displayName) { selectedKey = key.rawValue }
+                }
+            }
+        } label: {
+            HStack(spacing: 4) {
+                Text(KeyCode.displayName(for: selectedKey))
+                    .foregroundColor(appSettings.primaryButton)
+                Image(systemName: "chevron.up.chevron.down")
+                    .font(.caption)
+                    .foregroundColor(appSettings.secondaryText)
             }
         }
     }
