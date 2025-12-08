@@ -16,6 +16,9 @@ struct RaceWheelView: View {
     
     var onNavigateHome: (() -> Void)? = nil
     
+    // Settings state
+    @State private var showSettings = false
+
     // Motion manager
     @StateObject private var motion = MotionManager()
     
@@ -68,13 +71,35 @@ struct RaceWheelView: View {
         }
         .navigationBarItems(
             trailing:
-                ConnectionIndicator(
-                    statusText: ui(for: mc.sessionState).0,
-                    dotColor: ui(for: mc.sessionState).1
-                )
-                .environmentObject(appSettings)
+                HStack(spacing: 12) {
+                    ConnectionIndicator(
+                        statusText: ui(for: mc.sessionState).0,
+                        dotColor: ui(for: mc.sessionState).1
+                    )
+                    .environmentObject(appSettings)
+
+                    Button(action: { showSettings = true }) {
+                        Image(systemName: "gearshape.fill")
+                            .font(.system(size: 14))
+                            .foregroundColor(appSettings.primaryButton)
+                            .padding(8)
+                            .background(appSettings.cardColor)
+                            .clipShape(Circle())
+                            .shadow(color: appSettings.shadowColor, radius: 4, y: 2)
+                            .overlay(
+                                Circle()
+                                    .stroke(appSettings.strokeColor, lineWidth: 1)
+                            )
+                    }
+                }
         )
         .navigationBarTitleDisplayMode(.inline)
+        .sheet(isPresented: $showSettings) {
+            RaceWheelSettingsView(
+                onNavigateHome: onNavigateHome,
+                mcManager: mc
+            )
+        }
     }
         
     @ViewBuilder
