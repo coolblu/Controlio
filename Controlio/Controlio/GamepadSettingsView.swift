@@ -299,7 +299,7 @@ private struct StickKeybindRow: View {
     }
 }
 
-private struct KeyPicker: View {
+struct KeyPicker: View {
     @Binding var selectedKey: Int
     @EnvironmentObject var appSettings: AppSettings
 

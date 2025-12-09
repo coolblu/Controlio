@@ -133,6 +133,22 @@ struct RaceWheelSettingsView: View {
                     }
                 }
 
+                // Pedal Keybinds
+                Section(
+                    header: Text(
+                        NSLocalizedString(
+                            "Pedal Keybinds",
+                            bundle: appSettings.bundle,
+                            comment: "Header for pedal keybind section"
+                        )
+                    )
+                    .foregroundColor(appSettings.primaryText)
+                ) {
+                    PedalKeybindRow(labelKey: "Gas Pedal", settingsKey: "raceGas")
+                    PedalKeybindRow(labelKey: "Brake Pedal", settingsKey: "raceBrake")
+                }
+                .listRowBackground(appSettings.cardColor)
+
                 // Reset Section
                 Section(
                     header: Text(
@@ -259,6 +275,27 @@ struct RaceWheelSettingsView: View {
                         onCommit()
                     }
                 }
+            )
+        }
+        .listRowBackground(appSettings.cardColor)
+    }
+}
+
+private struct PedalKeybindRow: View {
+    let labelKey: String
+    let settingsKey: String
+    @EnvironmentObject var appSettings: AppSettings
+
+    var body: some View {
+        HStack {
+            Text(NSLocalizedString(labelKey, bundle: appSettings.bundle, comment: "Pedal keybind label"))
+                .foregroundColor(appSettings.primaryText)
+            Spacer()
+            KeyPicker(
+                selectedKey: Binding(
+                    get: { appSettings.keybind(for: settingsKey) },
+                    set: { appSettings.setKeybind($0, for: settingsKey) }
+                )
             )
         }
         .listRowBackground(appSettings.cardColor)

@@ -156,7 +156,9 @@ final class AppSettings: ObservableObject {
         "rightStickUp": 126, // Up Arrow
         "rightStickDown": 125, // Down Arrow
         "rightStickLeft": 123, // Left Arrow
-        "rightStickRight": 124 // Right Arrow
+        "rightStickRight": 124, // Right Arrow
+        "raceGas": 13, // W
+        "raceBrake": 1 // S
     ]
 
     func resetRaceWheelDefaults() {
