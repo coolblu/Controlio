@@ -208,9 +208,11 @@ struct RaceWheelView: View {
 
         switch pedal {
         case .gas:
-            mc.send(down ? .gpDown(.r2) : .gpUp(.r2))
+            let keyHint = appSettings.keybind(for: "raceGas")
+            mc.send(down ? .gpDown(.r2, ht: keyHint) : .gpUp(.r2, ht: keyHint))
         case .brake:
-            mc.send(down ? .gpDown(.l1) : .gpUp(.l1))
+            let keyHint = appSettings.keybind(for: "raceBrake")
+            mc.send(down ? .gpDown(.l1, ht: keyHint) : .gpUp(.l1, ht: keyHint))
         }
     }
         

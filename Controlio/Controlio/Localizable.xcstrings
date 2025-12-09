@@ -261,6 +261,57 @@
         }
       }
     },
+    "Brake Pedal" : {
+      "comment" : "Label for brake pedal keybind",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pedal de Freno"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "P\u00e9dale de frein"
+          }
+        }
+      }
+    },
+    "Gas Pedal" : {
+      "comment" : "Label for gas pedal keybind",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pedal de Acelerador"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "P\u00e9dale d'acc\u00e9l\u00e9rateur"
+          }
+        }
+      }
+    },
+    "Pedal Keybinds" : {
+      "comment" : "Header for pedal keybind section",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Asignaciones de Pedales"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Raccourcis des P\u00e9dales"
+          }
+        }
+      }
+    },
     "Change Password" : {
       "localizations" : {
         "es" : {
