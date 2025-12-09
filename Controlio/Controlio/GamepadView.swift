@@ -58,7 +58,7 @@ struct GamepadView: View {
             let verticalSpacing: CGFloat = isLandscape ? 6 : 4
 
             let shoulderHeight: CGFloat = max(36, min(52, h * 0.06))
-            let shoulderWidth: CGFloat  = max(100, min(160, w * 0.35))
+            let shoulderWidth: CGFloat = max(100, min(160, w * 0.35))
 
             let middleRowPadding: CGFloat = isLandscape ? 22 : (isUltraCompact ? 12 : (isCompactWidth ? 14 : 18))
             let stickRowPadding: CGFloat = isLandscape ? 20 : (isUltraCompact ? 12 : (isCompactWidth ? 14 : 16))
