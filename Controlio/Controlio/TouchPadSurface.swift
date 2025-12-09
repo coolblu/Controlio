@@ -49,7 +49,7 @@ struct TouchPadSurface: UIViewRepresentable {
 
 final class PadView: UIView, UIGestureRecognizerDelegate {
     var pointerMultiplier: Double = 1.0
-    var scrollMultiplier: Double  = 1.0
+    var scrollMultiplier: Double = 1.0
 
     var onPointer: (Int, Int) -> Void = { _, _ in }
     var onScroll: (Int, Int) -> Void = { _, _ in }
