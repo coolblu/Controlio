@@ -50,23 +50,26 @@ final class EventTxPump {
 
     private func flush() {
         guard let mc = mc else { return }
-        var out = Data()
+        var burstUnreliable = Data()
+        var burstReliable   = Data()
 
         if moveDX != 0 || moveDY != 0 {
-            out.append(encodeLine(.pm(dx: moveDX, dy: moveDY)))
+            burstUnreliable.append(encodeLine(.pm(dx: moveDX, dy: moveDY)))
             moveDX = 0; moveDY = 0
         }
         if scrollDX != 0 || scrollDY != 0 {
-            out.append(encodeLine(.sc(dx: scrollDX, dy: scrollDY)))
+            burstUnreliable.append(encodeLine(.sc(dx: scrollDX, dy: scrollDY)))
             scrollDX = 0; scrollDY = 0
         }
         if !buffer.isEmpty {
-            out.append(buffer)
+            burstReliable.append(buffer)
             buffer.removeAll(keepingCapacity: true)
         }
-        if !out.isEmpty {
-//            mc.sendRaw(out, reliable: false)
-            mc.sendRaw(out, reliable: true)
+        if !burstUnreliable.isEmpty {
+            mc.sendRaw(burstUnreliable, reliable: false)
+        }
+        if !burstReliable.isEmpty {
+            mc.sendRaw(burstReliable, reliable: true)
         }
     }
 }
